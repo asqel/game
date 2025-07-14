@@ -35,9 +35,17 @@ struct game_t {
 
 extern char *game_dir;
 
+extern SDL_Window *window;
+extern SDL_Renderer *renderer;
+extern SDL_Surface *gameSurface;
+extern SDL_Texture *texture;
+
 void game_init(int argc, char **argv);
 int game_path_is_dir(char *path);
 
 #define PRINT_ERR(...) fprintf(stderr, __VA_ARGS__);
+
+#define GAME_WIDTH 960
+#define GAME_HEIGHT 549
 
 #endif

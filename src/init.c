@@ -1,5 +1,9 @@
 #include "game.h"
 
+void init_sdl() {
+	
+}
+
 void game_init(int argc, char **argv) {
 	if (argc > 2) {
 		PRINT_ERR("Error: %s takes at most 1 argument\n", argv[0]);
@@ -11,6 +15,8 @@ void game_init(int argc, char **argv) {
 		PRINT_ERR("Error: %s is not a valid directory\n", game_dir);
 		exit(1);
 	}
+
+	init_sdl();
 
 }
 
