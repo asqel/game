@@ -1,81 +1,80 @@
 #include "game.h"
 
 int init_sdl() {
-	 if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-        SDL_Log("Erreur SDL_Init: %s", SDL_GetError());
-        return 1;
-    }
+	SDL_Init(SDL_INIT_VIDEO);
+	TTF_Init();
+	IMG_Init(IMG_INIT_PNG);
 
-    SDL_Window* window = SDL_CreateWindow("Fenetre resizable avec surface projetée",
-                                          SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                                          800, 600, SDL_WINDOW_RESIZABLE);
+	window = SDL_CreateWindow("game", SDL_WINDOWPOS_UNDEFINED,
+			SDL_WINDOWPOS_UNDEFINED, GAME_WIDTH, GAME_HEIGHT, SDL_WINDOW_RESIZABLE);
 
-    if (!window) {
-        SDL_Log("Erreur SDL_CreateWindow: %s", SDL_GetError());
-        SDL_Quit();
-        return 1;
-    }
+	if (!window) {
+		SDL_Quit();
+		return 1;
+	}
 
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    if (!renderer) {
-        SDL_Log("Erreur SDL_CreateRenderer: %s", SDL_GetError());
-        SDL_DestroyWindow(window);
-        SDL_Quit();
-        return 1;
-    }
+	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+	if (renderer == NULL) {
+		SDL_DestroyWindow(window);
+		window = NULL;
+		SDL_Quit();
+		return 1;
+	}
 
-    // Surface de jeu (offscreen buffer)
-    SDL_Surface* gameSurface = SDL_CreateRGBSurfaceWithFormat(0, GAME_WIDTH, GAME_HEIGHT, 32, SDL_PIXELFORMAT_RGBA32);
-    if (!gameSurface) {
-        SDL_Log("Erreur création gameSurface: %s", SDL_GetError());
-        SDL_DestroyRenderer(renderer);
-        SDL_DestroyWindow(window);
-        SDL_Quit();
-        return 1;
-    }
+	game_surface = SDL_CreateRGBSurfaceWithFormat(0, GAME_WIDTH, GAME_HEIGHT, 32,
+		SDL_PIXELFORMAT_RGBA32);
+	if (game_surface == NULL) {
+		SDL_DestroyRenderer(renderer);
+		SDL_DestroyWindow(window);
+		window = NULL;
+		renderer = NULL;
+		SDL_Quit();
+		return 1;
+	}
 
-    // Texture utilisée pour projeter la surface sur la fenêtre
-    SDL_Texture* texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA32,
-                                             SDL_TEXTUREACCESS_STREAMING, GAME_WIDTH, GAME_HEIGHT);
+	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA32,
+		SDL_TEXTUREACCESS_STREAMING, GAME_WIDTH, GAME_HEIGHT);
+	return 0;
+}
 
-    SDL_bool running = SDL_TRUE;
-    SDL_Event event;
+void init_texture_callback(const char *filepath) {
+	if (strlen(filepath) < 4 || strcmp(filepath + strlen(filepath) - 3, ".tx") != 0)
+		return;
+	int path_len = strlen(filepath);
+	char *png_path = malloc(path_len + 2);
+	if (!png_path) {
+		PRINT_ERR("Error: Memory allocation failed (init_texture_callback)\n");
+		return;
+	}
+	strcpy(png_path, filepath);
+	png_path[path_len - 2] = 'p';
+	png_path[path_len - 1] = 'n';
+	png_path[path_len] = 'g';
+	png_path[path_len + 1] = '\0';
+	if (!game_path_is_file(png_path)) {
+		PRINT_ERR("Error: %s is not a valid file\n", png_path);
+		free(png_path);
+		return;
+	}
+	game_load_tx(png_path, filepath);
+}
 
-    while (running) {
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT)
-                running = SDL_FALSE;
-        }
+int init_textures() {
+	char *assets_path = malloc(strlen(game_dir) + 10);
+	if (!assets_path) {
+		PRINT_ERR("Error: Memory allocation failed (init_textures)\n");
+		return 1;
+	}
+	sprintf(assets_path, "%s/assets", game_dir);
 
-        // Exemple simple de rendu sur la surface
-        SDL_FillRect(gameSurface, NULL, SDL_MapRGB(gameSurface->format, 0, 0, 64)); // fond bleu foncé
-        SDL_Rect rect = {50, 50, 100, 100};
-        SDL_FillRect(gameSurface, &rect, SDL_MapRGB(gameSurface->format, 255, 0, 0)); // carré rouge
+	game_list_files(assets_path, init_texture_callback);
 
-        // Mettre à jour la texture avec le contenu de la surface
-        SDL_UpdateTexture(texture, NULL, gameSurface->pixels, gameSurface->pitch);
+	free(assets_path);
+	return 0;
+}
 
-        // Nettoyer l'écran
-        SDL_RenderClear(renderer);
-
-        // Obtenir la taille actuelle de la fenêtre
-        int winW, winH;
-        SDL_GetRendererOutputSize(renderer, &winW, &winH);
-
-        // Calculer le rectangle de destination (plein écran, stretch)
-        SDL_Rect dstRect = {0, 0, winW, winH};
-
-        // Dessiner la texture sur l'écran (scalée)
-        SDL_RenderCopy(renderer, texture, NULL, &dstRect);
-        SDL_RenderPresent(renderer);
-    }
-
-    SDL_DestroyTexture(texture);
-    SDL_FreeSurface(gameSurface);
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    SDL_Quit();
-    return 0;	
+int init_objects() {
+	return 0;
 }
 
 void game_init(int argc, char **argv) {
@@ -90,7 +89,29 @@ void game_init(int argc, char **argv) {
 		exit(1);
 	}
 
-	init_sdl();
+	if (init_sdl()) {
+		PRINT_ERR("Error: Failed to initialize SDL\n");
+		exit(1);
+	}
+	if (TTF_Init() == -1) {
+		PRINT_ERR("Error: Failed to initialize SDL TTF: %s\n", TTF_GetError());
+		sdl_exit();
+		exit(1);
+	}
+	if (IMG_Init(IMG_INIT_PNG) == 0) {
+		PRINT_ERR("Error: Failed to initialize SDL IMG: %s\n", IMG_GetError());
+		TTF_Quit();
+		sdl_exit();
+		exit(1);
+	}
 
+	if (init_textures()) {
+		PRINT_ERR("Error: Failed to initialize textures\n\t%s\n", game_get_error());
+		game_exit(1);
+	}
+	if (init_objects()) {
+		PRINT_ERR("Error: Failed to initialize objects\n\t%s\n", game_get_error());
+		game_exit(1);
+	}
 }
 
