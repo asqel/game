@@ -143,7 +143,7 @@ void game_load_tx(const char *png_path, const char *tx_path) {
 		PRINT_ERR("Error: Failed to load texture '%s': %s\n", png_path, IMG_GetError());
 		return;
 	}
-	FILE *tx_file = fopen(tx_path, "r");
+	FILE *tx_file = fopen(tx_path, "rb");
 	if (!tx_file) {
 		PRINT_ERR("Error: Failed to open texture file '%s': %s\n", tx_path, strerror(errno));
 		SDL_FreeSurface(surface);

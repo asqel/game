@@ -52,7 +52,6 @@ void init_texture_callback(const char *filepath) {
 	png_path[path_len] = 'g';
 	png_path[path_len + 1] = '\0';
 	if (!game_path_is_file(png_path)) {
-		PRINT_ERR("Error: %s is not a valid file\n", png_path);
 		free(png_path);
 		return;
 	}
@@ -68,7 +67,7 @@ int init_textures() {
 	sprintf(assets_path, "%s/assets", game_dir);
 
 	game_list_files(assets_path, init_texture_callback);
-
+	printf("texture number %d\n", texture_registry_len);
 	free(assets_path);
 	return 0;
 }
@@ -113,5 +112,13 @@ void game_init(int argc, char **argv) {
 		PRINT_ERR("Error: Failed to initialize objects\n\t%s\n", game_get_error());
 		game_exit(1);
 	}
+	game_ctx = malloc(sizeof(game_ctx));
+	if (game_ctx == NULL) {
+		PRINT_ERR("Error: Failed to allocate game context\n");
+		game_exit(1);
+	}
+	*game_ctx = (game_t){0};
+	game_ctx->player = malloc(sizeof(playezr_t));
+	game_ctx->world = load_world("start");
 }
 

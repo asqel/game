@@ -6,6 +6,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
+#include <pthread.h>
+#include <errno.h>
 
 #define PRINT_ERR(...) fprintf(stderr, __VA_ARGS__)
 
@@ -30,16 +32,20 @@ struct texture_t {
 struct obj_info_t {
 	char name[OBJ_NAME_LENGTH + 1];
 	void (*free_data)(void *data, uint32_t id, int x, int y);
+	int is_animated;
+	int *frame_ids;
 };
 
 struct obj_t {
 	uint32_t id;
 	void *data;
-
+	int frame_idx;
+	int next_frame_time;
 };
 
 struct chunk_t {
 	obj_t objs[20][20][3]; // 0: back, 1: middle, 2:top
+	pthread_mutex_t mutex;
 };
 
 struct world_t {
@@ -55,8 +61,8 @@ struct player_t {
 };
 
 struct game_t {
-	player_t player;
-	world_t world;
+	player_t *player;
+	world_t *world;
 };
 
 extern char *game_dir;
@@ -71,6 +77,7 @@ extern texture_t	*texture_registry;
 extern int			texture_registry_len;
 extern char			*game_error_str;
 extern int			game_error_is_special;
+extern game_t		*game_ctx;
 
 void	game_init(int argc, char **argv);
 int		game_path_is_dir(char *path);
@@ -83,6 +90,7 @@ void	game_exit(int exit_code);
 char	*game_get_error();
 void	game_set_error(const char *error);
 void	game_set_error_special(int error_code);
+void	game_load_tx(const char *png_path, const char *tx_path);
 
 enum {
 	GAME_ERROR_NONE = 0,
