@@ -73,6 +73,8 @@ int init_textures() {
 }
 
 int init_objects() {
+	game_register_obj("air", 0, NULL);
+	game_register_obj("grass", 1, (int []){game_texture_get_id("grass")});
 	return 0;
 }
 
@@ -120,5 +122,7 @@ void game_init(int argc, char **argv) {
 	*game_ctx = (game_t){0};
 	game_ctx->player = malloc(sizeof(player_t));
 	game_ctx->world = game_load_world("start");
+	game_ctx->player->x = 0;
+	game_ctx->player->y = 0;
 }
 

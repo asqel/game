@@ -170,3 +170,12 @@ void game_load_tx(const char *png_path, const char *tx_path) {
 	free(tx_content);
 	SDL_FreeSurface(surface);
 }
+
+int game_texture_get_id(const char *name) {
+	for (int i = 0; i < texture_registry_len; i++) {
+		if (strcmp(texture_registry[i].name, name) == 0) {
+			return i;
+		}
+	}
+	return -1;
+}

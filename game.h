@@ -6,7 +6,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
-#include <pthread.h>
 #include <errno.h>
 
 #define PRINT_ERR(...) fprintf(stderr, __VA_ARGS__)
@@ -16,6 +15,8 @@
 #define TEXTURE_NAME_LENGTH 256
 #define OBJ_NAME_LENGTH 256
 #define GAME_WORLD_NAME_MAX_LEN 100
+
+#define CHUNK_SIZE 20
 
 typedef struct chunk_t		chunk_t;
 typedef struct world_t		world_t;
@@ -32,20 +33,20 @@ struct texture_t {
 
 struct obj_info_t {
 	char name[OBJ_NAME_LENGTH + 1];
-	void (*free_data)(void *data, uint32_t id, int x, int y);
-	int is_animated;
+	int frame_len;
 	int *frame_ids;
+	int frame_delay;
 };
 
 struct obj_t {
 	uint32_t id;
+	uint32_t data;
 	int frame_idx;
 	int next_frame_time;
 };
 
 struct chunk_t {
-	obj_t objs[20][20][3]; // 0: back, 1: middle, 2:top
-	pthread_mutex_t mutex;
+	obj_t objs[CHUNK_SIZE][CHUNK_SIZE][3]; // 0: back, 1: middle, 2:top
 };
 
 struct world_t {
@@ -93,6 +94,12 @@ char	*game_get_error();
 void	game_set_error(const char *error);
 void	game_set_error_special(int error_code);
 void	game_load_tx(const char *png_path, const char *tx_path);
+
+void game_register_obj(char *name, int frame_len, int *frame_ids);
+int game_get_obj_id(char *name);
+
+int game_texture_get_id(const char *name);
+chunk_t *game_load_chunk(world_t *world, int x, int y);
 
 enum {
 	GAME_ERROR_NONE = 0,
