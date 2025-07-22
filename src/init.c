@@ -118,7 +118,7 @@ void game_init(int argc, char **argv) {
 		game_exit(1);
 	}
 	*game_ctx = (game_t){0};
-	game_ctx->player = malloc(sizeof(playezr_t));
-	game_ctx->world = load_world("start");
+	game_ctx->player = malloc(sizeof(player_t));
+	game_ctx->world = game_load_world("start");
 }
 

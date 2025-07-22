@@ -1,6 +1,11 @@
 {
 	"files.associations": {
 		"dirent.h": "c",
-		"stat.h": "c"
+		"stat.h": "c",
+		"game.h": "c",
+		"sdl.h": "c",
+		"chrono": "c",
+		"text_encoding": "c",
+		"typeinfo": "c"
 	}
 }

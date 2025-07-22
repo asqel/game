@@ -15,6 +15,7 @@
 #define GAME_HEIGHT 549
 #define TEXTURE_NAME_LENGTH 256
 #define OBJ_NAME_LENGTH 256
+#define GAME_WORLD_NAME_MAX_LEN 100
 
 typedef struct chunk_t		chunk_t;
 typedef struct world_t		world_t;
@@ -38,7 +39,6 @@ struct obj_info_t {
 
 struct obj_t {
 	uint32_t id;
-	void *data;
 	int frame_idx;
 	int next_frame_time;
 };
@@ -50,8 +50,10 @@ struct chunk_t {
 
 struct world_t {
 	chunk_t ***chunks;
-	char *name;
-	char *dir_path;
+	int width; // in chunks
+	int height;
+	char name[GAME_WORLD_NAME_MAX_LEN + 1];
+	char *path;
 	void *infos;
 };
 

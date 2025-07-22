@@ -1,0 +1,14 @@
+world:
+	back ground color (RGB 3B)
+	world_width (int32 in chunks)
+	world_heigh (int32 in chunks)
+	chunks...
+
+chunk:
+	objs... (stored in x y plane)
+
+obj:
+	id (int32)
+	if id == 0
+		skip
+
