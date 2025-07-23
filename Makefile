@@ -4,7 +4,7 @@ OBJ = ${SRC:.c=.o}
 CC = gcc
 LD = gcc
 
-CFLAGS = -Wall -Wextra -Werror -g -I.
+CFLAGS = -Wall -Wextra -g -I.
 LDFLAGS = -lSDL2 -lSDL2_image -lSDL2_ttf
 
 NAME = game

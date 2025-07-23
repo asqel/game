@@ -74,7 +74,7 @@ int init_textures() {
 
 int init_objects() {
 	game_register_obj("air", 0, NULL);
-	game_register_obj("grass", 1, (int []){game_texture_get_id("grass")});
+	game_register_obj("grass", 1, (int []){game_texture_get_id("grass0")});
 	return 0;
 }
 
@@ -114,7 +114,7 @@ void game_init(int argc, char **argv) {
 		PRINT_ERR("Error: Failed to initialize objects\n\t%s\n", game_get_error());
 		game_exit(1);
 	}
-	game_ctx = malloc(sizeof(game_ctx));
+	game_ctx = malloc(sizeof(game_t));
 	if (game_ctx == NULL) {
 		PRINT_ERR("Error: Failed to allocate game context\n");
 		game_exit(1);
@@ -124,5 +124,10 @@ void game_init(int argc, char **argv) {
 	game_ctx->world = game_load_world("start");
 	game_ctx->player->x = 0;
 	game_ctx->player->y = 0;
+	game_ctx->world->chunks = malloc(sizeof(chunk_t **));
+	game_ctx->world->chunks[0] = malloc(sizeof(chunk_t *));
+	game_ctx->world->chunks[0][0] = game_load_chunk(game_ctx->world, 0, 0);
+	game_ctx->world->height = 1;
+	game_ctx->world->width = 1;
 }
 

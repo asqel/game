@@ -11,7 +11,7 @@
 #define PRINT_ERR(...) fprintf(stderr, __VA_ARGS__)
 
 #define GAME_WIDTH 960
-#define GAME_HEIGHT 549
+#define GAME_HEIGHT 540
 #define TEXTURE_NAME_LENGTH 256
 #define OBJ_NAME_LENGTH 256
 #define GAME_WORLD_NAME_MAX_LEN 100
@@ -100,6 +100,9 @@ int game_get_obj_id(char *name);
 
 int game_texture_get_id(const char *name);
 chunk_t *game_load_chunk(world_t *world, int x, int y);
+world_t *game_load_world(char *name);
+
+void game_render();
 
 enum {
 	GAME_ERROR_NONE = 0,
