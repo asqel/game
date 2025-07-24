@@ -2,13 +2,23 @@ world:
 	back ground color (RGB 3B)
 	world_width (int32 in chunks)
 	world_heigh (int32 in chunks)
-	chunks...
+	chunks... (stored as lines)
 
 chunk:
-	objs... (stored in x y plane)
+	info: 0bIABC0000 (I: is empty, A: has background, B: has middle, C: has foreground)
+	if I == 0
+		if A == 1
+			background: objs... (stored as lines)
+		if B == 1
+			middle: objs... (stored as lines)
+		if C == 1
+			foreground: objs... (stored as lines)
 
 obj:
-	id (int32)
-	if id == 0
-		skip
+	info:
+		0bACBBBBB (A: is_air) (BBBBBB: number of repetition) (C has data)
+	if A == 0
+		id: uint24
+	if C == 1 && A == 0
+		data: uint32_t
 

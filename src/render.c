@@ -64,8 +64,9 @@ void game_render() {
 				SDL_BlitSurface(texture, NULL, game_surface, &(SDL_Rect){real_x, real_y, texture->w, texture->h});
 			}
 			if (y + top_left[1] - CHUNK_SIZE == (int)game_ctx->player->y + 1) {
-				SDL_Surface *texture = texture_registry[game_texture_get_id("mc_d")].surface;
-				SDL_BlitSurface(texture, NULL, game_surface, &(SDL_Rect){GAME_WIDTH / 2 -  texture->w / 2, GAME_HEIGHT / 2 -  texture->h / 2 , texture->w, texture->h});
+				// TODO
+				//SDL_Surface *texture = texture_registry[game_texture_get_id("mc_d")].surface;
+				//SDL_BlitSurface(texture, NULL, game_surface, &(SDL_Rect){GAME_WIDTH / 2 -  texture->w / 2, GAME_HEIGHT / 2 -  texture->h / 2 , texture->w, texture->h});
 			}
 			obj_t obj = objs[2];
 			if (obj.id == 0 || obj.id >= obj_registry_len || obj_registry[obj.id].frame_len == 0)
@@ -76,8 +77,9 @@ void game_render() {
 			SDL_Surface *texture = texture_registry[frame_id].surface;
 			if (texture == NULL)
 				continue;
-			SDL_BlitSurface(texture, NULL, game_surface, &(SDL_Rect){real_x, real_y, texture->w, texture->h});
+			SDL_BlitSurface(texture, NULL, game_surface, &(SDL_Rect){real_x, real_y - texture->h + TILE_SIZE, texture->w, texture->h});
 		}
 	}
+	SDL_FillRect(game_surface, &(SDL_Rect){GAME_WIDTH / 2 - 5, GAME_HEIGHT / 2 - 5, 5, 5}, 0xffffffff);
 	update_screen();
 }
