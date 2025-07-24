@@ -16,7 +16,19 @@
 #define OBJ_NAME_LENGTH 256
 #define GAME_WORLD_NAME_MAX_LEN 100
 
+#define TILE_SIZE 64
+
+#define GAME_FPS 30
+
 #define CHUNK_SIZE 20
+
+enum {
+	GAME_ACT_UP,
+	GAME_ACT_DOWN,
+	GAME_ACT_LEFT,
+	GAME_ACT_RIGHT,
+	GAME_ACT_ENUM_MAX
+};
 
 typedef struct chunk_t		chunk_t;
 typedef struct world_t		world_t;
@@ -66,6 +78,7 @@ struct player_t {
 struct game_t {
 	player_t *player;
 	world_t *world;
+	uint32_t actions[GAME_ACT_ENUM_MAX]; // how much the action is pressed
 };
 
 extern char *game_dir;

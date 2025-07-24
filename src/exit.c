@@ -29,11 +29,11 @@ void objects_free() {
 }
 
 void game_exit(int exit_code) {
-	sdl_exit();
-	TTF_Quit();
-	IMG_Quit();
 	free(game_error_str);
 	textures_free();
 	objects_free();
+	IMG_Quit();
+	TTF_Quit();
+	sdl_exit();
 	exit(exit_code);
 }

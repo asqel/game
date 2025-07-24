@@ -13,7 +13,7 @@ int init_sdl() {
 		return 1;
 	}
 
-	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 	if (renderer == NULL) {
 		SDL_DestroyWindow(window);
 		window = NULL;
@@ -75,6 +75,7 @@ int init_textures() {
 int init_objects() {
 	game_register_obj("air", 0, NULL);
 	game_register_obj("grass", 1, (int []){game_texture_get_id("grass0")});
+	game_register_obj("tall_grass", 1, (int []){game_texture_get_id("tall_grass")});
 	return 0;
 }
 
@@ -124,10 +125,12 @@ void game_init(int argc, char **argv) {
 	game_ctx->world = game_load_world("start");
 	game_ctx->player->x = 0;
 	game_ctx->player->y = 0;
-	game_ctx->world->chunks = malloc(sizeof(chunk_t **));
-	game_ctx->world->chunks[0] = malloc(sizeof(chunk_t *));
+	game_ctx->world->chunks = calloc(sizeof(chunk_t **), 2);
+	game_ctx->world->chunks[0] = calloc(sizeof(chunk_t *), 2);
+	game_ctx->world->chunks[1] = calloc(sizeof(chunk_t *), 2);
 	game_ctx->world->chunks[0][0] = game_load_chunk(game_ctx->world, 0, 0);
-	game_ctx->world->height = 1;
-	game_ctx->world->width = 1;
+	game_ctx->world->chunks[1][1] = game_load_chunk(game_ctx->world, 0, 0);
+	game_ctx->world->height = 2;
+	game_ctx->world->width = 2;
 }
 
