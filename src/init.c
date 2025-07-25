@@ -121,6 +121,7 @@ void game_init(int argc, char **argv) {
 		game_exit(1);
 	}
 	*game_ctx = (game_t){0};
+	memset(game_ctx->actions, 0, sizeof(uint32_t) * GAME_ACT_ENUM_MAX);
 	game_ctx->player = malloc(sizeof(player_t));
 	game_ctx->world = game_load_world("start");
 	game_ctx->player->x = 0;
@@ -132,5 +133,21 @@ void game_init(int argc, char **argv) {
 	game_ctx->world->chunks[1][1] = game_load_chunk(game_ctx->world, 0, 0);
 	game_ctx->world->height = 2;
 	game_ctx->world->width = 2;
+
+	for (int i = 0; i < 4; i++) {
+		for (int k = 0; k < 3; k++) {
+			char name[] = "mc_d0";
+			name[3] = "urdl"[i];
+			name[4] = k + '0';
+			int texture_id = game_texture_get_id(name);
+			game_ctx->player_textures_id[i][k] = texture_registry[texture_id].surface;
+		}
+	}
+	game_ctx->player->dir = 2;
+
+	char *font_path = malloc(sizeof(char) * (strlen(game_dir) + strlen("/assets/PressStart2P-Regular.ttf") + 1));
+	sprintf(font_path, "%s/assets/PressStart2P-Regular.ttf", game_dir);
+	game_ctx->fonts[0] = TTF_OpenFont(font_path, 16);
+	free(font_path);
 }
 

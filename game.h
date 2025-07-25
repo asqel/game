@@ -73,12 +73,15 @@ struct world_t {
 struct player_t {
 	double x;
 	double y;
+	uint8_t dir; // 0 up, 1 right, 2 down 3 left
 };
 
 struct game_t {
 	player_t *player;
 	world_t *world;
 	uint32_t actions[GAME_ACT_ENUM_MAX]; // how much the action is pressed
+	SDL_Surface *player_textures_id[4][3];
+	TTF_Font *fonts[1];
 };
 
 extern char *game_dir;
@@ -114,6 +117,10 @@ int game_get_obj_id(char *name);
 int game_texture_get_id(const char *name);
 chunk_t *game_load_chunk(world_t *world, int x, int y);
 world_t *game_load_world(char *name);
+
+
+void update_screen();
+void game_render_text(char *text, int x, int y, uint8_t r, uint8_t g, uint8_t b);
 
 void game_render();
 
