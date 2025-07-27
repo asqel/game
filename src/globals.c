@@ -15,3 +15,6 @@ game_t *game_ctx = NULL;
 
 char *game_error_str = NULL;
 int game_error_is_special = GAME_ERROR_NONE; // like errno (doesnt use game_error_str)
+
+sprite_registry_t *sprite_registry = NULL;
+int sprite_registry_len = 0;

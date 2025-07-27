@@ -72,10 +72,16 @@ int init_textures() {
 	return 0;
 }
 
+int init_sprites() {
+	register_sprite((int []){game_texture_get_id("grass0")}, 1, 0, "grass", 0);
+	register_sprite((int []){game_texture_get_id("tree"), game_texture_get_id("mc_d0")}, 2, 15, "tree", SPRITE_MASK_LOOP);
+	return 0;
+}
+
 int init_objects() {
-	game_register_obj("air", 0, NULL);
-	game_register_obj("grass", 1, (int []){game_texture_get_id("grass0")});
-	game_register_obj("tall_grass", 1, (int []){game_texture_get_id("tall_grass")});
+	game_register_obj("air", 0);
+	game_register_obj("grass", get_sprite_id("grass"));
+	game_register_obj("tree", get_sprite_id("tree"));
 	return 0;
 }
 
@@ -111,6 +117,10 @@ void game_init(int argc, char **argv) {
 		PRINT_ERR("Error: Failed to initialize textures\n\t%s\n", game_get_error());
 		game_exit(1);
 	}
+	if (init_sprites()) {
+		PRINT_ERR("Error: Failed to initialize sprites\n\t%s\n", game_get_error());
+		game_exit(1);
+	}
 	if (init_objects()) {
 		PRINT_ERR("Error: Failed to initialize objects\n\t%s\n", game_get_error());
 		game_exit(1);
@@ -121,6 +131,7 @@ void game_init(int argc, char **argv) {
 		game_exit(1);
 	}
 	*game_ctx = (game_t){0};
+	memset(game_ctx->actions, 0, sizeof(uint32_t) * GAME_ACT_ENUM_MAX);
 	game_ctx->player = malloc(sizeof(player_t));
 	game_ctx->world = game_load_world("start");
 	game_ctx->player->x = 0;
@@ -132,5 +143,21 @@ void game_init(int argc, char **argv) {
 	game_ctx->world->chunks[1][1] = game_load_chunk(game_ctx->world, 0, 0);
 	game_ctx->world->height = 2;
 	game_ctx->world->width = 2;
+
+	for (int i = 0; i < 4; i++) {
+		for (int k = 0; k < 3; k++) {
+			char name[] = "mc_d0";
+			name[3] = "urdl"[i];
+			name[4] = k + '0';
+			int texture_id = game_texture_get_id(name);
+			game_ctx->player_textures[i][k] = texture_registry[texture_id].surface;
+		}
+	}
+	game_ctx->player->dir = 2;
+
+	char *font_path = malloc(sizeof(char) * (strlen(game_dir) + strlen("/assets/PressStart2P-Regular.ttf") + 1));
+	sprintf(font_path, "%s/assets/PressStart2P-Regular.ttf", game_dir);
+	game_ctx->fonts[0] = TTF_OpenFont(font_path, 16);
+	free(font_path);
 }
 
