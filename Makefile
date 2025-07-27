@@ -4,7 +4,7 @@ OBJ = ${SRC:.c=.o}
 CC = gcc
 LD = gcc
 
-CFLAGS = -Wall -Wextra -g -I. #-fsanitize=address
+CFLAGS = -Wall -Wextra -g -Iinclude/ #-fsanitize=address
 LDFLAGS = -lSDL2 -lSDL2_image -lSDL2_ttf #-fsanitize=address
 
 NAME = game

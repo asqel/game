@@ -1,27 +1,28 @@
-#ifndef GAME_H
-#define GAME_H
+#ifndef GAME_TYPES
+#define GAME_TYPES
 
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include <stdint.h>
 #include <stdio.h>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_ttf.h>
-#include <SDL2/SDL_image.h>
-#include <errno.h>
 #include <stdarg.h>
 
 #define PRINT_ERR(...) fprintf(stderr, __VA_ARGS__)
 
-#define GAME_WIDTH 960
-#define GAME_HEIGHT 540
 #define TEXTURE_NAME_LENGTH 256
 #define OBJ_NAME_LENGTH 256
 #define GAME_WORLD_NAME_MAX_LEN 100
+#define CHUNK_SIZE 20
+
+#define GAME_WIDTH 960
+#define GAME_HEIGHT 540
 #define TILE_SIZE 64
 #define GAME_FPS 30
-#define CHUNK_SIZE 20
 
 #define SPRITE_MASK_PAUSED (1)
 #define SPRITE_MASK_LOOP (1 << 1)
+
 
 enum {
 	GAME_ACT_UP,
@@ -30,6 +31,18 @@ enum {
 	GAME_ACT_LEFT,
 	GAME_ACT_ENUM_MAX
 };
+
+#define GAME_EVTY_INVALID 0
+#define GAME_EVTY_PRESSED 1
+#define GAME_EVTY_RELEASED 2
+#define GAME_EVTY_TEXT 3
+
+#define GAME_EVAC_NONE 0
+#define GAME_EVAC_UP 1
+#define GAME_EVAC_RIGHT 2
+#define GAME_EVAC_DOWN 3
+#define GAME_EVAC_LEFT 4
+#define GAME_EVAC_CLOSE 5
 
 typedef struct chunk_t		chunk_t;
 typedef struct world_t		world_t;
@@ -41,6 +54,7 @@ typedef struct texture_t	texture_t;
 typedef struct sprite_registry_t sprite_registry_t;
 typedef struct sprite_t	sprite_t;
 typedef struct gui_t		gui_t;
+typedef struct game_event_t game_event_t;
 
 struct gui_t {
 	void *data;
@@ -111,66 +125,17 @@ struct game_t {
 	TTF_Font *fonts[1];
 };
 
+struct game_event_t {
+	uint8_t type;
+	union {
+		struct {
+			uint8_t action; // 0 if not mapped
+			uint32_t scancode; // SDL scancode
+		} key;
+		char text[32];
+	};
+};
 
-extern char *game_dir;
-
-extern SDL_Window	*window;
-extern SDL_Renderer	*renderer;
-extern SDL_Surface	*game_surface;
-extern SDL_Texture	*texture;
-extern obj_info_t	*obj_registry;
-extern int			obj_registry_len;
-extern texture_t	*texture_registry;
-extern int			texture_registry_len;
-extern char			*game_error_str;
-extern int			game_error_is_special;
-extern game_t		*game_ctx;
-
-extern sprite_registry_t *sprite_registry;
-extern int sprite_registry_len;
-
-void	game_init(int argc, char **argv);
-int		game_path_is_dir(char *path);
-void	game_list_files(char *path, void (*callback)(const char *filepath));
-int		game_path_is_file(char *path);
-
-void	sdl_exit();
-void	game_exit(int exit_code);
-
-char	*game_get_error();
-void	game_set_error(const char *error);
-void	game_set_error_special(int error_code);
-void	game_load_tx(const char *png_path, const char *tx_path);
-
-void game_register_obj(char *name, int sprite_id);
-int game_get_obj_id(char *name);
-
-int game_texture_get_id(const char *name);
-chunk_t *game_load_chunk(world_t *world, int x, int y);
-world_t *game_load_world(char *name);
-
-
-void update_screen();
-void game_render_text(char *text, int x, int y, uint8_t r, uint8_t g, uint8_t b);
-void game_render_strf(int x, int y, uint8_t r, uint8_t g, uint8_t b, char *text, ...);
-
-void game_render();
-
-
-void register_sprite(int *texture_ids, int texture_ids_len, int frame_len_tick, const char *name, uint8_t state);
-sprite_t get_sprite(char *name);
-sprite_t get_sprite_by_id(int sprite_id);
-
-void game_pause_sprite(sprite_t *sprite);
-void game_resume_sprite(sprite_t *sprite);
-void game_set_sprite_loop(sprite_t *sprite, int loop);
-void game_sprite_tick(sprite_t *sprite);
-void game_sprite_reset(sprite_t *sprite);
-
-SDL_Surface *game_get_sprite_texture(sprite_t *sprite);
-int get_sprite_id(const char *name);
-
-obj_t game_get_obj(int id);
 enum {
 	GAME_ERROR_NONE = 0,
 

@@ -8,6 +8,8 @@
 		"text_encoding": "c",
 		"typeinfo": "c",
 		"stdint.h": "c",
-		"stdio.h": "c"
+		"stdio.h": "c",
+		"sdl_ttf.h": "c",
+		"funcs.h": "c"
 	}
 }
