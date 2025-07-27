@@ -32,6 +32,61 @@ void game_render_text(char *text, int x, int y, uint8_t r, uint8_t g, uint8_t b)
 	SDL_FreeSurface(text_surface);
 }
 
+void game_render_strf(int x, int y, uint8_t r, uint8_t g, uint8_t b, char *text, ...) {
+	va_list args;
+	va_list args_copy;
+	va_start(args, text);
+	va_copy(args_copy, args);
+	int size = vsnprintf(NULL, 0, text, args_copy);
+	va_end(args_copy);
+	char *buffer = malloc(size + 1);
+	vsprintf(buffer, text, args);
+	va_end(args);
+	game_render_text(buffer, x, y, r, g, b);
+	free(buffer);
+}
+
+static void game_render_player() {
+	SDL_Surface *texture = NULL;
+	int action_duration = (game_ctx->actions[GAME_ACT_UP + game_ctx->player->dir] * 100 / GAME_FPS) % 100;
+	if (game_ctx->actions[GAME_ACT_UP + game_ctx->player->dir] == 0)
+		action_duration = 0;
+	else {
+    	action_duration = ((action_duration / 17) % 2) + 1;
+	}
+	texture = game_ctx->player_textures[game_ctx->player->dir][action_duration];
+	SDL_BlitSurface(texture, NULL, game_surface, &(SDL_Rect){GAME_WIDTH / 2 -  texture->w / 2, GAME_HEIGHT / 2 -  texture->h / 2 , texture->w, texture->h});
+}
+
+static void game_render_layer(int layer, chunk_t *chunks[3][3], int offset_x, int offset_y, int render_player) {
+	for (int y = 0; y < 3 * CHUNK_SIZE; y++) {
+		for (int x = 0; x < 3 * CHUNK_SIZE; x++) {
+			chunk_t *chunk = chunks[y / CHUNK_SIZE][x / CHUNK_SIZE];
+			int x_to_0 = x - CHUNK_SIZE + game_ctx->player->x / CHUNK_SIZE;
+			int y_to_0 = y - CHUNK_SIZE + game_ctx->player->y / CHUNK_SIZE;
+			if (chunk == NULL) {
+				if (y_to_0 == (int)game_ctx->player->y && x_to_0 == (int)game_ctx->player->x && render_player)
+					game_render_player();
+				continue;
+			}
+			obj_t *obj =  &chunk->objs[y % CHUNK_SIZE][x % CHUNK_SIZE][layer];
+			SDL_Surface *texture = NULL;
+			if (obj->id != 0) {
+				texture = game_get_sprite_texture(&obj->sprite);
+				game_sprite_tick(&obj->sprite);
+			}
+
+			if (texture != NULL) {
+				int real_x = (x - CHUNK_SIZE) * TILE_SIZE + offset_x - texture->w / 2 + TILE_SIZE / 2;
+				int real_y = (y - CHUNK_SIZE) * TILE_SIZE + offset_y - texture->h + TILE_SIZE;
+				SDL_BlitSurface(texture, NULL, game_surface, &(SDL_Rect){real_x, real_y, texture->w, texture->h});
+			}
+			if (y_to_0 == (int)game_ctx->player->y && x_to_0 == (int)game_ctx->player->x && render_player)
+				game_render_player();
+		}
+	}
+}
+
 void game_render() {
 	SDL_FillRect(game_surface, &(SDL_Rect){0, 0, GAME_WIDTH, GAME_HEIGHT}, 0);
 	int player_chunk_x = ((int)game_ctx->player->x) / CHUNK_SIZE;
@@ -44,45 +99,13 @@ void game_render() {
 		for (int k = -1; k <= 1; k++) {
 			int x = player_chunk_x + k;
 			int y = player_chunk_y + i;
-			if (x < 0 || y < 0 || x >= game_ctx->world->width || y >= game_ctx->world->height)
-				continue;
-			chunks[i + 1][k + 1] = game_ctx->world->chunks[y][x];
+			if (x >= 0 && y >= 0 && x < game_ctx->world->width && y < game_ctx->world->height)
+				chunks[i + 1][k + 1] = game_ctx->world->chunks[y][x];
 		}
 	}
 	int offset_x =  GAME_WIDTH / 2 - TILE_SIZE / 2 - game_ctx->player->x * TILE_SIZE + top_left[0] * TILE_SIZE + TILE_SIZE / 2;
 	int offset_y =  GAME_HEIGHT / 2 - TILE_SIZE / 2 - game_ctx->player->y * TILE_SIZE + top_left[1] * TILE_SIZE + TILE_SIZE / 2;
-	for (int y = 0; y < 3 * CHUNK_SIZE; y++) {
-		for (int x = 0; x < 3 * CHUNK_SIZE; x++) {
-			chunk_t *chunk = chunks[y / CHUNK_SIZE][x / CHUNK_SIZE];
-			if (chunk == NULL)
-				continue;
-			obj_t *objs =  chunk->objs[y % CHUNK_SIZE][x % CHUNK_SIZE];
-			for (int i = 0; i < 2; i++) {
-				obj_t obj = objs[i];
-				if (obj.id == 0 || obj.id >= obj_registry_len || obj_registry[obj.id].frame_len == 0)
-					continue;
-				int real_x = (x - CHUNK_SIZE) * TILE_SIZE + offset_x;
-				int real_y = (y - CHUNK_SIZE) * TILE_SIZE + offset_y;
-				int frame_id = obj_registry[obj.id].frame_ids[obj.frame_idx];
-				SDL_Surface *texture = texture_registry[frame_id].surface;
-				if (texture == NULL)
-					continue;
-				SDL_BlitSurface(texture, NULL, game_surface, &(SDL_Rect){real_x, real_y, texture->w, texture->h});
-			}
-			if (y + top_left[1] - CHUNK_SIZE == (int)game_ctx->player->y + 1) {
-				SDL_Surface *texture = texture_registry[game_texture_get_id("mc_d0")].surface;
-				SDL_BlitSurface(texture, NULL, game_surface, &(SDL_Rect){GAME_WIDTH / 2 -  texture->w / 2, GAME_HEIGHT / 2 -  texture->h / 2 , texture->w, texture->h});
-			}
-			obj_t obj = objs[2];
-			if (obj.id == 0 || obj.id >= obj_registry_len || obj_registry[obj.id].frame_len == 0)
-				continue;
-			int real_x = (x - CHUNK_SIZE) * TILE_SIZE + offset_x;
-			int real_y = (y - CHUNK_SIZE) * TILE_SIZE + offset_y;
-			int frame_id = obj_registry[obj.id].frame_ids[obj.frame_idx];
-			SDL_Surface *texture = texture_registry[frame_id].surface;
-			if (texture == NULL)
-				continue;
-			SDL_BlitSurface(texture, NULL, game_surface, &(SDL_Rect){real_x, real_y - texture->h + TILE_SIZE, texture->w, texture->h});
-		}
-	}
+	game_render_layer(0, chunks, offset_x, offset_y, 0);
+	game_render_layer(1, chunks, offset_x, offset_y, 1);
+	game_render_layer(2, chunks, offset_x, offset_y, 0);
 }

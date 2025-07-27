@@ -26,14 +26,19 @@ void textures_free() {
 	free(texture_registry);
 }
 
+void sprite_free() {
+	for (int i = 0; i < sprite_registry_len; i++)
+		free(sprite_registry[i].textures_ids);
+	free(sprite_registry);
+}
+
 void objects_free() {
-	for (int i = 0; i < obj_registry_len; i++)
-		free(obj_registry[i].frame_ids);
 	free(obj_registry);
 }
 
 void game_exit(int exit_code) {
 	free(game_error_str);
+	sprite_free();
 	textures_free();
 	objects_free();
 	IMG_Quit();
@@ -51,5 +56,6 @@ void game_exit(int exit_code) {
 	free(game_ctx->world->path);
 	free(game_ctx->world);
 	free(game_ctx->player);
+	free(game_ctx);
 	exit(exit_code);
 }

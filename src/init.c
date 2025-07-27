@@ -72,10 +72,16 @@ int init_textures() {
 	return 0;
 }
 
+int init_sprites() {
+	register_sprite((int []){game_texture_get_id("grass0")}, 1, 0, "grass", 0);
+	register_sprite((int []){game_texture_get_id("tree"), game_texture_get_id("mc_d0")}, 2, 15, "tree", SPRITE_MASK_LOOP);
+	return 0;
+}
+
 int init_objects() {
-	game_register_obj("air", 0, NULL);
-	game_register_obj("grass", 1, (int []){game_texture_get_id("grass0")});
-	game_register_obj("tall_grass", 1, (int []){game_texture_get_id("tall_grass")});
+	game_register_obj("air", 0);
+	game_register_obj("grass", get_sprite_id("grass"));
+	game_register_obj("tree", get_sprite_id("tree"));
 	return 0;
 }
 
@@ -111,6 +117,10 @@ void game_init(int argc, char **argv) {
 		PRINT_ERR("Error: Failed to initialize textures\n\t%s\n", game_get_error());
 		game_exit(1);
 	}
+	if (init_sprites()) {
+		PRINT_ERR("Error: Failed to initialize sprites\n\t%s\n", game_get_error());
+		game_exit(1);
+	}
 	if (init_objects()) {
 		PRINT_ERR("Error: Failed to initialize objects\n\t%s\n", game_get_error());
 		game_exit(1);
@@ -140,7 +150,7 @@ void game_init(int argc, char **argv) {
 			name[3] = "urdl"[i];
 			name[4] = k + '0';
 			int texture_id = game_texture_get_id(name);
-			game_ctx->player_textures_id[i][k] = texture_registry[texture_id].surface;
+			game_ctx->player_textures[i][k] = texture_registry[texture_id].surface;
 		}
 	}
 	game_ctx->player->dir = 2;

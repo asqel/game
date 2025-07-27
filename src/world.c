@@ -17,6 +17,7 @@ world_t *game_new_world(char *name) {
 	res->chunks = NULL;
 	res->width = 0;
 	res->height = 0;
+	// TODO!
 }
 
 world_t *game_load_world(char *name) {

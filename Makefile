@@ -4,8 +4,8 @@ OBJ = ${SRC:.c=.o}
 CC = gcc
 LD = gcc
 
-CFLAGS = -Wall -Wextra -g -I.
-LDFLAGS = -lSDL2 -lSDL2_image -lSDL2_ttf
+CFLAGS = -Wall -Wextra -g -I. #-fsanitize=address
+LDFLAGS = -lSDL2 -lSDL2_image -lSDL2_ttf #-fsanitize=address
 
 NAME = game
 
@@ -18,10 +18,10 @@ $(NAME): $(OBJ)
 	$(CC) -c $< -o $@ $(CFLAGS)
 
 clean:
-	rm $(OBJ)
+	rm -rf $(OBJ)
 
 fclean: clean
-	rm $(NAME)
+	rm -rf $(NAME)
 
 re: fclean all
 

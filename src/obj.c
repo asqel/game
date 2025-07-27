@@ -1,6 +1,6 @@
 #include "game.h"
 
-void game_register_obj(char *name, int frame_len, int *frame_ids) {
+void game_register_obj(char *name, int sprite_id) {
 	if (strlen(name) > OBJ_NAME_LENGTH) {
 		PRINT_ERR("Error: Object name too long: '%s'\n", name);
 		return;
@@ -19,9 +19,7 @@ void game_register_obj(char *name, int frame_len, int *frame_ids) {
 	}
 	obj_registry = tmp;
 	strcpy(obj_registry[obj_registry_len].name, name);
-	obj_registry[obj_registry_len].frame_len = frame_len;
-	obj_registry[obj_registry_len].frame_ids = malloc(sizeof(int) * frame_len);
-	memcpy(obj_registry[obj_registry_len].frame_ids, frame_ids, sizeof(int) * frame_len);
+	obj_registry[obj_registry_len].sprite_id = sprite_id;
 	obj_registry_len++;
 }
 
@@ -32,4 +30,21 @@ int game_get_obj_id(char *name) {
 		}
 	}
 	return -1;
+}
+
+obj_t game_get_obj(int id) {
+	if (id <= 0 || id >= obj_registry_len) {
+		obj_t empty_obj = {0};
+		return empty_obj;
+	}
+	obj_t obj;
+	obj.id = id;
+	obj.data = 0;
+	obj.sprite.sprite_id = obj_registry[id].sprite_id;
+	obj.sprite.frame_idx = 0;
+	if (obj.sprite.sprite_id >= 0 && obj.sprite.sprite_id < sprite_registry_len) {
+		obj.sprite.current_frame_ttl = sprite_registry[obj.sprite.sprite_id].frame_len_tick;
+		obj.sprite.state = sprite_registry[obj.sprite.sprite_id].state;
+	}
+	return obj;
 }
