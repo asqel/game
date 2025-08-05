@@ -59,16 +59,15 @@ static void game_render_player() {
 }
 
 static void game_render_layer(int layer, chunk_t *chunks[3][3], int offset_x, int offset_y, int render_player) {
+
+	int line_y_bottom = (0 - CHUNK_SIZE) * TILE_SIZE + offset_y + TILE_SIZE;
 	for (int y = 0; y < 3 * CHUNK_SIZE; y++) {
+		if (render_player && line_y_bottom > GAME_HEIGHT / 2 + TILE_SIZE / 2 && line_y_bottom - TILE_SIZE <= GAME_HEIGHT / 2 + TILE_SIZE / 2)
+			game_render_player();
 		for (int x = 0; x < 3 * CHUNK_SIZE; x++) {
 			chunk_t *chunk = chunks[y / CHUNK_SIZE][x / CHUNK_SIZE];
-			int x_to_0 = x - CHUNK_SIZE + game_ctx->player->x / CHUNK_SIZE;
-			int y_to_0 = y - CHUNK_SIZE + game_ctx->player->y / CHUNK_SIZE;
-			if (chunk == NULL) {
-				if (y_to_0 == (int)game_ctx->player->y && x_to_0 == (int)game_ctx->player->x && render_player)
-					game_render_player();
+			if (chunk == NULL)
 				continue;
-			}
 			obj_t *obj =  &chunk->objs[y % CHUNK_SIZE][x % CHUNK_SIZE][layer];
 			SDL_Surface *texture = NULL;
 			if (obj->id != 0) {
@@ -78,12 +77,11 @@ static void game_render_layer(int layer, chunk_t *chunks[3][3], int offset_x, in
 
 			if (texture != NULL) {
 				int real_x = (x - CHUNK_SIZE) * TILE_SIZE + offset_x - texture->w / 2 + TILE_SIZE / 2;
-				int real_y = (y - CHUNK_SIZE) * TILE_SIZE + offset_y - texture->h + TILE_SIZE;
+				int real_y = line_y_bottom - texture->h;
 				SDL_BlitSurface(texture, NULL, game_surface, &(SDL_Rect){real_x, real_y, texture->w, texture->h});
 			}
-			if (y_to_0 == (int)game_ctx->player->y && x_to_0 == (int)game_ctx->player->x && render_player)
-				game_render_player();
 		}
+		line_y_bottom += TILE_SIZE;
 	}
 }
 
