@@ -50,4 +50,5 @@ void objects_free();
 
 void game_tick();
 void update_event();
+int player_move(double x, double y);
 #endif

@@ -20,6 +20,7 @@ void game_register_obj(char *name, int sprite_id) {
 	obj_registry = tmp;
 	strcpy(obj_registry[obj_registry_len].name, name);
 	obj_registry[obj_registry_len].sprite_id = sprite_id;
+	obj_registry[obj_registry_len].has_hitbox = 0;
 	obj_registry_len++;
 }
 

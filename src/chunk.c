@@ -9,6 +9,7 @@ chunk_t *game_load_chunk(world_t *world, int x, int y) {
 			res->objs[i][k][0] = grass;
 			res->objs[i][k][1].id = 0;
 			res->objs[i][k][2].id = 0;
+			res->hitbox[i][k] = 0;	
 		}
 	}
 	return res;
