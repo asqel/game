@@ -25,10 +25,12 @@
 
 
 enum {
+	GAME_ACT_NONE,
 	GAME_ACT_UP,
 	GAME_ACT_RIGHT,
 	GAME_ACT_DOWN,
 	GAME_ACT_LEFT,
+	GAME_ACT_CLOSE,
 	GAME_ACT_ENUM_MAX
 };
 
@@ -36,13 +38,6 @@ enum {
 #define GAME_EVTY_PRESSED 1
 #define GAME_EVTY_RELEASED 2
 #define GAME_EVTY_TEXT 3
-
-#define GAME_EVAC_NONE 0
-#define GAME_EVAC_UP 1
-#define GAME_EVAC_RIGHT 2
-#define GAME_EVAC_DOWN 3
-#define GAME_EVAC_LEFT 4
-#define GAME_EVAC_CLOSE 5
 
 typedef struct chunk_t		chunk_t;
 typedef struct world_t		world_t;
@@ -88,6 +83,7 @@ struct sprite_t {
 struct obj_info_t {
 	char name[OBJ_NAME_LENGTH + 1];
 	int sprite_id;
+	int has_hitbox;
 };
 
 struct obj_t {
@@ -98,6 +94,7 @@ struct obj_t {
 
 struct chunk_t {
 	obj_t objs[CHUNK_SIZE][CHUNK_SIZE][3]; // 0: back, 1: middle, 2:top
+	char hitbox[CHUNK_SIZE][CHUNK_SIZE];
 };
 
 struct world_t {

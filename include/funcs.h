@@ -48,4 +48,6 @@ void sprite_free();
 void textures_free();
 void objects_free();
 
+void game_tick();
+void update_event();
 #endif
