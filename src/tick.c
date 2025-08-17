@@ -2,6 +2,7 @@
 
 void game_tick() {
 	update_event();
+	
 	if (game_ctx->actions[GAME_ACT_LEFT]) {
     	game_ctx->player->dir = 3;
 		player_move(-0.07, 0);

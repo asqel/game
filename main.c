@@ -7,7 +7,6 @@ int main(int argc, char **argv) {
 	while (1) {
 
 		uint32_t start_time = SDL_GetTicks();
-		SDL_Event e;
 		for (int i = 1; i < GAME_ACT_ENUM_MAX; i++)
 			if (game_ctx->actions[i])
 				game_ctx->actions[i]++;
@@ -21,7 +20,7 @@ int main(int argc, char **argv) {
 		}
 		end_time = SDL_GetTicks();
 		frame_time = end_time - start_time;
-		game_render_strf(10, 10, 255, 255, 255, "FPS: %d", 1000 / frame_time);
+		game_render_strf(10, 10, 255, 255, 255, "FPSé: %d", 1000 / frame_time);
 		update_screen();
 	}
 	return 0;

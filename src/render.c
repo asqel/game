@@ -27,7 +27,7 @@ void update_screen() {
 }
 
 void game_render_text(char *text, int x, int y, uint8_t r, uint8_t g, uint8_t b) {
-	SDL_Surface *text_surface = TTF_RenderText_Solid(game_ctx->fonts[0], text, (SDL_Color){r, g, b, 0xff});
+	SDL_Surface *text_surface = TTF_RenderUTF8_Solid(game_ctx->fonts[0], text, (SDL_Color){r, g, b, 0xff});
 	SDL_BlitSurface(text_surface, NULL, game_surface, &(SDL_Rect){x, y, text_surface->w, text_surface->h});
 	SDL_FreeSurface(text_surface);
 }
@@ -47,6 +47,8 @@ void game_render_strf(int x, int y, uint8_t r, uint8_t g, uint8_t b, char *text,
 }
 
 static void game_render_player() {
+	if (game_ctx->is_editor)
+		return ;
 	SDL_Surface *texture = NULL;
 	int action_duration = (game_ctx->actions[GAME_ACT_UP + game_ctx->player->dir] * 100 / GAME_FPS) % 100;
 	if (game_ctx->actions[GAME_ACT_UP + game_ctx->player->dir] == 0)
@@ -56,6 +58,22 @@ static void game_render_player() {
 	}
 	texture = game_ctx->player_textures[game_ctx->player->dir][action_duration];
 	SDL_BlitSurface(texture, NULL, game_surface, &(SDL_Rect){GAME_WIDTH / 2 -  texture->w / 2, GAME_HEIGHT / 2 -  texture->h / 2 , texture->w, texture->h});
+}
+
+static void render_editor() {
+	static int tick_count = 0;
+	int texture_id = 0;
+
+	if (tick_count < 15)
+		texture_id = game_texture_get_id("editor_0");
+	else
+		texture_id = game_texture_get_id("editor_1");
+
+	SDL_Surface *texture = texture_registry[texture_id].surface;
+	SDL_BlitSurface(texture, NULL, game_surface, &(SDL_Rect){GAME_WIDTH / 2, GAME_HEIGHT / 2, texture->w, texture->h});
+	
+	tick_count++;
+	tick_count %= 30;
 }
 
 static void game_render_layer(int layer, chunk_t *chunks[3][3], int offset_x, int offset_y, int render_player) {
@@ -106,4 +124,6 @@ void game_render() {
 	game_render_layer(0, chunks, offset_x, offset_y, 0);
 	game_render_layer(1, chunks, offset_x, offset_y, 1);
 	game_render_layer(2, chunks, offset_x, offset_y, 0);
+	if (game_ctx->is_editor)
+		render_editor();
 }

@@ -1,6 +1,6 @@
 #include "game.h"
 
-void game_register_obj(char *name, int sprite_id) {
+void game_register_obj(char *name, int sprite_id, int hithox, void *interact) {
 	if (strlen(name) > OBJ_NAME_LENGTH) {
 		PRINT_ERR("Error: Object name too long: '%s'\n", name);
 		return;
@@ -20,7 +20,8 @@ void game_register_obj(char *name, int sprite_id) {
 	obj_registry = tmp;
 	strcpy(obj_registry[obj_registry_len].name, name);
 	obj_registry[obj_registry_len].sprite_id = sprite_id;
-	obj_registry[obj_registry_len].has_hitbox = 0;
+	obj_registry[obj_registry_len].has_hitbox = hithox;
+	obj_registry[obj_registry_len].interact = interact;
 	obj_registry_len++;
 }
 

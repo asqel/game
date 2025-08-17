@@ -53,9 +53,8 @@ typedef struct game_event_t game_event_t;
 
 struct gui_t {
 	void *data;
-	void (*init)(gui_t *self);
 	void (*render)(gui_t *self);
-	void (*handle_event)(gui_t *self, SDL_Event *event);
+	void (*handle_event)(gui_t *self, game_event_t *ev);
 	void (*free)(gui_t *self);
 	void (*update)(gui_t *self);
 };
@@ -84,6 +83,7 @@ struct obj_info_t {
 	char name[OBJ_NAME_LENGTH + 1];
 	int sprite_id;
 	int has_hitbox;
+	void (*interact)(int x, int y);
 };
 
 struct obj_t {
@@ -110,7 +110,7 @@ struct player_t {
 	double x;
 	double y;
 	uint8_t dir; // 0 up, 1 right, 2 down 3 left
-	gui_t *guis;
+	gui_t *gui;
 	int guis_len;
 };
 
@@ -120,6 +120,7 @@ struct game_t {
 	uint32_t actions[GAME_ACT_ENUM_MAX]; // how much the action is pressed
 	SDL_Surface *player_textures[4][3];
 	TTF_Font *fonts[1];
+	int is_editor;
 };
 
 struct game_event_t {
