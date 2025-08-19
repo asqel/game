@@ -1,22 +1,35 @@
 world:
-	back ground color (RGB 3B)
 	world_width (int32 in chunks)
 	world_heigh (int32 in chunks)
 	chunks... (stored as lines)
 
 chunk:
-	info: 0bIABC0000 (I: is empty, A: has background, B: has middle, C: has foreground)
+	info: 0bIABCXYZH (I: is empty, A: has background, B: has middle, C: has foreground, H: has hitbox)
+					(X: background is repeat, Y: middle is repeat, C: foreground is repeat)
 	if I == 0
 		if A == 1
-			background: objs... (stored as lines)
+			if (X == 0)
+				background: objs... (stored as lines)
+			else
+				id: uint24 (fill background layer)
 		if B == 1
-			middle: objs... (stored as lines)
+			if (Y == 0)
+				middle: objs... (stored as lines)
+			else
+				id: uint24 (fill middle layer)
 		if C == 1
-			foreground: objs... (stored as lines)
+			if (Z == 0)
+				foreground: objs... (stored as lines)
+			else
+				iid: uin24 (fill foreground layer)
+		if H == 1:
+			50 Bytes (bitmap line by line, if 0 no hitbox else yes)
+			
 
 obj:
 	info:
-		0bACBBBBB (A: is_air) (BBBBBB: number of repetition) (C has data)
+		0bACBBBBBB (A: is_air) (BBBBBB: number of repetition) (C has data)
+							(if BBBBBB == 1 then theres is 2 object)
 	if A == 0
 		id: uint24
 	if C == 1 && A == 0
