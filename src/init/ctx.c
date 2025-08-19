@@ -25,7 +25,9 @@ static void parse_args(int argc, char **argv) {
 
 
 void init_ctx(int argc, char **argv) {
-	parse_args(argc, argv);		
+	parse_args(argc, argv);
+	for (int i = 0; i < GAME_ACT_ENUM_MAX; i++)
+		game_ctx->actions[i] = 0;
 	game_ctx->player = malloc(sizeof(player_t));
 	game_ctx->world = game_load_world("start");
     game_ctx->player->x = 18;

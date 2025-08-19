@@ -32,3 +32,28 @@ world_t *game_load_world(char *name) {
 	}
 	// TODO!
 }
+
+chunk_t *world_get_chunk(world_t *world, int cx, int cy) {
+	if (cx < 0 || cy < 0)
+		return NULL;
+	if (cx < world->width && cy < world->height) {
+		if (world->chunks[cy][cx] == NULL)
+			world->chunks[cy][cx] = game_load_chunk(world, cx, cy);
+		return world->chunks[cy][cx];
+	}
+	if (cy >= world->height) {
+		world->chunks = realloc(world->chunks, sizeof(chunk_t **) * (cy + 1))	;
+		for (int i = world->height; i < cy; i++)
+			world->chunks[cy] = calloc(sizeof(chunk_t *), world->width);
+		world->height = cy + 1;
+	}
+	if (cx >= world->width) {
+		for (int i = 0; i < world->height; i++) {
+			world->chunks[cy] = realloc(world->chunks[cy][i], sizeof(chunk_t *) * (cx + 1));
+			for (int k = world->width; k < cx; k++)
+				world->chunks[cy][i] = NULL;
+		}
+		world->width = cx + 1;
+	}
+	return world_get_chunk(world, cx, cy);
+}

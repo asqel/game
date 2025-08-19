@@ -58,16 +58,19 @@ void		update_screen();
 
 //------- event
 void		update_event();
+int			game_action_pressed_hold(int action, int duration);
 void		game_enable_text_input();
 void		game_disable_text_input();
 void		game_tick();
 
 //------- player
+void		player_tick();
 int			player_move(double x, double y);
 void		player_interact();
 
 //------- chunk
 chunk_t		*game_load_chunk(world_t *world, int x, int y);
+chunk_t		*world_get_chunk(world_t *world, int cx, int cy);
 
 //------- world
 world_t		*game_load_world(char *name);
@@ -80,5 +83,8 @@ void		game_close_gui();
 void		game_render_gui();
 void		game_send_event_gui(game_event_t *ev);
 int			game_is_gui_open();
+
+//-------- editor
+void		game_editor_tick();
 
 #endif

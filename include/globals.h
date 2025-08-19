@@ -34,5 +34,8 @@ extern int					game_error_is_special;
 extern game_t				*game_ctx;
 extern char					*game_dir;
 
+//------- editor
+extern int					editor_obj_id;
+extern int					editor_obj_layer;
 
 #endif

@@ -60,6 +60,26 @@ static void game_render_player() {
 	SDL_BlitSurface(texture, NULL, game_surface, &(SDL_Rect){GAME_WIDTH / 2 -  texture->w / 2, GAME_HEIGHT / 2 -  texture->h / 2 , texture->w, texture->h});
 }
 
+static void render_border() {
+	int cx_real = ((int)game_ctx->player->x / CHUNK_SIZE) * CHUNK_SIZE;
+	int cy_real = ((int)game_ctx->player->y / CHUNK_SIZE) * CHUNK_SIZE;
+
+	int offset_x = cx_real - game_ctx->player->x;
+	int offset_y = cy_real - game_ctx->player->y;
+
+	int screen_x = GAME_WIDTH / 2 + offset_x * TILE_SIZE;
+	int screen_y = GAME_HEIGHT / 2 + offset_y * TILE_SIZE;
+
+	printf("(%d %d)\n", screen_x, screen_y);
+
+	SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+	int color = 0x0000FF;	
+	SDL_FillRect(game_surface, &(SDL_Rect){screen_x, 0, 1, GAME_HEIGHT}, color);
+	SDL_FillRect(game_surface, &(SDL_Rect){screen_x + CHUNK_SIZE * TILE_SIZE, 0, 1, GAME_HEIGHT}, color);
+	SDL_FillRect(game_surface, &(SDL_Rect){0, screen_y, GAME_WIDTH, 1}, color);
+	SDL_FillRect(game_surface, &(SDL_Rect){0, screen_y + CHUNK_SIZE * TILE_SIZE, GAME_WIDTH, 1}, color);
+}
+
 static void render_editor() {
 	static int tick_count = 0;
 	int texture_id = 0;
@@ -74,6 +94,10 @@ static void render_editor() {
 	
 	tick_count++;
 	tick_count %= 30;
+
+	game_render_strf(0, GAME_HEIGHT - 20, 255, 255, 255, "layer %d", editor_obj_layer);
+	game_render_strf(0, GAME_HEIGHT - 40, 255, 255, 255, "obj %d %s", editor_obj_id, obj_registry[editor_obj_id].name);
+	render_border();
 }
 
 static void game_render_layer(int layer, chunk_t *chunks[3][3], int offset_x, int offset_y, int render_player) {
