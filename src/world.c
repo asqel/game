@@ -26,9 +26,10 @@ static void read_layer(int layer, chunk_t *chunk, FILE *f, uint8_t c_info) {
 	if ((c_info >> (3 - layer)) & 0b1 == 1) {
 		uint32_t id;
 		fread(&id, 1, sizeof(uint32_t), f);
+		obj_t o = game_get_obj(id);
 		for (int i = 0; i < CHUNK_SIZE; i++) {
 			for (int k = 0; k < CHUNK_SIZE; k++) {
-				chunk->obj[i][k][layer] = id;	
+				chunk->objs[i][k][layer] = o;	
 			}
 		}
 		return ;
@@ -42,11 +43,11 @@ static void read_layer(int layer, chunk_t *chunk, FILE *f, uint8_t c_info) {
 		if (info >> 7)
 			obj.id = 0;
 		if ((info >> 6) & 0b1 == 1 && info >> 7 == 0)
-			fread(&info->data, 1, sizeof(uint32_t), f);
+			fread(&obj.data, 1, sizeof(uint32_t), f);
 		int repeat = info & 0b111111;
 		repeat++;
 		while (repeat--) {
-			chunk->obj[y][x][layer] = obj;
+			chunk->objs[y][x][layer] = obj;
 			x++;
 			if (x >= CHUNK_SIZE) {
 				x = 0;
@@ -87,9 +88,9 @@ world_t *game_load_world(char *name) {
 			if (c_info >> 7 == 1)
 				continue;
 			res->chunks[i][k] = calloc(sizeof(chunk_t), 1);
-			read_layer(0, res->chunks[i][k], f);
-			read_layer(1, res->chunks[i][k], f);
-			read_layer(2, res->chunks[i][k], f);
+			read_layer(0, res->chunks[i][k], f, c_info);
+			read_layer(1, res->chunks[i][k], f, c_info);
+			read_layer(2, res->chunks[i][k], f, c_info);
 		}
 	}
 	
@@ -105,15 +106,19 @@ chunk_t *world_get_chunk(world_t *world, int cx, int cy) {
 	}
 	if (cy >= world->height) {
 		world->chunks = realloc(world->chunks, sizeof(chunk_t **) * (cy + 1))	;
-		for (int i = world->height; i < cy; i++)
-			world->chunks[cy] = calloc(sizeof(chunk_t *), world->width);
+		for (int i = world->height; i <= cy; i++) {
+			world->chunks[i] = malloc(sizeof(chunk_t *) * world->width);
+			for (int k = 0; k < world->width; k++)
+				world->chunks[i][k] = NULL;
+		}
 		world->height = cy + 1;
+		return world_get_chunk(world, cx, cy);
 	}
 	if (cx >= world->width) {
 		for (int i = 0; i < world->height; i++) {
-			world->chunks[cy] = realloc(world->chunks[cy][i], sizeof(chunk_t *) * (cx + 1));
-			for (int k = world->width; k < cx; k++)
-				world->chunks[cy][i] = NULL;
+			world->chunks[i] = realloc(world->chunks[i], sizeof(chunk_t *) * (cx + 1));
+			for (int k = world->width; k <= cx; k++)
+				world->chunks[i][k] = NULL;
 		}
 		world->width = cx + 1;
 	}

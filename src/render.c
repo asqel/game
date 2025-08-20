@@ -70,8 +70,6 @@ static void render_border() {
 	int screen_x = GAME_WIDTH / 2 + offset_x * TILE_SIZE;
 	int screen_y = GAME_HEIGHT / 2 + offset_y * TILE_SIZE;
 
-	printf("(%d %d)\n", screen_x, screen_y);
-
 	SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
 	int color = 0x0000FF;	
 	SDL_FillRect(game_surface, &(SDL_Rect){screen_x, 0, 1, GAME_HEIGHT}, color);
