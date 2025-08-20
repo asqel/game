@@ -75,6 +75,7 @@ chunk_t		*world_get_chunk(world_t *world, int cx, int cy);
 //------- world
 world_t		*game_load_world(char *name);
 obj_t		*world_get_obj_at(world_t *world, int x, int y, int layer);
+int			game_world_exists(char *name);
 
 //------- gui
 
