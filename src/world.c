@@ -14,9 +14,9 @@ world_t *game_new_world(char *name) {
 }
 
 static void read_layer(int layer, chunk_t *chunk, FILE *f, uint8_t c_info) {
-	if ((c_info >> (6 - layer)) & 0b1 == 0)
+	if (((c_info >> (6 - layer)) & 0b1) == 0)
 		return ;
-	if ((c_info >> (3 - layer)) & 0b1 == 1) {
+	if (((c_info >> (3 - layer)) & 0b1) == 1) {
 		uint32_t id;
 		fread(&id, 1, sizeof(uint32_t), f);
 		obj_t o = game_get_obj(id);
@@ -35,7 +35,7 @@ static void read_layer(int layer, chunk_t *chunk, FILE *f, uint8_t c_info) {
 		fread(&info, 1, sizeof(uint8_t), f);
 		if (info >> 7)
 			obj.id = 0;
-		if ((info >> 6) & 0b1 == 1 && info >> 7 == 0)
+		if (((info >> 6) & 0b1) == 1 && info >> 7 == 0)
 			fread(&obj.data, 1, sizeof(uint32_t), f);
 		int repeat = info & 0b111111;
 		repeat++;
@@ -73,20 +73,20 @@ world_t *game_load_world(char *name) {
 	fread(&res->height, 1, sizeof(int32_t), f);
 	res->chunks = malloc(sizeof(chunk_t **) * res->height);
 	for (int i = 0; i < res->height; i++)
-		res->chunks[i] = calloc(sizeof(chunk_t *), res->width);
+		res->chunks[i] = calloc(res->width, sizeof(chunk_t *));
 	for (int i = 0; i < res->height; i++) {
 		for (int k = 0; k < res->width; k++) {
 			uint8_t c_info = 0;
 			fread(&c_info, 1, 1, f);
 			if (c_info >> 7 == 1)
 				continue;
-			res->chunks[i][k] = calloc(sizeof(chunk_t), 1);
+			res->chunks[i][k] = calloc(1, sizeof(chunk_t));
 			read_layer(0, res->chunks[i][k], f, c_info);
 			read_layer(1, res->chunks[i][k], f, c_info);
 			read_layer(2, res->chunks[i][k], f, c_info);
 		}
 	}
-	
+	return res;	
 }
 
 chunk_t *world_get_chunk(world_t *world, int cx, int cy) {

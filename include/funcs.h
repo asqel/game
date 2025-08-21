@@ -21,6 +21,8 @@ void		objects_free();
 int			game_path_is_dir(char *path);
 void		game_list_files(char *path, void (*callback)(const char *filepath));
 int			game_path_is_file(char *path);
+char *game_get_world_path(char *name);
+
 //------- error
 char		*game_get_error();
 void		game_set_error(const char *error);
@@ -76,6 +78,7 @@ chunk_t		*world_get_chunk(world_t *world, int cx, int cy);
 world_t		*game_load_world(char *name);
 obj_t		*world_get_obj_at(world_t *world, int x, int y, int layer);
 int			game_world_exists(char *name);
+void		game_world_save(world_t *world);
 
 //------- gui
 

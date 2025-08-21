@@ -68,5 +68,6 @@ void game_editor_tick() {
 		editor_fill();
 	if (game_action_pressed_hold(GAME_ACT_EDIT_EMPTY, 15))
 		editor_empty();
-	
+	if (game_ctx->actions[GAME_ACT_EDIT_SAVE] == 1)
+		game_world_save(game_ctx->world);
 }

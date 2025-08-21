@@ -36,6 +36,8 @@ int get_action_from_scancode(int scancode) {
 		return GAME_ACT_EDIT_FILL;
 	if (scancode == SDL_SCANCODE_MINUS)
 		return GAME_ACT_EDIT_EMPTY;
+	if (scancode == SDL_SCANCODE_RETURN)
+		return GAME_ACT_EDIT_SAVE;
 	return GAME_ACT_NONE;
 }
 
