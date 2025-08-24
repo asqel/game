@@ -112,8 +112,6 @@ struct world_t {
 	int width; // in chunks
 	int height;
 	char name[GAME_WORLD_NAME_MAX_LEN + 1];
-	char *path;
-	void *infos;
 };
 
 struct player_t {

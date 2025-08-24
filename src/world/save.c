@@ -82,6 +82,24 @@ static void write_chunk_layer(chunk_t *chunk, int layer, FILE *f) {
 	}
 }
 
+static void write_hitbox(char hitbox[CHUNK_SIZE][CHUNK_SIZE], FILE *f) {
+	int y = 0;
+	int x = 0;
+	while (y < CHUNK_SIZE) {
+		uint8_t hit = 0;
+		for (int i = 0; i < 8; i++) {
+			hit <<= 1;
+			hit |= hitbox[y][x];
+			x++;
+		}
+		fwrite(&hit, 1, 1, f);
+		if (x >= CHUNK_SIZE) {
+			y++;
+			x %= CHUNK_SIZE;
+		}
+	}
+}
+
 void game_world_save(world_t *world) {
 	char *path = game_get_world_path(world->name);
 	printf("path %s\n", path);	
@@ -125,8 +143,9 @@ void game_world_save(world_t *world) {
 					fwrite(&chunk->objs[0][0][i].id, 1, 3, f);
 				else
 					write_chunk_layer(chunk, i, f);
-
 			}
+			if ((chunk_info & 0b1) == 1)
+				write_hitbox(chunk->hitbox, f);
 		}
 	}
 

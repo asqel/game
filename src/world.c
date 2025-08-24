@@ -6,7 +6,6 @@ world_t *game_new_world(char *name) {
 
 	strcpy(res->name, name);
 	res->chunks = NULL;
-	res->path = game_get_world_path(name);
 	res->chunks = NULL;
 	res->width = 0;
 	res->height = 0;
@@ -67,8 +66,6 @@ world_t *game_load_world(char *name) {
 	res->width = 0;
 	res->chunks = NULL;
 	strcpy(res->name, name);
-	res->path = strdup(world_path);
-	res->infos = NULL;
 	fread(&res->width, 1, sizeof(int32_t), f);
 	fread(&res->height, 1, sizeof(int32_t), f);
 	res->chunks = malloc(sizeof(chunk_t **) * res->height);
