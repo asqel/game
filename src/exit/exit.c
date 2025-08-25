@@ -17,7 +17,6 @@ void game_exit(int exit_code) {
 	for (int i = 0; i < game_ctx->world->height; i++)
 		free(game_ctx->world->chunks[i]);
 	free(game_ctx->world->chunks);
-	free(game_ctx->world->path);
 	free(game_ctx->world);
 	free(game_ctx->player);
 	free(game_ctx);
