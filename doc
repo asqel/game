@@ -24,7 +24,7 @@ chunk:
 				iid: uin24 (fill foreground layer)
 		if H == 1:
 			50 Bytes (bitmap line by line, if 0 no hitbox else yes)
-			
+
 
 obj:
 	info:

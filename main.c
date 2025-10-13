@@ -3,7 +3,6 @@
 
 int main(int argc, char **argv) {
 	game_init(argc, argv);
-	game_ctx->world->chunks[0][0]->objs[19][19][1] = game_get_obj(game_get_obj_id("tree"));
 	while (1) {
 
 		uint32_t start_time = SDL_GetTicks();

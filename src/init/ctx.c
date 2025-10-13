@@ -32,13 +32,6 @@ void init_ctx(int argc, char **argv) {
 	game_ctx->world = game_load_world("start");
     game_ctx->player->x = 18;
     game_ctx->player->y = 18;
-    game_ctx->world->chunks = calloc(sizeof(chunk_t **), 2);
-    game_ctx->world->chunks[0] = calloc(sizeof(chunk_t *), 2);
-    game_ctx->world->chunks[1] = calloc(sizeof(chunk_t *), 2);
-    game_ctx->world->chunks[0][0] = game_load_chunk(game_ctx->world, 0, 0);
-    game_ctx->world->chunks[1][1] = game_load_chunk(game_ctx->world, 0, 0);
-    game_ctx->world->height = 2;
-    game_ctx->world->width = 2;
                                                                                                                   
     for (int i = 0; i < 4; i++) {
     	for (int k = 0; k < 3; k++) {

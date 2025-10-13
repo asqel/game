@@ -2,6 +2,5 @@
 
 void game_tick() {
 	update_event();
-	player_tick();	
-
+	player_tick();
 }

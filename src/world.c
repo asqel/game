@@ -13,11 +13,12 @@ world_t *game_new_world(char *name) {
 }
 
 static void read_layer(int layer, chunk_t *chunk, FILE *f, uint8_t c_info) {
+	printf("layer %d info %x res %d", layer, c_info, ((c_info >> (6 - layer)) & 0b1) == 0);
 	if (((c_info >> (6 - layer)) & 0b1) == 0)
 		return ;
 	if (((c_info >> (3 - layer)) & 0b1) == 1) {
-		uint32_t id;
-		fread(&id, 1, sizeof(uint32_t), f);
+		uint32_t id = 0;
+		fread(&id, 1, 3, f);
 		obj_t o = game_get_obj(id);
 		for (int i = 0; i < CHUNK_SIZE; i++) {
 			for (int k = 0; k < CHUNK_SIZE; k++) {
@@ -34,10 +35,13 @@ static void read_layer(int layer, chunk_t *chunk, FILE *f, uint8_t c_info) {
 		fread(&info, 1, sizeof(uint8_t), f);
 		if (info >> 7)
 			obj.id = 0;
+		else
+			fread(&obj.id, 1, 3, f);
 		if (((info >> 6) & 0b1) == 1 && info >> 7 == 0)
 			fread(&obj.data, 1, sizeof(uint32_t), f);
 		int repeat = info & 0b111111;
 		repeat++;
+		obj = game_get_obj(obj.id);
 		while (repeat--) {
 			chunk->objs[y][x][layer] = obj;
 			x++;
@@ -78,11 +82,13 @@ world_t *game_load_world(char *name) {
 			if (c_info >> 7 == 1)
 				continue;
 			res->chunks[i][k] = calloc(1, sizeof(chunk_t));
+			printf("info %x\n", c_info);
 			read_layer(0, res->chunks[i][k], f, c_info);
 			read_layer(1, res->chunks[i][k], f, c_info);
 			read_layer(2, res->chunks[i][k], f, c_info);
 		}
 	}
+	printf("TES GAND PARENT\n");
 	return res;	
 }
 

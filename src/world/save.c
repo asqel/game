@@ -68,16 +68,18 @@ static void write_chunk_layer(chunk_t *chunk, int layer, FILE *f) {
 		info |= (obj->id == 0) << 7;
 		info |= (obj->id && obj->data) << 6;
 		int	rep = get_repetition(chunk, layer, x, y);
-		info |= (rep - 1);
+		printf("at %d %d rep %d\n", x, y, rep);
+		info |= (rep - 1) & 0b00111111;
+		fwrite(&info, 1, 1, f);
 		if (obj->id != 0)
 			fwrite(&obj->id, 1, 3, f);
 		if (obj->data && obj->id)
 			fwrite(&obj->data, 1, 4, f);
 
 		x += rep;
-		if (x >=  CHUNK_SIZE) {
-			x = 0;
-			y++;
+		if (x >= CHUNK_SIZE) {
+			y += x / CHUNK_SIZE;
+			x %= CHUNK_SIZE;
 		}
 	}
 }
@@ -102,7 +104,7 @@ static void write_hitbox(char hitbox[CHUNK_SIZE][CHUNK_SIZE], FILE *f) {
 
 void game_world_save(world_t *world) {
 	char *path = game_get_world_path(world->name);
-	printf("path %s\n", path);	
+	printf("path %s\n", path);
 	FILE *f = fopen(path, "wb");
 	printf("f %p %p %p\n", f, &world->width, &world->height);
 
@@ -120,8 +122,8 @@ void game_world_save(world_t *world) {
 				fwrite("\x80", 1, 1, f);
 				continue;
 			}
-			
-			layers_is_repeat[0] = is_layer_repeat(chunk, 0); 		
+
+			layers_is_repeat[0] = is_layer_repeat(chunk, 0);
 			layers_is_repeat[1] = is_layer_repeat(chunk, 1);
 			layers_is_repeat[2] = is_layer_repeat(chunk, 2);
 			printf("empty %d %d %d\n", layers_empty[0], layers_empty[1], layers_empty[2]);
