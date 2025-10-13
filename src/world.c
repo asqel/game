@@ -13,7 +13,6 @@ world_t *game_new_world(char *name) {
 }
 
 static void read_layer(int layer, chunk_t *chunk, FILE *f, uint8_t c_info) {
-	printf("layer %d info %x res %d", layer, c_info, ((c_info >> (6 - layer)) & 0b1) == 0);
 	if (((c_info >> (6 - layer)) & 0b1) == 0)
 		return ;
 	if (((c_info >> (3 - layer)) & 0b1) == 1) {
@@ -87,7 +86,6 @@ world_t *game_load_world(char *name) {
 			read_layer(2, res->chunks[i][k], f, c_info);
 		}
 	}
-	printf("TES GAND PARENT\n");
 	return res;	
 }
 
