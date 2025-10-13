@@ -82,7 +82,6 @@ world_t *game_load_world(char *name) {
 			if (c_info >> 7 == 1)
 				continue;
 			res->chunks[i][k] = calloc(1, sizeof(chunk_t));
-			printf("info %x\n", c_info);
 			read_layer(0, res->chunks[i][k], f, c_info);
 			read_layer(1, res->chunks[i][k], f, c_info);
 			read_layer(2, res->chunks[i][k], f, c_info);
