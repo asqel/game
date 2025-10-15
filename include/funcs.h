@@ -91,4 +91,7 @@ int			game_is_gui_open();
 //-------- editor
 void		game_editor_tick();
 
+//-------- utils
+char *read_file(char *path);
+
 #endif

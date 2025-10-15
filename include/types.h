@@ -60,6 +60,7 @@ typedef struct sprite_registry_t sprite_registry_t;
 typedef struct sprite_t	sprite_t;
 typedef struct gui_t		gui_t;
 typedef struct game_event_t game_event_t;
+typedef struct dialogue_info_t dialogue_info_t;
 
 struct gui_t {
 	void *data;
@@ -145,6 +146,11 @@ struct game_event_t {
 enum {
 	GAME_ERROR_NONE = 0,
 
+};
+
+struct dialogue_info_t {
+	unint32_t *text;
+	char id[256];
 };
 
 #endif

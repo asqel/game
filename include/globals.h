@@ -38,4 +38,10 @@ extern char					*game_dir;
 extern int					editor_obj_id;
 extern int					editor_obj_layer;
 
+extern char					game_lang[6];
+
+//------- dialogue
+extern dialogue_info_t		*dialogue_infos;
+extern int					dialogue_infos_len;
+
 #endif
