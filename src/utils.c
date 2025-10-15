@@ -14,7 +14,7 @@ char *read_file(char *path) {
 		fclose(f);
 		return NULL;
 	}
-	char *res = mallo(len + 1);
+	char *res = malloc(len + 1);
 	if (!res) {
 		fclose(f);
 		return NULL;

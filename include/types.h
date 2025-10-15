@@ -7,6 +7,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdarg.h>
+#include <stdint.h>
 
 #define PRINT_ERR(...) fprintf(stderr, __VA_ARGS__)
 
@@ -149,7 +150,7 @@ enum {
 };
 
 struct dialogue_info_t {
-	unint32_t *text;
+	uint32_t *text;
 	char id[256];
 };
 
