@@ -25,6 +25,7 @@ int dialogue_init() {
 		free(path);
 		return 1;
 	}
+	printf("lang content %s\n", text);
 	if (parse_lang(text)) {
 		free(text);
 		dialogue_exit();
@@ -34,7 +35,7 @@ int dialogue_init() {
 	return 0;
 }
 
-int dialogue_exit() {
+void dialogue_exit() {
 	for (int i = 0; i < dialogue_infos_len; i++)
 		free(dialogue_infos[i].text);
 	free(dialogue_infos);

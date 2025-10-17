@@ -16,6 +16,8 @@ void		game_exit(int exit_code);
 void		sprite_free();
 void		textures_free();
 void		objects_free();
+int			dialogue_init();
+void		dialogue_exit();
 
 //------- file / path
 int			game_path_is_dir(char *path);
@@ -93,5 +95,10 @@ void		game_editor_tick();
 
 //-------- utils
 char *read_file(char *path);
+
+//-------- dialogue
+uint32_t *parse_dialogue(char *str);
+int dialogue_register(char *id, char *val);
+int parse_lang(char *text);
 
 #endif

@@ -12,4 +12,9 @@ int dialogue_register(char *id, char *val) {
 	}
 	dialogue_infos = new_dialog;
 	strcpy(dialogue_infos[dialogue_infos_len].id, id);
+	dialogue_infos[dialogue_infos_len].text = parse_dialogue(val);
+	if (!dialogue_infos[dialogue_infos_len].text)
+		return 1;
+	dialogue_infos_len++;
+	return 0;
 }

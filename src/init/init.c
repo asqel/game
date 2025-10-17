@@ -36,5 +36,7 @@ void game_init(int argc, char **argv) {
 	sprintf(font_path, "%s/assets/PressStart2P-Regular.ttf", game_dir);
 	game_ctx->fonts[0] = TTF_OpenFont(font_path, 16);
 	free(font_path);
+	if (dialogue_init())
+		game_exit(1);
 }
 

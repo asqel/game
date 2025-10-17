@@ -59,8 +59,8 @@ static int parse_line(char *text) {
 	}
 	value[val_len] = '\0';
 	id[id_len] = '\0';
-	memcpy(&text[id_start], id, id_len);
-	memcpy(&text[val_start], value, val_len);
+	memcpy(id, &text[id_start], id_len);
+	memcpy(value, &text[val_start], val_len);
 	int ret = dialogue_register(id, value);
 	free(id);
 	free(value);

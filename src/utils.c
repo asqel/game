@@ -14,6 +14,7 @@ char *read_file(char *path) {
 		fclose(f);
 		return NULL;
 	}
+	fseek(f, 0, SEEK_SET);
 	char *res = malloc(len + 1);
 	if (!res) {
 		fclose(f);

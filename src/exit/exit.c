@@ -29,5 +29,6 @@ void game_exit(int exit_code) {
 	if (is_sdl_init)
 		sdl_exit();
 	is_sdl_init = 0;
+	dialogue_exit();
 	exit(exit_code);
 }

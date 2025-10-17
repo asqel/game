@@ -149,6 +149,11 @@ enum {
 
 };
 
+#define DIALOG_CHAR (0 << 24)
+#define DIALOG_VAR (1 << 24) // \$123. (dot to mark the end of the number)
+#define DIALOG_PAUSE (2 << 24) // \P2. (pause for 2 tick)
+#define DIALOG_EMOTE (3 << 24) // \E3.
+
 struct dialogue_info_t {
 	uint32_t *text;
 	char id[256];

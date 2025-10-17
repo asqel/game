@@ -148,4 +148,6 @@ void game_render() {
 	game_render_layer(2, chunks, offset_x, offset_y, 0);
 	if (game_ctx->is_editor)
 		render_editor();
+	if (game_ctx->player->gui)
+		game_render_gui();
 }
