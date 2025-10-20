@@ -2,7 +2,7 @@
 
 int dialogue_register(char *id, char *val) {
 	if (strlen(id) > 255) {
-		printf("Error: dialog indentifier too long '%s' %s\n", id, game_lang);
+		PRINT_ERR("Error: dialog indentifier too long '%s' %s\n", id, game_lang);
 		return 1;
 	}
 	dialogue_info_t *new_dialog = realloc(dialogue_infos, sizeof(dialogue_info_t) * (dialogue_infos_len + 1));

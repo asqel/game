@@ -21,17 +21,18 @@ int dialogue_init() {
 	}
 	char *text = read_file(path);
 	if (!text) {
-		printf("Error: could not read the lang file for %s\n", game_lang);
+		PRINT_ERR("Error: could not read the lang file for %s\n", game_lang);
 		free(path);
 		return 1;
 	}
-	printf("lang content %s\n", text);
 	if (parse_lang(text)) {
 		free(text);
+		free(path);
 		dialogue_exit();
 		return 1;
 	}
 	free(text);
+	free(path);
 	return 0;
 }
 

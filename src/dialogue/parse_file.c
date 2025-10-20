@@ -77,7 +77,7 @@ int parse_lang(char *text) {
 			continue;
 		}
 		if (parse_line(&text[i])) {
-			printf("Error: dialogue lang %s on line %d\n", game_lang, line);
+			PRINT_ERR("Error: dialogue lang %s on line %d\n", game_lang, line);
 			return 1;
 		}
 		while (text[i] != '\n' && text[i])

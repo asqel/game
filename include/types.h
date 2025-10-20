@@ -65,10 +65,9 @@ typedef struct dialogue_info_t dialogue_info_t;
 
 struct gui_t {
 	void *data;
-	void (*render)(gui_t *self);
-	void (*handle_event)(gui_t *self, game_event_t *ev);
-	void (*free)(gui_t *self);
 	void (*update)(gui_t *self);
+	void (*render)(gui_t *self);
+	void (*free)(gui_t *self);
 };
 
 struct texture_t {
@@ -121,7 +120,6 @@ struct player_t {
 	double y;
 	uint8_t dir; // 0 up, 1 right, 2 down 3 left
 	gui_t *gui;
-	int guis_len;
 };
 
 struct game_t {
@@ -153,10 +151,12 @@ enum {
 #define DIALOG_VAR (1 << 24) // \$123. (dot to mark the end of the number)
 #define DIALOG_PAUSE (2 << 24) // \P2. (pause for 2 tick)
 #define DIALOG_EMOTE (3 << 24) // \E3.
+#define DIALOG_WAIT (5 << 24) // \W
 
 struct dialogue_info_t {
 	uint32_t *text;
 	char id[256];
 };
+
 
 #endif

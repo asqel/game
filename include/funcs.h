@@ -87,9 +87,7 @@ void		game_world_save(world_t *world);
 void		game_tick_gui();
 void		game_close_gui();
 void		game_render_gui();
-void		game_send_event_gui(game_event_t *ev);
-int			game_is_gui_open();
-
+gui_t *game_open_gui(void *data, void (*update)(gui_t *self), void (*render)(gui_t *self), void (*free)(gui_t *self));
 //-------- editor
 void		game_editor_tick();
 
@@ -100,5 +98,8 @@ char *read_file(char *path);
 uint32_t *parse_dialogue(char *str);
 int dialogue_register(char *id, char *val);
 int parse_lang(char *text);
+
+void open_dialogue(char *name, void (*on_end)(), int id_len, ...);
+void display_dialogue(uint32_t *dialogue, int len, int x, int y);
 
 #endif

@@ -6,10 +6,12 @@ int game_action_pressed_hold(int action, int duration) {
 	if (game_ctx->actions[action] == 1)
 		return 1;
 	return game_ctx->actions[action] > duration;
-	
+
 }
 
 int get_action_from_scancode(int scancode) {
+	if (scancode == SDL_SCANCODE_ESCAPE)
+		return GAME_ACT_CLOSE;
 	if (scancode == SDL_SCANCODE_W)
 		return GAME_ACT_UP;
 	if (scancode == SDL_SCANCODE_D)

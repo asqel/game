@@ -37,6 +37,9 @@ static int parse_sequence(unsigned char *str, uint32_t **buffer, int do_write) {
 		case 'n':
 			buff_append_c(buffer, '\n', do_write);
 			return 1;
+		case 'W':
+			buff_append_c(buffer, DIALOG_WAIT, do_write);
+			return 1;
 		default:
 			break;
 	}
@@ -71,18 +74,8 @@ uint32_t *parse_dialogue(char *str) {
 	if (!res) {
 		perror("malloc");
 		return res;
-	}	
+	}
 	parse_buffer(res, (unsigned char *)str);
 	res[res_len] = 0;
-	printf("DIALOG %d\n", res_len);;
-	for (int i = 0; i < res_len; i++) {
-		if (res[i] >> 24 == 0) {
-			printf("%c", res[i] & 0xff);
-		}
-		else {
-			printf("\\%d[%d]", res[i] >> 24, res[i] & 0x00FFFFFF);
-		}
-	}
-	printf("\n");
 	return res;
 }

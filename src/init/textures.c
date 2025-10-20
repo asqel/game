@@ -19,6 +19,7 @@ void init_texture_callback(const char *filepath) {
 		return;
 	}
 	game_load_tx(png_path, filepath);
+	free(png_path);
 }
 
 int init_textures() {
@@ -30,7 +31,6 @@ int init_textures() {
 	sprintf(assets_path, "%s/assets", game_dir);
 
 	game_list_files(assets_path, init_texture_callback);
-	printf("texture number %d\n", texture_registry_len);
 	free(assets_path);
 	return 0;
 }

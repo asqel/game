@@ -10,6 +10,7 @@
 		"stdint.h": "c",
 		"stdio.h": "c",
 		"sdl_ttf.h": "c",
-		"funcs.h": "c"
+		"funcs.h": "c",
+		"errno.h": "c"
 	}
 }

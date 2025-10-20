@@ -71,7 +71,7 @@ static void render_border() {
 	int screen_y = GAME_HEIGHT / 2 + offset_y * TILE_SIZE;
 
 	SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-	int color = 0x0000FF;	
+	int color = 0x0000FF;
 	SDL_FillRect(game_surface, &(SDL_Rect){screen_x, 0, 1, GAME_HEIGHT}, color);
 	SDL_FillRect(game_surface, &(SDL_Rect){screen_x + CHUNK_SIZE * TILE_SIZE, 0, 1, GAME_HEIGHT}, color);
 	SDL_FillRect(game_surface, &(SDL_Rect){0, screen_y, GAME_WIDTH, 1}, color);
@@ -89,7 +89,7 @@ static void render_editor() {
 
 	SDL_Surface *texture = texture_registry[texture_id].surface;
 	SDL_BlitSurface(texture, NULL, game_surface, &(SDL_Rect){GAME_WIDTH / 2, GAME_HEIGHT / 2, texture->w, texture->h});
-	
+
 	tick_count++;
 	tick_count %= 30;
 
@@ -150,4 +150,42 @@ void game_render() {
 		render_editor();
 	if (game_ctx->player->gui)
 		game_render_gui();
+}
+
+void display_dialogue(uint32_t *dialogue, int len, int x, int y) {
+	int i = 0;
+	while (i < len) {
+		int text_len = 0;
+		int text_start = i;
+		while (i < len && dialogue[i] >> 24 == 0) {
+			text_len++;
+			i++;
+		}
+		if (text_len) {
+			char *text = malloc(text_len + 1);
+			text[text_len] = '\0';
+			for (int k = 0; k < text_len; k++)
+				text[k] = dialogue[text_start + k] & 0xFF;
+
+			SDL_Surface *text_surface = TTF_RenderUTF8_Solid(game_ctx->fonts[0], text, (SDL_Color){0xff, 0xff, 0xff, 0xff});
+			SDL_BlitSurface(text_surface, NULL, game_surface, &(SDL_Rect){x, y, text_surface->w, text_surface->h});
+			x += text_surface->w;
+			SDL_FreeSurface(text_surface);
+			free(text);
+			continue;
+		}
+		if ((dialogue[i] & 0xFF000000) == DIALOG_EMOTE) {
+			char emote_name[64] = {0};
+			sprintf(emote_name, "emote_%d", dialogue[i] & 0x00FFFFFF);
+			int id = game_texture_get_id(emote_name);
+			if (id == -1) {
+				i++;
+				continue;
+			}
+			SDL_Surface *emote = texture_registry[id].surface;
+			SDL_BlitSurface(emote, NULL, game_surface, &(SDL_Rect){x, y, emote->w, emote->h});
+			x += emote->w;
+			i++;
+		}
+	}
 }

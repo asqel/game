@@ -22,5 +22,6 @@ char *read_file(char *path) {
 	}
 	res[len] = '\0';
 	fread(res, 1, len, f);
+	flose(f);
 	return res;
 }

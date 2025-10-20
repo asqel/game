@@ -28,11 +28,11 @@ void init_ctx(int argc, char **argv) {
 	parse_args(argc, argv);
 	for (int i = 0; i < GAME_ACT_ENUM_MAX; i++)
 		game_ctx->actions[i] = 0;
-	game_ctx->player = malloc(sizeof(player_t));
+	game_ctx->player = calloc(1, sizeof(player_t));
 	game_ctx->world = game_load_world("start");
     game_ctx->player->x = 18;
     game_ctx->player->y = 18;
-                                                                                                                  
+
     for (int i = 0; i < 4; i++) {
     	for (int k = 0; k < 3; k++) {
     		char name[] = "mc_d0";
@@ -43,7 +43,7 @@ void init_ctx(int argc, char **argv) {
     	}
     }
     game_ctx->player->dir = 2;
-                                                                                                                  
+
     char *font_path = malloc(sizeof(char) * (strlen(game_dir) + strlen("/assets/PressStart2P-Regular.ttf") + 1));
     sprintf(font_path, "%s/assets/PressStart2P-Regular.ttf", game_dir);
     game_ctx->fonts[0] = TTF_OpenFont(font_path, 16);
