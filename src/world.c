@@ -86,6 +86,8 @@ world_t *game_load_world(char *name) {
 			read_layer(2, res->chunks[i][k], f, c_info);
 		}
 	}
+	fclose(f);
+	free(world_path);
 	return res;	
 }
 

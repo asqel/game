@@ -1,7 +1,7 @@
 #include "game.h"
 
 void test(int x, int y) {
-	open_dialogue("AA", NULL, 1, 0);
+	open_dialogue("AA", NULL, 2, (int []){0, 1});
 }
 
 int init_objects() {

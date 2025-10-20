@@ -142,7 +142,7 @@ void on_dialogue_update(gui_t *self) {
 		data->wait = 0;
 }
 
-void open_dialogue(char *name, void (*on_end)(), int id_len, ...) {
+void open_dialogue(char *name, int (*on_end)(gui_t *self), int id_len, ...) {
 	if (strlen(name) > 511)
 		return ;
 
