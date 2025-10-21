@@ -152,6 +152,11 @@ enum {
 #define DIALOG_PAUSE (2 << 24) // \P2. (pause for 2 tick)
 #define DIALOG_EMOTE (3 << 24) // \E3.
 #define DIALOG_WAIT (5 << 24) // \W
+#define DIALOG_PX (5 << 24) // \X
+#define DIALOG_PY (6 << 24) // \Y
+#define DIALOG_CR (7 << 24) // \R
+#define DIALOG_CG (8 << 24) // \G
+#define DIALOG_CB (9 << 24) // \B
 
 struct dialogue_info_t {
 	uint32_t *text;

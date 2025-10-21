@@ -16,6 +16,9 @@ typedef struct dialogue_gui_info_t {
 
 	uint32_t *to_print;
 	int to_print_len;
+	int r;
+	int g;
+	int b;
 } dialogue_gui_info_t;
 
 static void add_to_print(uint32_t c, dialogue_gui_info_t *infos) {
@@ -49,7 +52,7 @@ void on_dialogue_render(gui_t *self) {
 		while (end < data->to_print_len && data->to_print[end] != '\n')
 			end++;
 		len = end - i;
-		display_dialogue(&data->to_print[i], len, 100, y);
+		display_dialogue(&data->to_print[i], len, 100, y, data->r, data->g, data->b);
 		i = end;
 	}
 }

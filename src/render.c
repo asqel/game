@@ -152,7 +152,7 @@ void game_render() {
 		game_render_gui();
 }
 
-void display_dialogue(uint32_t *dialogue, int len, int x, int y) {
+void display_dialogue(uint32_t *dialogue, int len, int x, int y, int r, int g, int b) {
 	int i = 0;
 	while (i < len) {
 		int text_len = 0;
@@ -167,7 +167,7 @@ void display_dialogue(uint32_t *dialogue, int len, int x, int y) {
 			for (int k = 0; k < text_len; k++)
 				text[k] = dialogue[text_start + k] & 0xFF;
 
-			SDL_Surface *text_surface = TTF_RenderUTF8_Solid(game_ctx->fonts[0], text, (SDL_Color){0xff, 0xff, 0xff, 0xff});
+			SDL_Surface *text_surface = TTF_RenderUTF8_Solid(game_ctx->fonts[0], text, (SDL_Color){r, g, b, 0xff});
 			SDL_BlitSurface(text_surface, NULL, game_surface, &(SDL_Rect){x, y, text_surface->w, text_surface->h});
 			x += text_surface->w;
 			SDL_FreeSurface(text_surface);
