@@ -41,4 +41,5 @@ void dialogue_exit() {
 		free(dialogue_infos[i].text);
 	free(dialogue_infos);
 	dialogue_infos = NULL;
+	dialogue_infos_len = 0;
 }

@@ -1,2 +1,2 @@
-test1 :  "Le frigo vous regarde...\nVous sentez\P15. une aura glacial\W"
-test2: "...Ce n'etait probablement rien\W"
+test1 :  "\X300\Y100The fridge looks at you...\nYou feel a chill along\nyour spine\W"
+test2: "... That was probably nothing\W"

@@ -19,6 +19,8 @@ typedef struct dialogue_gui_info_t {
 	int r;
 	int g;
 	int b;
+	int x;
+	int y;
 } dialogue_gui_info_t;
 
 static void add_to_print(uint32_t c, dialogue_gui_info_t *infos) {
@@ -39,8 +41,8 @@ void on_dialogue_render(gui_t *self) {
 	dialogue_gui_info_t *data = self->data;
 	if (!data->to_print)
 		return ;
-	int y = 30;
 	int i = 0;
+	int y = data->y;
 	while (i < data->to_print_len) {
 		if (data->to_print[i] == (uint32_t)'\n') {
 			i++;
@@ -52,13 +54,28 @@ void on_dialogue_render(gui_t *self) {
 		while (end < data->to_print_len && data->to_print[end] != '\n')
 			end++;
 		len = end - i;
-		display_dialogue(&data->to_print[i], len, 100, y, data->r, data->g, data->b);
+		display_dialogue(&data->to_print[i], len, data->x, y);
 		i = end;
 	}
 }
 
 void on_dialogue_update(gui_t *self) {
 	dialogue_gui_info_t *data = self->data;
+	while (1) {
+		dialogue_info_t *dialogue = &dialogue_infos[data->current_idx];
+		uint32_t c = dialogue->text[data->current_len] & 0x00FFFFFF;
+		uint32_t type = dialogue->text[data->current_len] & 0xFF000000;
+		if (type == DIALOG_PX) {
+			data->current_len++;
+			data->x = c;
+		}
+		else if (type == DIALOG_PY) {
+			data->current_len++;
+			data->y = c;
+		}
+		else
+			break;
+	}
 	if (data->sleep) {
 		data->sleep--;
 		return ;
@@ -76,6 +93,12 @@ void on_dialogue_update(gui_t *self) {
 		dialogue_info_t *dialogue = &dialogue_infos[data->current_idx];
 		uint32_t c = dialogue->text[data->current_len] & 0x00FFFFFF;
 		uint32_t type = dialogue->text[data->current_len] & 0xFF000000;
+		while (type == DIALOG_CHAR && c && strchr(" \n", c)) {
+			add_to_print(c, data);
+			data->current_len++;
+			c = dialogue->text[data->current_len] & 0x00FFFFFF;
+			type = dialogue->text[data->current_len] & 0xFF000000;
+		}
 		if (type == DIALOG_CHAR) {
 			if (c == 0) {
 				data->current_idx++;
@@ -131,13 +154,9 @@ void on_dialogue_update(gui_t *self) {
 			data->stash = strdup("VAR");
 			data->current_len++;
 		}
-		else if (type == DIALOG_EMOTE) {
+		else {
 			add_to_print(c | type, data);
 			data->current_len++;
-		}
-		else {
-			PRINT_ERR("ERROR: unknown dialogue type %d\n", type);
-			game_exit(1);
 		}
 		return ;
 	}

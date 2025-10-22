@@ -100,6 +100,6 @@ int dialogue_register(char *id, char *val);
 int parse_lang(char *text);
 
 void open_dialogue(char *name, int (*on_end)(gui_t *self), int id_len, ...);
-void display_dialogue(uint32_t *dialogue, int len, int x, int y, int r, int g, int b);
+void display_dialogue(uint32_t *dialogue, int len, int x, int y);
 
 #endif

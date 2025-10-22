@@ -152,7 +152,10 @@ void game_render() {
 		game_render_gui();
 }
 
-void display_dialogue(uint32_t *dialogue, int len, int x, int y, int r, int g, int b) {
+void display_dialogue(uint32_t *dialogue, int len, int x, int y) {
+	int r = 0;
+	int g = 0;
+	int b = 0;
 	int i = 0;
 	while (i < len) {
 		int text_len = 0;
@@ -167,10 +170,19 @@ void display_dialogue(uint32_t *dialogue, int len, int x, int y, int r, int g, i
 			for (int k = 0; k < text_len; k++)
 				text[k] = dialogue[text_start + k] & 0xFF;
 
-			SDL_Surface *text_surface = TTF_RenderUTF8_Solid(game_ctx->fonts[0], text, (SDL_Color){r, g, b, 0xff});
-			SDL_BlitSurface(text_surface, NULL, game_surface, &(SDL_Rect){x, y, text_surface->w, text_surface->h});
-			x += text_surface->w;
-			SDL_FreeSurface(text_surface);
+			SDL_Surface *text_surface = NULL;
+			int nb = 2;
+			for (int i = 0; i < nb; i++) {
+				r = ~r;
+				g = ~g;
+				b = ~b;
+				text_surface = TTF_RenderUTF8_Solid(game_ctx->fonts[0], text, (SDL_Color){r, g, b, 0xff});
+				SDL_FillRect(game_surface, &(SDL_Rect){x, y, text_surface->w, text_surface->h}, (~r << 16) | (~g << 8) | (~b));
+				SDL_BlitSurface(text_surface, NULL, game_surface, &(SDL_Rect){x, y + i, text_surface->w, text_surface->h});
+				if (i == nb - 1)
+					x += text_surface->w;
+				SDL_FreeSurface(text_surface);
+			}
 			free(text);
 			continue;
 		}
@@ -185,6 +197,18 @@ void display_dialogue(uint32_t *dialogue, int len, int x, int y, int r, int g, i
 			SDL_Surface *emote = texture_registry[id].surface;
 			SDL_BlitSurface(emote, NULL, game_surface, &(SDL_Rect){x, y, emote->w, emote->h});
 			x += emote->w;
+			i++;
+		}
+		else if ((dialogue[i] & 0xFF000000) == DIALOG_CR) {
+			r = dialogue[i] & 0x00FFFFFF;
+			i++;
+		}
+		else if ((dialogue[i] & 0xFF000000) == DIALOG_CG) {
+			g = dialogue[i] & 0x00FFFFFF;
+			i++;
+		}
+		else if ((dialogue[i] & 0xFF000000) == DIALOG_CB) {
+			b = dialogue[i] & 0x00FFFFFF;
 			i++;
 		}
 	}

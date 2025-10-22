@@ -43,9 +43,4 @@ void init_ctx(int argc, char **argv) {
     	}
     }
     game_ctx->player->dir = 2;
-
-    char *font_path = malloc(sizeof(char) * (strlen(game_dir) + strlen("/assets/PressStart2P-Regular.ttf") + 1));
-    sprintf(font_path, "%s/assets/PressStart2P-Regular.ttf", game_dir);
-    game_ctx->fonts[0] = TTF_OpenFont(font_path, 16);
-    free(font_path);
 }
