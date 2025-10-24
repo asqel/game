@@ -44,6 +44,8 @@ static int parse_sequence(unsigned char *str, uint32_t **buffer, int do_write) {
 			return 1 + parse_number(str + 1, buffer, DIALOG_CG, do_write);
 		case 'B':
 			return 1 + parse_number(str + 1, buffer, DIALOG_CB, do_write);
+		case 'S':
+			return 1 + parse_number(str + 1, buffer, DIALOG_STYLE, do_write);
 		case 'n':
 			buff_append_c(buffer, '\n', do_write);
 			return 1;

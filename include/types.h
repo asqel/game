@@ -157,6 +157,7 @@ enum {
 #define DIALOG_CR (8 << 24) // \R
 #define DIALOG_CG (9 << 24) // \G
 #define DIALOG_CB (10 << 24) // \B
+#define DIALOG_STYLE (11 << 24) // \S
 
 struct dialogue_info_t {
 	uint32_t *text;
