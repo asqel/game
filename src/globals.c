@@ -22,3 +22,6 @@ int game_error_is_special = GAME_ERROR_NONE; // like errno (doesnt use game_erro
 
 sprite_registry_t *sprite_registry = NULL;
 int sprite_registry_len = 0;
+
+
+lua_State *lua_state = NULL;

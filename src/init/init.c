@@ -38,5 +38,7 @@ void game_init(int argc, char **argv) {
 	free(font_path);
 	if (dialogue_init())
 		game_exit(1);
+	if (init_lua())
+		game_exit(1);
 }
 

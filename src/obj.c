@@ -21,7 +21,8 @@ void game_register_obj(char *name, int sprite_id, int hithox, void *interact) {
 	strcpy(obj_registry[obj_registry_len].name, name);
 	obj_registry[obj_registry_len].sprite_id = sprite_id;
 	obj_registry[obj_registry_len].has_hitbox = hithox;
-	obj_registry[obj_registry_len].interact = interact;
+	obj_registry[obj_registry_len].interact.c = interact;
+	obj_registry[obj_registry_len].interact.is_lua = 0;
 	obj_registry_len++;
 }
 

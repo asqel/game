@@ -65,7 +65,7 @@ typedef struct dialogue_info_t		dialogue_info_t;
 typedef struct c_lua_obj_t			c_lua_obj_t;
 
 struct c_lua_obj_t {
-	uint8_t is_c;
+	uint8_t is_lua;
 	union {
 		void *c;
 		int lua_ref;

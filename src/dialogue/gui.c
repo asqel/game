@@ -30,7 +30,7 @@ static void add_to_print(uint32_t c, dialogue_gui_info_t *infos) {
 }
 
 void on_dialogue_free(gui_t *self) {
-	dialogue_gui_info_t *data = self->data;
+	dialogue_gui_info_t *data = self->data.c;
 	free(data->stash);
 	free(data->to_print);
 	free(data->dialogue_ids);
@@ -38,7 +38,7 @@ void on_dialogue_free(gui_t *self) {
 }
 
 void on_dialogue_render(gui_t *self) {
-	dialogue_gui_info_t *data = self->data;
+	dialogue_gui_info_t *data = self->data.c;
 	if (!data->to_print)
 		return ;
 	int i = 0;
@@ -60,7 +60,7 @@ void on_dialogue_render(gui_t *self) {
 }
 
 void on_dialogue_update(gui_t *self) {
-	dialogue_gui_info_t *data = self->data;
+	dialogue_gui_info_t *data = self->data.c;
 	while (1) {
 		dialogue_info_t *dialogue = &dialogue_infos[data->current_idx];
 		uint32_t c = dialogue->text[data->current_len] & 0x00FFFFFF;

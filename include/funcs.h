@@ -18,6 +18,7 @@ void		textures_free();
 void		objects_free();
 int			dialogue_init();
 void		dialogue_exit();
+int			init_lua();
 
 //------- file / path
 int			game_path_is_dir(char *path);
