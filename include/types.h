@@ -50,24 +50,33 @@ enum {
 #define GAME_EVTY_RELEASED 2
 #define GAME_EVTY_TEXT 3
 
-typedef struct chunk_t		chunk_t;
-typedef struct world_t		world_t;
-typedef struct player_t		player_t;
-typedef struct obj_t		obj_t;
-typedef struct game_t		game_t;
-typedef struct obj_info_t	obj_info_t;
-typedef struct texture_t	texture_t;
-typedef struct sprite_registry_t sprite_registry_t;
-typedef struct sprite_t	sprite_t;
-typedef struct gui_t		gui_t;
-typedef struct game_event_t game_event_t;
-typedef struct dialogue_info_t dialogue_info_t;
+typedef struct chunk_t				chunk_t;
+typedef struct world_t				world_t;
+typedef struct player_t				player_t;
+typedef struct obj_t				obj_t;
+typedef struct game_t				game_t;
+typedef struct obj_info_t			obj_info_t;
+typedef struct texture_t			texture_t;
+typedef struct sprite_registry_t	sprite_registry_t;
+typedef struct sprite_t				sprite_t;
+typedef struct gui_t				gui_t;
+typedef struct game_event_t			game_event_t;
+typedef struct dialogue_info_t		dialogue_info_t;
+typedef struct c_lua_obj_t			c_lua_obj_t;
+
+struct c_lua_obj_t {
+	uint8_t is_c;
+	union {
+		void *c;
+		int lua_ref;
+	};
+};
 
 struct gui_t {
-	void *data;
-	void (*update)(gui_t *self);
-	void (*render)(gui_t *self);
-	void (*free)(gui_t *self);
+	c_lua_obj_t data;
+	c_lua_obj_t update;
+	c_lua_obj_t render;
+	c_lua_obj_t free;
 };
 
 struct texture_t {
@@ -94,7 +103,8 @@ struct obj_info_t {
 	char name[OBJ_NAME_LENGTH + 1];
 	int sprite_id;
 	int has_hitbox;
-	void (*interact)(int x, int y);
+	c_lua_obj_t interact;
+	int lua_func;
 };
 
 struct obj_t {

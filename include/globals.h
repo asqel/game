@@ -44,4 +44,7 @@ extern char					game_lang[6];
 extern dialogue_info_t		*dialogue_infos;
 extern int					dialogue_infos_len;
 
+//-------- lua
+extern lua_State			*lua_state;
+
 #endif
