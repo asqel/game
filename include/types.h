@@ -16,10 +16,10 @@
 #define GAME_WORLD_NAME_MAX_LEN 100
 #define CHUNK_SIZE 20
 
-#define GAME_WIDTH 960
-#define GAME_HEIGHT 540
+#define GAME_WIDTH 1280
+#define GAME_HEIGHT 720
 #define TILE_SIZE 64
-#define GAME_FPS 30
+#define GAME_FPS 60
 
 #define SPRITE_MASK_PAUSED (1)
 #define SPRITE_MASK_LOOP (1 << 1)
