@@ -110,8 +110,15 @@ void game_world_save(world_t *world) {
 
 	fwrite(&world->width, 1, sizeof(uint32_t), f);
 	fwrite(&world->height, 1, sizeof(uint32_t), f);
+	uint64_t *chunk_table = calloc( world->width * world->height, sizeof(uint64_t));
+	long int chunk_table_offset = ftell(f);
+	fwrite(chunk_table, world->width * world->height, sizeof(uint64_t), f);
+	size_t current_chunk = 0;
+	
 	for (int cy = 0; cy < world->height; cy++) {
 		for (int cx = 0; cx < world->width; cx++) {
+			chunk_table[current_chunk++] = ftell(f);
+			printf("crreunt %lu, %ld", current_chunk - 1, ftell(f));
 			chunk_t *chunk = world->chunks[cy][cx];
 			int layers_empty[3] = {0};
 			int layers_is_repeat[3] = {0};
@@ -150,6 +157,12 @@ void game_world_save(world_t *world) {
 				write_hitbox(chunk->hitbox, f);
 		}
 	}
-
+	long int old = ftell(f);
+	fseek(f, chunk_table_offset, SEEK_SET);
+	for (int i = 0; i < world->width * world->height; i++)
+		printf("%lx\n", chunk_table[i]);
+	fwrite(chunk_table, world->width * world->height, sizeof(uint64_t), f);
+	fseek(f, old, SEEK_SET);
+	fflush(f);
 	fclose(f);
 }

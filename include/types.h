@@ -122,6 +122,8 @@ struct world_t {
 	chunk_t ***chunks;
 	int width; // in chunks
 	int height;
+	int origin_x;
+	int origin_y;
 	char name[GAME_WORLD_NAME_MAX_LEN + 1];
 };
 

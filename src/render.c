@@ -127,8 +127,8 @@ static void game_render_layer(int layer, chunk_t *chunks[3][3], int offset_x, in
 
 void game_render() {
 	SDL_FillRect(game_surface, &(SDL_Rect){0, 0, GAME_WIDTH, GAME_HEIGHT}, 0);
-	int player_chunk_x = ((int)game_ctx->player->x) / CHUNK_SIZE;
-	int player_chunk_y = ((int)game_ctx->player->y) / CHUNK_SIZE;
+	int player_chunk_x = ((int)(game_ctx->player->x - game_ctx->world->origin_x)) / CHUNK_SIZE;
+	int player_chunk_y = ((int)(game_ctx->player->y - game_ctx->world->origin_y)) / CHUNK_SIZE;
 	chunk_t *chunks[3][3] = {{NULL, NULL, NULL},
 							 {NULL, NULL, NULL},
 							 {NULL, NULL, NULL}};
