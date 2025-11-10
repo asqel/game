@@ -141,8 +141,8 @@ void game_render() {
 				chunks[i + 1][k + 1] = game_ctx->world->chunks[y][x];
 		}
 	}
-	int offset_x =  GAME_WIDTH / 2 - TILE_SIZE / 2 - game_ctx->player->x * TILE_SIZE + top_left[0] * TILE_SIZE + TILE_SIZE / 2;
-	int offset_y =  GAME_HEIGHT / 2 - TILE_SIZE / 2 - game_ctx->player->y * TILE_SIZE + top_left[1] * TILE_SIZE + TILE_SIZE / 2;
+	int offset_x =  GAME_WIDTH / 2 - TILE_SIZE / 2 - (game_ctx->player->x - game_ctx->world->origin_x) * TILE_SIZE + top_left[0] * TILE_SIZE + TILE_SIZE / 2;
+	int offset_y =  GAME_HEIGHT / 2 - TILE_SIZE / 2 - (game_ctx->player->y - game_ctx->world->origin_y) * TILE_SIZE + top_left[1] * TILE_SIZE + TILE_SIZE / 2;
 	game_render_layer(0, chunks, offset_x, offset_y, 0);
 	game_render_layer(1, chunks, offset_x, offset_y, 1);
 	game_render_layer(2, chunks, offset_x, offset_y, 0);
