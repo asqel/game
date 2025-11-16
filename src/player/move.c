@@ -19,10 +19,16 @@ static hitbox_t get_player_hitbox() {
 	return res;
 }
 
-static void get_objs(char map[3][3], hitbox_t player_hit) {
+static inline hitbox_t hitbox(double x, double y, double w, double h) {
+	return (hitbox_t){x, y, w, h};
+}
+
+static void get_objs(hitbox_t map[3][3][2], hitbox_t player_hit) {
 	for (int i = 0; i < 3; i++)
-		for (int k = 0; k < 3; k++)
-			map[i][k] = 0;
+		for (int k = 0; k < 3; k++) {
+			map[i][k][0] = (hitbox_t){0};
+			map[i][k][1] = (hitbox_t){0};
+		}
 	for (int i = 0; i < 3; i++) {
 		for (int k = 0; k < 3; k++) {
 			int mx = k - 1 + (int)player_hit.x;
@@ -34,9 +40,20 @@ static void get_objs(char map[3][3], hitbox_t player_hit) {
 			if (cx >= game_ctx->world->width || cy >= game_ctx->world->height || game_ctx->world->chunks[cy][cx] == NULL)
 				continue;
 			int obj_id = game_ctx->world->chunks[cy][cx]->objs[my % CHUNK_SIZE][mx % CHUNK_SIZE][1].id;
-			if (obj_id > 0 && obj_id < obj_registry_len)
-				map[i][k] = obj_registry[obj_id].has_hitbox;
-			map[i][k] = map[i][k] || game_ctx->world->chunks[cy][cx]->hitbox[my % CHUNK_SIZE][mx % CHUNK_SIZE];
+			if (obj_id > 0 && obj_id < obj_registry_len) {
+				int hit_val = obj_registry[obj_id].has_hitbox;
+				if (hit_val == 1)
+					map[i][k][0] = hitbox(0, 0, 1, 1);
+				else if (hit_val == 2) {
+					double x = obj_registry[obj_id].hit_x;
+					double y = obj_registry[obj_id].hit_y;
+					double w = obj_registry[obj_id].hit_w;
+					double h = obj_registry[obj_id].hit_h;
+					map[i][k][0] = hitbox(x, y, w, h);
+				}
+			}
+			if (game_ctx->world->chunks[cy][cx]->hitbox[my % CHUNK_SIZE][mx % CHUNK_SIZE])
+				map[i][k][1] = hitbox(0, 0, 1, 1);
 		}
 	}
 }
@@ -64,23 +81,24 @@ int player_move(double x, double y) {
 	player_hit.x += x;
 	player_hit.y += y;
 
-	char map[3][3] = {{0}};
+	hitbox_t map[3][3][2];
 	get_objs(map, player_hit);
 	for	(int i = 0; i < 3; i++) {
 		for (int k = 0; k < 3; k++) {
-			if (map[i][k] == 0)
-				continue;
-			hitbox_t obj_hit;
-			obj_hit.x =  (k - 1) + (int)player_hit.x;
-			obj_hit.y =  (i - 1) + (int)player_hit.y;
-			obj_hit.w =  1;
-			obj_hit.h =  1;
-			if (does_collide(player_hit, obj_hit)) {
-				if (x == 0 || y == 0)
+			for (int l = 0; l < 2; l++) {
+				hitbox_t obj_hit = map[i][k][l];
+				if (obj_hit.w <= 0 && obj_hit.h <= 0)
+					continue;
+				printf("%f %f %f %f\n", obj_hit.x, obj_hit.y, obj_hit.w, obj_hit.h);
+				obj_hit.x += (k - 1) + (int)player_hit.x;
+				obj_hit.y +=  (i - 1) + (int)player_hit.y;
+				if (does_collide(player_hit, obj_hit)) {
+					if (x == 0 || y == 0)
+						return 0;
+					if (player_move(0, y) == 0)
+						return player_move(x, 0);
 					return 0;
-				if (player_move(0, y) == 0)
-					return player_move(x, 0);
-				return 0;
+				}
 			}
 		}
 	}

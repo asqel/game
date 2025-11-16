@@ -52,6 +52,7 @@ obj_t		game_get_obj(int id);
 
 //------- register
 void		game_register_obj(char *name, int sprite_id, int hithox, void *interact);
+void game_register_obj_w_hit(char *name, int sprite_id, void *interact, double hitx, double hity, double hitw, double hith);
 void		register_sprite(int *texture_ids, int texture_ids_len, int frame_len_tick, const char *name, uint8_t state);
 
 

@@ -102,9 +102,13 @@ struct sprite_t {
 struct obj_info_t {
 	char name[OBJ_NAME_LENGTH + 1];
 	int sprite_id;
-	int has_hitbox;
+	int has_hitbox; // 2 = custom
 	c_lua_obj_t interact;
 	int lua_func;
+	double hit_x;
+	double hit_y;
+	double hit_w;
+	double hit_h;
 };
 
 struct obj_t {
