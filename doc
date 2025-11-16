@@ -1,7 +1,6 @@
 world:
 	world_width (int32 in chunks)
 	world_heigh (int32 in chunks)
-	chunk addresses (stored as lines as uint64_t)
 	chunks... (stored as lines)
 
 chunk:
