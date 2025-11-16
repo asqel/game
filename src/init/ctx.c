@@ -43,6 +43,4 @@ void init_ctx(int argc, char **argv) {
     	}
     }
     game_ctx->player->dir = 2;
-	game_ctx->world->origin_x = 5;
-	game_ctx->world->origin_y = 5;
 }
