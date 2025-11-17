@@ -88,8 +88,6 @@ int player_move(double x, double y) {
 					continue;
 				obj_hit.x += (k - 2) + (int)player_hit.x;
 				obj_hit.y +=  (i - 2) + (int)player_hit.y;
-				printf("%f %f %f %f\n", obj_hit.x, obj_hit.y, obj_hit.w, obj_hit.h);
-				printf("    %f %f %f %f\n", player_hit.x, player_hit.y, player_hit.w, player_hit.h);
 				if (does_collide(player_hit, obj_hit)) {
 					if (x == 0 || y == 0)
 						return 0;

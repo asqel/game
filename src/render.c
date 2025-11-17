@@ -98,8 +98,51 @@ static void render_editor() {
 	render_border();
 }
 
-static void game_render_layer(int layer, chunk_t *chunks[3][3], int offset_x, int offset_y, int render_player) {
+typedef struct {
+	SDL_Surface *surf;
+	int x;
+	int y;
+	int bottom_y;
+	int is_set;
+} image_info_t;
 
+static void game_render_mid(chunk_t *chunks[3][3], int offset_x, int offset_y) {
+	int len = CHUNK_SIZE * CHUNK_SIZE * 3 * 3;
+	for (int i = 0; i < 3; i++) {
+		for (int k = 0; k < 3; k++) {
+			if (!chunks[i][k])
+				continue;
+			len += chunks[i][k]->entities_len;
+		}
+	}
+	image_info_t *infos = malloc(sizeof(image_info_t) * len);
+	int end = 0;
+	for (int y = 0; y < 3 * CHUNK_SIZE; y++) {
+		for (int x = 0; x < 3 * CHUNK_SIZE; x++) {
+			chunk_t *chunk = chunks[y / CHUNK_SIZE][x / CHUNK_SIZE];
+			if (chunk == NULL)
+				continue;
+			obj_t *obj =  &chunk->objs[y % CHUNK_SIZE][x % CHUNK_SIZE][layer];
+			SDL_Surface *texture = NULL;
+			if (obj->id != 0) {
+				texture = game_get_sprite_texture(&obj->sprite);
+				game_sprite_tick(&obj->sprite);
+			}
+
+			if (texture != NULL) {
+				int real_x = (x - CHUNK_SIZE) * TILE_SIZE + offset_x - texture->w / 2 + TILE_SIZE / 2;
+				int real_y = line_y_bottom - texture->h;
+				info[
+			}
+		}
+		line_y_bottom += TILE_SIZE;
+	}
+}
+
+static void game_render_layer(int layer, chunk_t *chunks[3][3], int offset_x, int offset_y, int render_player) {
+	if (render_player) {
+		entity_t **entities	
+	}
 	int line_y_bottom = (0 - CHUNK_SIZE) * TILE_SIZE + offset_y + TILE_SIZE;
 	for (int y = 0; y < 3 * CHUNK_SIZE; y++) {
 		if (render_player && line_y_bottom > GAME_HEIGHT / 2 + TILE_SIZE / 2 && line_y_bottom - TILE_SIZE <= GAME_HEIGHT / 2 + TILE_SIZE / 2)

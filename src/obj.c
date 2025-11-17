@@ -77,7 +77,7 @@ void game_register_obj_w_hit(char *name, int sprite_id, void *interact, double h
 	obj_registry[obj_registry_len].interact.is_lua = 0;
 	obj_registry[obj_registry_len].hit_x = hitx;
 	obj_registry[obj_registry_len].hit_y = hity;
-	obj_registry[obj_registry_len].hit_w = hith;
-	obj_registry[obj_registry_len].hit_h = hitw;
+	obj_registry[obj_registry_len].hit_w = hitw;
+	obj_registry[obj_registry_len].hit_h = hith;
 	obj_registry_len++;
 }

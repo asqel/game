@@ -63,6 +63,8 @@ typedef struct gui_t				gui_t;
 typedef struct game_event_t			game_event_t;
 typedef struct dialogue_info_t		dialogue_info_t;
 typedef struct c_lua_obj_t			c_lua_obj_t;
+typedef struct entity_t				entity_t;
+typedef struct entity_info_t		entity_info_t;
 
 struct c_lua_obj_t {
 	uint8_t is_lua;
@@ -120,6 +122,8 @@ struct obj_t {
 struct chunk_t {
 	obj_t objs[CHUNK_SIZE][CHUNK_SIZE][3]; // 0: back, 1: middle, 2:top
 	char hitbox[CHUNK_SIZE][CHUNK_SIZE];
+	entity_t *entities;
+	int entities_len;
 };
 
 struct world_t {
@@ -134,6 +138,33 @@ struct player_t {
 	double y;
 	uint8_t dir; // 0 up, 1 right, 2 down 3 left
 	gui_t *gui;
+};
+
+struct entity_t {
+	double x;
+	double y;
+	double vx;
+	double vy;
+	c_lua_obj_t data;
+	uint32_t id;
+	sprite_t sprite;
+	double hitbox_x;
+	double hitbox_y;
+	double hitbox_w;
+	double hitbox_h;
+	double hp;
+	int bottom_y;
+};
+
+struct entity_info_t {
+	char name[OBJ_NAME_LENGTH + 1];
+	int sprite_id;
+	double default_hitbox_x;
+	double default_hitbox_y;
+	double default_hitbox_w;
+	double default_hitbox_h;
+	int (*on_tick)(entity_t *self); // return 1 to die
+	double hp;
 };
 
 struct game_t {
