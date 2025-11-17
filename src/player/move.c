@@ -23,16 +23,16 @@ static inline hitbox_t hitbox(double x, double y, double w, double h) {
 	return (hitbox_t){x, y, w, h};
 }
 
-static void get_objs(hitbox_t map[3][3][2], hitbox_t player_hit) {
-	for (int i = 0; i < 3; i++)
-		for (int k = 0; k < 3; k++) {
+static void get_objs(hitbox_t map[5][5][2], hitbox_t player_hit) {
+	for (int i = 0; i < 5; i++)
+		for (int k = 0; k < 5; k++) {
 			map[i][k][0] = (hitbox_t){0};
 			map[i][k][1] = (hitbox_t){0};
 		}
-	for (int i = 0; i < 3; i++) {
-		for (int k = 0; k < 3; k++) {
-			int mx = k - 1 + (int)player_hit.x;
-			int my = i - 1 + (int)player_hit.y;
+	for (int i = 0; i < 5; i++) {
+		for (int k = 0; k < 5; k++) {
+			int mx = k - 2 + (int)player_hit.x;
+			int my = i - 2 + (int)player_hit.y;
 			if (mx < 0 || my < 0)
 				continue;
 			int cy = my / CHUNK_SIZE;
@@ -59,10 +59,7 @@ static void get_objs(hitbox_t map[3][3][2], hitbox_t player_hit) {
 }
 
 static int does_collide(hitbox_t a, hitbox_t b) {
-	return !(a.x + a.w <= b.x ||
-             b.x + b.w <= a.x ||
-             a.y + a.h <= b.y ||
-             b.y + b.h <= a.y);
+	return (a.x + a.w >= b.x) && (a.x <= b.x + b.w) && (a.y + a.h  >= b.y) && (a.y <= b.y + b.h);
 }
 
 int player_move(double x, double y) {
@@ -81,17 +78,18 @@ int player_move(double x, double y) {
 	player_hit.x += x;
 	player_hit.y += y;
 
-	hitbox_t map[3][3][2];
+	hitbox_t map[5][5][2];
 	get_objs(map, player_hit);
-	for	(int i = 0; i < 3; i++) {
-		for (int k = 0; k < 3; k++) {
+	for	(int i = 0; i < 5; i++) {
+		for (int k = 0; k < 5; k++) {
 			for (int l = 0; l < 2; l++) {
 				hitbox_t obj_hit = map[i][k][l];
 				if (obj_hit.w <= 0 && obj_hit.h <= 0)
 					continue;
+				obj_hit.x += (k - 2) + (int)player_hit.x;
+				obj_hit.y +=  (i - 2) + (int)player_hit.y;
 				printf("%f %f %f %f\n", obj_hit.x, obj_hit.y, obj_hit.w, obj_hit.h);
-				obj_hit.x += (k - 1) + (int)player_hit.x;
-				obj_hit.y +=  (i - 1) + (int)player_hit.y;
+				printf("    %f %f %f %f\n", player_hit.x, player_hit.y, player_hit.w, player_hit.h);
 				if (does_collide(player_hit, obj_hit)) {
 					if (x == 0 || y == 0)
 						return 0;
