@@ -98,51 +98,62 @@ static void render_editor() {
 	render_border();
 }
 
-typedef struct {
-	SDL_Surface *surf;
-	int x;
-	int y;
-	int bottom_y;
-	int is_set;
-} image_info_t;
-
-static void game_render_mid(chunk_t *chunks[3][3], int offset_x, int offset_y) {
-	int len = CHUNK_SIZE * CHUNK_SIZE * 3 * 3;
-	for (int i = 0; i < 3; i++) {
-		for (int k = 0; k < 3; k++) {
-			if (!chunks[i][k])
-				continue;
-			len += chunks[i][k]->entities_len;
-		}
-	}
-	image_info_t *infos = malloc(sizeof(image_info_t) * len);
-	int end = 0;
-	for (int y = 0; y < 3 * CHUNK_SIZE; y++) {
-		for (int x = 0; x < 3 * CHUNK_SIZE; x++) {
-			chunk_t *chunk = chunks[y / CHUNK_SIZE][x / CHUNK_SIZE];
-			if (chunk == NULL)
-				continue;
-			obj_t *obj =  &chunk->objs[y % CHUNK_SIZE][x % CHUNK_SIZE][layer];
-			SDL_Surface *texture = NULL;
-			if (obj->id != 0) {
-				texture = game_get_sprite_texture(&obj->sprite);
-				game_sprite_tick(&obj->sprite);
-			}
-
-			if (texture != NULL) {
-				int real_x = (x - CHUNK_SIZE) * TILE_SIZE + offset_x - texture->w / 2 + TILE_SIZE / 2;
-				int real_y = line_y_bottom - texture->h;
-				info[
-			}
-		}
-		line_y_bottom += TILE_SIZE;
-	}
-}
+//typedef struct {
+//	SDL_Surface *surf;
+//	int x;
+//	int y;
+//} image_info_t;
+//
+//static void game_render_mid(chunk_t *chunks[3][3], int offset_x, int offset_y) {
+//	int len = 0;
+//	for (int i = 0; i < 3; i++) {
+//		for (int k = 0; k < 3; k++) {
+//			if (!chunks[i][k])
+//				continue;
+//			len += chunks[i][k]->entities_len + CHUNK_SIZE * CHUNK_SIZE;
+//		}
+//	}
+//	len++;
+//	image_info_t *infos = malloc(sizeof(image_info_t) * len);
+//	memset(infos, 0, sizeof(image_info_t) * len);
+//	int end = 0;
+//	int player_x = GAME_WIDTH / 2 - TILE_SIZE / 2;
+//	int player_y = GAME_HEIGHT / 2 - TILE_SIZE / 2;
+//	for (int y = 0; y < 3 * CHUNK_SIZE; y++) {
+//		for (int x = 0; x < 3 * CHUNK_SIZE; x++) {
+//			chunk_t *chunk = chunks[y / CHUNK_SIZE][x / CHUNK_SIZE];
+//			if (!chunk)
+//				continue;
+//			obj_t *obj =  &chunk->objs[y % CHUNK_SIZE][x % CHUNK_SIZE][layer];
+//			SDL_Surface *texture = NULL;
+//			if (obj->id != 0) {
+//				texture = game_get_sprite_texture(&obj->sprite);
+//				game_sprite_tick(&obj->sprite);
+//			}
+//
+//			if (texture != NULL) {
+//				int real_x = (x - CHUNK_SIZE) * TILE_SIZE + offset_x - texture->w / 2 + TILE_SIZE / 2;
+//				int real_y = line_y_bottom - texture->h;
+//				info[end].x = real_x;
+//				info[end].y = real_y;
+//				info[end].bottom_y = line_y_bottom;
+//				end++;
+//			}
+//		}
+//		line_y_bottom += TILE_SIZE;
+//	}
+//	line_y_bottom = (0 - CHUNK_SIZE) * TILE_SIZE + offset_y + TILE_SIZE;
+//	for (int y = 0; y < 3; y++) {
+//		for (int x = 0; x < 3; x++) {
+//					
+//		}
+//	}
+//}
 
 static void game_render_layer(int layer, chunk_t *chunks[3][3], int offset_x, int offset_y, int render_player) {
-	if (render_player) {
-		entity_t **entities	
-	}
+	//if (render_player) {
+	//	entity_t **entities	
+	//}
 	int line_y_bottom = (0 - CHUNK_SIZE) * TILE_SIZE + offset_y + TILE_SIZE;
 	for (int y = 0; y < 3 * CHUNK_SIZE; y++) {
 		if (render_player && line_y_bottom > GAME_HEIGHT / 2 + TILE_SIZE / 2 && line_y_bottom - TILE_SIZE <= GAME_HEIGHT / 2 + TILE_SIZE / 2)
@@ -186,7 +197,22 @@ void game_render() {
 	}
 	int offset_x =  GAME_WIDTH / 2 - TILE_SIZE / 2 - game_ctx->player->x * TILE_SIZE + top_left[0] * TILE_SIZE + TILE_SIZE / 2;
 	int offset_y =  GAME_HEIGHT / 2 - TILE_SIZE / 2 - game_ctx->player->y * TILE_SIZE + top_left[1] * TILE_SIZE + TILE_SIZE / 2;
-	game_render_layer(0, chunks, offset_x, offset_y, 0);
+	//game_render_layer(0, chunks, offset_x, offset_y, 0);
+	{
+		extern void game_render_background(chunk_t ***, int);
+		chunk_t ***chunks_ptr = malloc(sizeof(chunk_t **) * 3);
+		for (int i = 0; i < 3; i++) {
+			chunks_ptr[i] = malloc(sizeof(chunk_t *) * 3);
+			for (int k = 0; k < 3; k++) {
+				chunks_ptr[i][k] = chunks[i][k];
+			}
+		}
+		game_render_background(chunks_ptr, 3);
+		for (int i = 0; i < 3; i++)
+			free(chunks_ptr[i]);
+		free(chunks_ptr);
+
+	}
 	game_render_layer(1, chunks, offset_x, offset_y, 1);
 	game_render_layer(2, chunks, offset_x, offset_y, 0);
 	if (game_ctx->is_editor)
