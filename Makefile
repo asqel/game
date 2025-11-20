@@ -35,6 +35,7 @@ clean:
 fclean: clean
 	rm -rf $(NAME)
 
-re: fclean all
+re: fclean
+	make -j10
 
 .PHONY: re fclean clean all

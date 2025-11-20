@@ -32,6 +32,7 @@ void init_ctx(int argc, char **argv) {
 	game_ctx->world = game_load_world("start");
     game_ctx->player->x = 18;
     game_ctx->player->y = 18;
+    game_ctx->player->render_distance = 5;
 
     for (int i = 0; i < 4; i++) {
     	for (int k = 0; k < 3; k++) {

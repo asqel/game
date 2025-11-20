@@ -8,9 +8,9 @@ static inline void render_obj(obj_t *obj, int x, int y) {
 
 	if (!texture)
 		return ;
-	x += TILE_SIZE / 2;
+	x += TILE_SIZE;
 	x -= texture->w / 2;
-	y += TILE_SIZE;
+	y += TILE_SIZE + TILE_SIZE / 2;
 	y -= texture->h;
 
 	SDL_Rect rect = (SDL_Rect){0};

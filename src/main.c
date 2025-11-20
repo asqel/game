@@ -3,6 +3,7 @@
 
 int main(int argc,char **argv) {
 	game_init(argc, argv);
+	uint32_t last_fps = 0;
 	while (1) {
 
 		uint32_t start_time = SDL_GetTicks();
@@ -17,10 +18,14 @@ int main(int argc,char **argv) {
 		if (frame_time < 1000 / GAME_FPS) {
 			SDL_Delay(1000 / GAME_FPS - frame_time);
 		}
+		if (!last_fps)
+			game_render_strf(10, 10, 255, 255, 255, "FPSé: %d", -1);
+		else
+			game_render_strf(10, 10, 255, 255, 255, "FPSé: %d", 1000 / last_fps);
+		update_screen();
 		end_time = SDL_GetTicks();
 		frame_time = end_time - start_time;
-		game_render_strf(10, 10, 255, 255, 255, "FPSé: %d", 1000 / frame_time);
-		update_screen();
+		last_fps = frame_time;
 	}
 	return 0;
 }

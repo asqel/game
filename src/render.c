@@ -1,6 +1,5 @@
 #include "game.h"
 
-
 void update_screen() {
 	SDL_UpdateTexture(texture, NULL, game_surface->pixels, game_surface->pitch);
 
@@ -46,20 +45,6 @@ void game_render_strf(int x, int y, uint8_t r, uint8_t g, uint8_t b, char *text,
 	free(buffer);
 }
 
-static void game_render_player() {
-	if (game_ctx->is_editor)
-		return ;
-	SDL_Surface *texture = NULL;
-	int action_duration = (game_ctx->actions[GAME_ACT_UP + game_ctx->player->dir] * 100 / GAME_FPS) % 100;
-	if (game_ctx->actions[GAME_ACT_UP + game_ctx->player->dir] == 0)
-		action_duration = 0;
-	else {
-    	action_duration = ((action_duration / 17) % 2) + 1;
-	}
-	texture = game_ctx->player_textures[game_ctx->player->dir][action_duration];
-	SDL_BlitSurface(texture, NULL, game_surface, &(SDL_Rect){GAME_WIDTH / 2 -  texture->w / 2, GAME_HEIGHT / 2 -  texture->h / 2 , texture->w, texture->h});
-}
-
 static void render_border() {
 	int cx_real = ((int)game_ctx->player->x / CHUNK_SIZE) * CHUNK_SIZE;
 	int cy_real = ((int)game_ctx->player->y / CHUNK_SIZE) * CHUNK_SIZE;
@@ -98,123 +83,35 @@ static void render_editor() {
 	render_border();
 }
 
-//typedef struct {
-//	SDL_Surface *surf;
-//	int x;
-//	int y;
-//} image_info_t;
-//
-//static void game_render_mid(chunk_t *chunks[3][3], int offset_x, int offset_y) {
-//	int len = 0;
-//	for (int i = 0; i < 3; i++) {
-//		for (int k = 0; k < 3; k++) {
-//			if (!chunks[i][k])
-//				continue;
-//			len += chunks[i][k]->entities_len + CHUNK_SIZE * CHUNK_SIZE;
-//		}
-//	}
-//	len++;
-//	image_info_t *infos = malloc(sizeof(image_info_t) * len);
-//	memset(infos, 0, sizeof(image_info_t) * len);
-//	int end = 0;
-//	int player_x = GAME_WIDTH / 2 - TILE_SIZE / 2;
-//	int player_y = GAME_HEIGHT / 2 - TILE_SIZE / 2;
-//	for (int y = 0; y < 3 * CHUNK_SIZE; y++) {
-//		for (int x = 0; x < 3 * CHUNK_SIZE; x++) {
-//			chunk_t *chunk = chunks[y / CHUNK_SIZE][x / CHUNK_SIZE];
-//			if (!chunk)
-//				continue;
-//			obj_t *obj =  &chunk->objs[y % CHUNK_SIZE][x % CHUNK_SIZE][layer];
-//			SDL_Surface *texture = NULL;
-//			if (obj->id != 0) {
-//				texture = game_get_sprite_texture(&obj->sprite);
-//				game_sprite_tick(&obj->sprite);
-//			}
-//
-//			if (texture != NULL) {
-//				int real_x = (x - CHUNK_SIZE) * TILE_SIZE + offset_x - texture->w / 2 + TILE_SIZE / 2;
-//				int real_y = line_y_bottom - texture->h;
-//				info[end].x = real_x;
-//				info[end].y = real_y;
-//				info[end].bottom_y = line_y_bottom;
-//				end++;
-//			}
-//		}
-//		line_y_bottom += TILE_SIZE;
-//	}
-//	line_y_bottom = (0 - CHUNK_SIZE) * TILE_SIZE + offset_y + TILE_SIZE;
-//	for (int y = 0; y < 3; y++) {
-//		for (int x = 0; x < 3; x++) {
-//					
-//		}
-//	}
-//}
-
-static void game_render_layer(int layer, chunk_t *chunks[3][3], int offset_x, int offset_y, int render_player) {
-	//if (render_player) {
-	//	entity_t **entities	
-	//}
-	int line_y_bottom = (0 - CHUNK_SIZE) * TILE_SIZE + offset_y + TILE_SIZE;
-	for (int y = 0; y < 3 * CHUNK_SIZE; y++) {
-		if (render_player && line_y_bottom > GAME_HEIGHT / 2 + TILE_SIZE / 2 && line_y_bottom - TILE_SIZE <= GAME_HEIGHT / 2 + TILE_SIZE / 2)
-			game_render_player();
-		for (int x = 0; x < 3 * CHUNK_SIZE; x++) {
-			chunk_t *chunk = chunks[y / CHUNK_SIZE][x / CHUNK_SIZE];
-			if (chunk == NULL)
-				continue;
-			obj_t *obj =  &chunk->objs[y % CHUNK_SIZE][x % CHUNK_SIZE][layer];
-			SDL_Surface *texture = NULL;
-			if (obj->id != 0) {
-				texture = game_get_sprite_texture(&obj->sprite);
-				game_sprite_tick(&obj->sprite);
-			}
-
-			if (texture != NULL) {
-				int real_x = (x - CHUNK_SIZE) * TILE_SIZE + offset_x - texture->w / 2 + TILE_SIZE / 2;
-				int real_y = line_y_bottom - texture->h;
-				SDL_BlitSurface(texture, NULL, game_surface, &(SDL_Rect){real_x, real_y, texture->w, texture->h});
-			}
-		}
-		line_y_bottom += TILE_SIZE;
-	}
-}
-
 void game_render() {
 	SDL_FillRect(game_surface, &(SDL_Rect){0, 0, GAME_WIDTH, GAME_HEIGHT}, 0);
 	int player_chunk_x = ((int)game_ctx->player->x) / CHUNK_SIZE;
 	int player_chunk_y = ((int)game_ctx->player->y) / CHUNK_SIZE;
-	chunk_t *chunks[3][3] = {{NULL, NULL, NULL},
-							 {NULL, NULL, NULL},
-							 {NULL, NULL, NULL}};
-	int top_left[2] = {(player_chunk_x) * CHUNK_SIZE, (player_chunk_y) * CHUNK_SIZE};
-	for (int i = -1; i <= 1; i++) {
-		for (int k = -1; k <= 1; k++) {
-			int x = player_chunk_x + k;
-			int y = player_chunk_y + i;
-			if (x >= 0 && y >= 0 && x < game_ctx->world->width && y < game_ctx->world->height)
-				chunks[i + 1][k + 1] = game_ctx->world->chunks[y][x];
-		}
-	}
-	int offset_x =  GAME_WIDTH / 2 - TILE_SIZE / 2 - game_ctx->player->x * TILE_SIZE + top_left[0] * TILE_SIZE + TILE_SIZE / 2;
-	int offset_y =  GAME_HEIGHT / 2 - TILE_SIZE / 2 - game_ctx->player->y * TILE_SIZE + top_left[1] * TILE_SIZE + TILE_SIZE / 2;
-	//game_render_layer(0, chunks, offset_x, offset_y, 0);
-	{
-		extern void game_render_background(chunk_t ***, int);
-		chunk_t ***chunks_ptr = malloc(sizeof(chunk_t **) * 3);
-		for (int i = 0; i < 3; i++) {
-			chunks_ptr[i] = malloc(sizeof(chunk_t *) * 3);
-			for (int k = 0; k < 3; k++) {
-				chunks_ptr[i][k] = chunks[i][k];
-			}
-		}
-		game_render_background(chunks_ptr, 3);
-		for (int i = 0; i < 3; i++)
-			free(chunks_ptr[i]);
-		free(chunks_ptr);
+	int size = game_ctx->player->render_distance;
 
+	chunk_t ***chunks_ptr = malloc(sizeof(chunk_t **) * size);
+	for (int i = 0; i < size; i++) {
+		chunks_ptr[i] = malloc(sizeof(chunk_t *) * size);
+		memset(chunks_ptr[i], 0, sizeof(chunk_t *) * size);
 	}
-	game_render_layer(1, chunks, offset_x, offset_y, 1);
-	game_render_layer(2, chunks, offset_x, offset_y, 0);
+	for (int i = 0; i < size; i++) {
+		int real_y = player_chunk_y - size / 2 + i;
+		if (real_y < 0 || real_y >= game_ctx->world->height)
+			continue;
+		for (int k = 0; k < size; k++) {
+			int real_x = k + player_chunk_x - size / 2; 
+			if (real_x < 0 || real_x >= game_ctx->world->width)
+				continue;
+			chunks_ptr[i][k] = game_ctx->world->chunks[real_y][real_x];
+		}
+	}
+	game_render_background(chunks_ptr, size);
+	game_render_middle(chunks_ptr, size);
+	game_render_foreground(chunks_ptr, size);
+
+	for (int i = 0; i < size; i++)
+		free(chunks_ptr[i]);
+	free(chunks_ptr);
 	if (game_ctx->is_editor)
 		render_editor();
 	if (game_ctx->player->gui)

@@ -16,10 +16,10 @@
 #define GAME_WORLD_NAME_MAX_LEN 100
 #define CHUNK_SIZE 20
 
-#define GAME_WIDTH 1280
-#define GAME_HEIGHT 720
-#define TILE_SIZE 64
-#define GAME_FPS 60
+#define GAME_WIDTH (1280 * 1.5)
+#define GAME_HEIGHT (720 * 1.5)
+#define TILE_SIZE (64)
+#define GAME_FPS (60)
 
 #define SPRITE_MASK_PAUSED (1)
 #define SPRITE_MASK_LOOP (1 << 1)
@@ -137,6 +137,7 @@ struct player_t {
 	double x;
 	double y;
 	uint8_t dir; // 0 up, 1 right, 2 down 3 left
+	int render_distance;
 	gui_t *gui;
 };
 
@@ -153,7 +154,7 @@ struct entity_t {
 	double hitbox_w;
 	double hitbox_h;
 	double hp;
-	int bottom_y;
+	int has_to_die;
 };
 
 struct entity_info_t {
@@ -163,7 +164,7 @@ struct entity_info_t {
 	double default_hitbox_y;
 	double default_hitbox_w;
 	double default_hitbox_h;
-	int (*on_tick)(entity_t *self); // return 1 to die
+	c_lua_obj_t on_tick; // return 1 to die
 	double hp;
 };
 

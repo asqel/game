@@ -61,6 +61,9 @@ void		game_render_text(char *text, int x, int y, uint8_t r, uint8_t g, uint8_t b
 void		game_render_strf(int x, int y, uint8_t r, uint8_t g, uint8_t b, char *text, ...);
 void		game_render();
 void		update_screen();
+void		game_render_background(chunk_t *** chunks, int size);
+void		game_render_middle(chunk_t *** chunks, int size);
+void		game_render_foreground(chunk_t *** chunks, int size);
 
 //------- event
 void		update_event();
@@ -103,5 +106,9 @@ int parse_lang(char *text);
 
 void open_dialogue(char *name, int (*on_end)(gui_t *self), int id_len, ...);
 void display_dialogue(uint32_t *dialogue, int len, int x, int y);
+
+//-------- entities
+entity_info_t *get_entity_info(uint32_t id);
+void entities_tick();
 
 #endif
