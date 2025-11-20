@@ -7,6 +7,10 @@ typedef struct {
 	int z;
 } image_t;
 
+int count_len(chunk_t ***chunks, int size) {
+	
+}
+
 void game_render_background(chunk_t ***chunks, int size) {
 	int offset_x = game_ctx->player->x;
 	int offset_y = game_ctx->player->y;
@@ -18,7 +22,7 @@ void game_render_background(chunk_t ***chunks, int size) {
 
 	int frac_x = -(game_ctx->player->x - (int)game_ctx->player->x) * TILE_SIZE;  
 	int frac_y = -(game_ctx->player->y - (int)game_ctx->player->y) * TILE_SIZE; 
-
+	int len = count_len(chunks, size);
 	for (int y = 0; y < size * CHUNK_SIZE; y++) {
 		for (int x = 0; x < size * CHUNK_SIZE; x++) {
 			chunk_t *chunk = chunks[y / CHUNK_SIZE][x / CHUNK_SIZE];
@@ -35,4 +39,4 @@ void game_render_background(chunk_t ***chunks, int size) {
 			render_obj(obj, scr_x, scr_y);
 		}
 	}
-}
+	
