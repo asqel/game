@@ -54,6 +54,7 @@ obj_t		game_get_obj(int id);
 void		game_register_obj(char *name, int sprite_id, int hithox, void *interact);
 void game_register_obj_w_hit(char *name, int sprite_id, void *interact, double hitx, double hity, double hitw, double hith);
 void		register_sprite(int *texture_ids, int texture_ids_len, int frame_len_tick, const char *name, uint8_t state);
+void game_register_obj_full(char *name, int sprite_id, c_lua_obj_t func, int has_hit, double hitx, double hity, double hitw, double hith);
 
 
 //------- render
@@ -110,5 +111,9 @@ void display_dialogue(uint32_t *dialogue, int len, int x, int y);
 //-------- entities
 entity_info_t *get_entity_info(uint32_t id);
 void entities_tick();
+
+//-------- lua funcs
+int lua_func_register_obj(lua_State *l); 
+int lua_func_register_obj2(lua_State *l);
 
 #endif

@@ -23,6 +23,8 @@ void game_init(int argc, char **argv) {
 		game_exit(1);
 	if (init_objects())
 		game_exit(1);
+	if (init_lua())
+		game_exit(1);
 	game_ctx = malloc(sizeof(game_t));
 	if (game_ctx == NULL) {
 		PRINT_ERR("Error: Failed to allocate game context\n");
@@ -37,8 +39,6 @@ void game_init(int argc, char **argv) {
 	game_ctx->fonts[0] = TTF_OpenFont(font_path, 16);
 	free(font_path);
 	if (dialogue_init())
-		game_exit(1);
-	if (init_lua())
 		game_exit(1);
 }
 

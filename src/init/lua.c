@@ -1,18 +1,13 @@
 #include "game.h"
 
-int print_c(lua_State *state) {
-	printf("hellow from c from lua\n");
-	return 0;
-}
-
 static void add_lua_func(void *f, char *name) {
 	lua_pushcfunction(lua_state, f);
 	lua_setglobal(lua_state, name);	
 }
 
-static void add_funcs() {
-	lua_pushcfunction(lua_state, &print_c);
-	lua_setglobal(lua_state, "le_print");
+static void init_lua_funcs() {
+	add_lua_func(lua_func_register_obj, "register_obj");
+	add_lua_func(lua_func_register_obj2, "register_obj2");
 }
 
 int init_lua() {
@@ -23,7 +18,8 @@ int init_lua() {
 	}
 
 	luaL_openlibs(lua_state);
-	add_funcs();
+	init_lua_funcs();
+
 	char *path = malloc(strlen(game_dir) + strlen("/scripts/main.lua") + 1);
 	sprintf(path, "%s/scripts/main.lua", game_dir);
 	if (luaL_dofile(lua_state, path) != LUA_OK) {
