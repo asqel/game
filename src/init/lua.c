@@ -5,7 +5,12 @@ int print_c(lua_State *state) {
 	return 0;
 }
 
-void add_funcs() {
+static void add_lua_func(void *f, char *name) {
+	lua_pushcfunction(lua_state, f);
+	lua_setglobal(lua_state, name);	
+}
+
+static void add_funcs() {
 	lua_pushcfunction(lua_state, &print_c);
 	lua_setglobal(lua_state, "le_print");
 }

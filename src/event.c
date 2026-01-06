@@ -5,7 +5,7 @@ int game_action_pressed_hold(int action, int duration) {
 		return 0;
 	if (game_ctx->actions[action] == 1)
 		return 1;
-	return game_ctx->actions[action] > duration;
+	return game_ctx->actions[action] > (uint32_t)duration;
 
 }
 

@@ -13,7 +13,7 @@ static int is_layer_empty(chunk_t *chunk, int layer) {
 }
 
 static int is_layer_repeat(chunk_t *chunk, int layer) {
-	int obj_id = chunk->objs[0][0][layer].id;
+	uint32_t obj_id = chunk->objs[0][0][layer].id;
 	for (int i = 0; i < CHUNK_SIZE; i++) {
 		for (int k = 0; k < CHUNK_SIZE; k++) {
 			if (chunk->objs[i][k][layer].id != obj_id)
@@ -67,8 +67,8 @@ static void write_chunk_layer(chunk_t *chunk, int layer, FILE *f) {
 		uint8_t info = 0;
 		info |= (obj->id == 0) << 7;
 		info |= (obj->id && obj->data) << 6;
+
 		int	rep = get_repetition(chunk, layer, x, y);
-		printf("at %d %d rep %d\n", x, y, rep);
 		info |= (rep - 1) & 0b00111111;
 		fwrite(&info, 1, 1, f);
 		if (obj->id != 0)
@@ -104,9 +104,7 @@ static void write_hitbox(char hitbox[CHUNK_SIZE][CHUNK_SIZE], FILE *f) {
 
 void game_world_save(world_t *world) {
 	char *path = game_get_world_path(world->name);
-	printf("path %s\n", path);
 	FILE *f = fopen(path, "wb");
-	printf("f %p %p %p\n", f, &world->width, &world->height);
 
 	fwrite(&world->width, 1, sizeof(uint32_t), f);
 	fwrite(&world->height, 1, sizeof(uint32_t), f);
@@ -126,8 +124,7 @@ void game_world_save(world_t *world) {
 			layers_is_repeat[0] = is_layer_repeat(chunk, 0);
 			layers_is_repeat[1] = is_layer_repeat(chunk, 1);
 			layers_is_repeat[2] = is_layer_repeat(chunk, 2);
-			printf("empty %d %d %d\n", layers_empty[0], layers_empty[1], layers_empty[2]);
-			printf("repeat %d %d %d\n", layers_is_repeat[0], layers_is_repeat[1], layers_is_repeat[2]);
+
 			uint8_t chunk_info = 0;
 			chunk_info |= (!layers_empty[0]) << 6;
 			chunk_info |= (!layers_empty[1]) << 5;
