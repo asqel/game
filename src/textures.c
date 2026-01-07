@@ -5,13 +5,15 @@ int texture_add(SDL_Surface *surface, const char *name) {
 		PRINT_ERR("Error: Texture name too long: '%s'\n", name);
 		return -1;
 	}
-	void *tmp;
-	for (int i = 0; i < texture_registry_len; i++) {
+	for (uint32_t i = 0; i < texture_registry_len; i++) {
 		if (strcmp(texture_registry[i].name, name) == 0) {
 			PRINT_ERR("Error: Texture already exists: '%s'\n", name);
 			return i;
 		}
 	}
+
+	void *tmp = NULL;
+
 	tmp = realloc(texture_registry, sizeof(texture_t) * (texture_registry_len + 1));
 	if (!tmp) {
 		PRINT_ERR("Error: Memory allocation failed (texture_add)\n");
@@ -171,8 +173,8 @@ void game_load_tx(const char *png_path, const char *tx_path) {
 	SDL_FreeSurface(surface);
 }
 
-int game_texture_get_id(const char *name) {
-	for (int i = 0; i < texture_registry_len; i++) {
+uint32_t game_texture_get_id(const char *name) {
+	for (uint32_t i = 0; i < texture_registry_len; i++) {
 		if (strcmp(texture_registry[i].name, name) == 0) {
 			return i;
 		}

@@ -33,28 +33,28 @@ void		game_set_error_special(int error_code);
 
 //------- texture
 void		game_load_tx(const char *png_path, const char *tx_path);
-int			game_texture_get_id(const char *name);
+uint32_t	game_texture_get_id(const char *name);
 
 //------- sprite
 sprite_t	get_sprite(char *name);
-sprite_t	get_sprite_by_id(int sprite_id);
+sprite_t	get_sprite_by_id(uint32_t sprite_id);
 void		game_pause_sprite(sprite_t *sprite);
 void		game_resume_sprite(sprite_t *sprite);
 void		game_set_sprite_loop(sprite_t *sprite, int loop);
 void		game_sprite_tick(sprite_t *sprite);
 void		game_sprite_reset(sprite_t *sprite);
-int			get_sprite_id(const char *name);
+uint32_t	get_sprite_id(const char *name);
 SDL_Surface	*game_get_sprite_texture(sprite_t *sprite);
 
 //------- obj
-int			game_get_obj_id(char *name);
-obj_t		game_get_obj(int id);
+uint32_t	game_get_obj_id(char *name);
+obj_t		game_get_obj(uint32_t id);
 
 //------- register
-void		game_register_obj(char *name, int sprite_id, int hithox, void *interact);
-void game_register_obj_w_hit(char *name, int sprite_id, void *interact, double hitx, double hity, double hitw, double hith);
-void		register_sprite(int *texture_ids, int texture_ids_len, int frame_len_tick, const char *name, uint8_t state);
-void game_register_obj_full(char *name, int sprite_id, c_lua_obj_t func, int has_hit, double hitx, double hity, double hitw, double hith);
+void		game_register_obj(char *name, uint32_t sprite_id, int hithox, void *interact);
+void game_register_obj_w_hit(char *name, uint32_t sprite_id, void *interact, double hitx, double hity, double hitw, double hith);
+void		register_sprite(uint32_t *texture_ids, int texture_ids_len, int frame_len_tick, const char *name, uint8_t state);
+void game_register_obj_full(char *name, uint32_t sprite_id, c_lua_obj_t func, int has_hit, double hitx, double hity, double hitw, double hith);
 
 
 //------- render
@@ -115,5 +115,8 @@ void entities_tick();
 //-------- lua funcs
 int lua_func_register_obj(lua_State *l); 
 int lua_func_register_obj2(lua_State *l);
+int lua_func_register_sprite(lua_State *l);
+int lua_func_get_sprite_id(lua_State *l);
+int lua_func_launch_file(lua_State *l);
 
 #endif

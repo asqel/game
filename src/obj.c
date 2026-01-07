@@ -1,12 +1,12 @@
 #include "game.h"
 
-void game_register_obj(char *name, int sprite_id, int hithox, void *interact) {
+void game_register_obj(char *name, uint32_t sprite_id, int hithox, void *interact) {
 	if (strlen(name) > OBJ_NAME_LENGTH) {
 		PRINT_ERR("Error: Object name too long: '%s'\n", name);
 		return;
 	}
 	void *tmp;
-	for (int i = 0; i < obj_registry_len; i++) {
+	for (uint32_t i = 0; i < obj_registry_len; i++) {
 		if (strcmp(obj_registry[i].name, name) == 0) {
 			PRINT_ERR("Error: Object already exists: '%s'\n", name);
 			return;
@@ -26,8 +26,8 @@ void game_register_obj(char *name, int sprite_id, int hithox, void *interact) {
 	obj_registry_len++;
 }
 
-int game_get_obj_id(char *name) {
-	for (int i = 0; i < obj_registry_len; i++) {
+uint32_t game_get_obj_id(char *name) {
+	for (uint32_t i = 0; i < obj_registry_len; i++) {
 		if (strcmp(obj_registry[i].name, name) == 0) {
 			return i;
 		}
@@ -35,8 +35,8 @@ int game_get_obj_id(char *name) {
 	return -1;
 }
 
-obj_t game_get_obj(int id) {
-	if (id <= 0 || id >= obj_registry_len) {
+obj_t game_get_obj(uint32_t id) {
+	if (id >= obj_registry_len) {
 		obj_t empty_obj = {0};
 		return empty_obj;
 	}
@@ -45,20 +45,20 @@ obj_t game_get_obj(int id) {
 	obj.data = 0;
 	obj.sprite.sprite_id = obj_registry[id].sprite_id;
 	obj.sprite.frame_idx = 0;
-	if (obj.sprite.sprite_id >= 0 && obj.sprite.sprite_id < sprite_registry_len) {
+	if (obj.sprite.sprite_id < sprite_registry_len) {
 		obj.sprite.current_frame_ttl = sprite_registry[obj.sprite.sprite_id].frame_len_tick;
 		obj.sprite.state = sprite_registry[obj.sprite.sprite_id].state;
 	}
 	return obj;
 }
 
-void game_register_obj_w_hit(char *name, int sprite_id, void *interact, double hitx, double hity, double hitw, double hith) {
+void game_register_obj_w_hit(char *name, uint32_t sprite_id, void *interact, double hitx, double hity, double hitw, double hith) {
 	if (strlen(name) > OBJ_NAME_LENGTH) {
 		PRINT_ERR("Error: Object name too long: '%s'\n", name);
 		return;
 	}
 	void *tmp;
-	for (int i = 0; i < obj_registry_len; i++) {
+	for (uint32_t i = 0; i < obj_registry_len; i++) {
 		if (strcmp(obj_registry[i].name, name) == 0) {
 			PRINT_ERR("Error: Object already exists: '%s'\n", name);
 			return;
@@ -82,13 +82,13 @@ void game_register_obj_w_hit(char *name, int sprite_id, void *interact, double h
 	obj_registry_len++;
 }
 
-void game_register_obj_full(char *name, int sprite_id, c_lua_obj_t func, int has_hit, double hitx, double hity, double hitw, double hith) {
+void game_register_obj_full(char *name, uint32_t sprite_id, c_lua_obj_t func, int has_hit, double hitx, double hity, double hitw, double hith) {
 	if (strlen(name) > OBJ_NAME_LENGTH) {
 		PRINT_ERR("Error: Object name too long: '%s'\n", name);
 		return;
 	}
 	void *tmp;
-	for (int i = 0; i < obj_registry_len; i++) {
+	for (uint32_t i = 0; i < obj_registry_len; i++) {
 		if (strcmp(obj_registry[i].name, name) == 0) {
 			PRINT_ERR("Error: Object already exists: '%s'\n", name);
 			return;

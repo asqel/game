@@ -2,7 +2,6 @@
 
 
 void game_exit(int exit_code) {
-	free(game_error_str);
 	if (is_ttf_init) {
 		TTF_CloseFont(game_ctx->fonts[0]);
 		TTF_Quit();

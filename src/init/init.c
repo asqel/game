@@ -21,8 +21,6 @@ void game_init(int argc, char **argv) {
 		game_exit(1);
 	if (init_sprites())
 		game_exit(1);
-	if (init_objects())
-		game_exit(1);
 	if (init_lua())
 		game_exit(1);
 	game_ctx = malloc(sizeof(game_t));

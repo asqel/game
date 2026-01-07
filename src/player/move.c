@@ -39,7 +39,7 @@ static void get_objs(hitbox_t map[5][5][2], hitbox_t player_hit) {
 			int cx = mx / CHUNK_SIZE;
 			if (cx >= game_ctx->world->width || cy >= game_ctx->world->height || game_ctx->world->chunks[cy][cx] == NULL)
 				continue;
-			int obj_id = game_ctx->world->chunks[cy][cx]->objs[my % CHUNK_SIZE][mx % CHUNK_SIZE][1].id;
+			uint32_t obj_id = game_ctx->world->chunks[cy][cx]->objs[my % CHUNK_SIZE][mx % CHUNK_SIZE][1].id;
 			if (obj_id > 0 && obj_id < obj_registry_len) {
 				int hit_val = obj_registry[obj_id].has_hitbox;
 				if (hit_val == 1)

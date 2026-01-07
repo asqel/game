@@ -1,7 +1,7 @@
 #include "game.h"
 
 dialogue_info_t		*dialogue_infos = NULL;
-int					dialogue_infos_len = 0;
+uint32_t					dialogue_infos_len = 0;
 char				game_lang[6] = "en_uk";
 
 char *get_lang_path() {
@@ -37,7 +37,7 @@ int dialogue_init() {
 }
 
 void dialogue_exit() {
-	for (int i = 0; i < dialogue_infos_len; i++)
+	for (uint32_t i = 0; i < dialogue_infos_len; i++)
 		free(dialogue_infos[i].text);
 	free(dialogue_infos);
 	dialogue_infos = NULL;

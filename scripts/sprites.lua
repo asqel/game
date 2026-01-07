@@ -1,0 +1,5 @@
+register_sprite("grass", 0, 0, "grass0") 
+register_sprite("tree", 0, 0, "tree")
+register_sprite("red", 0, 0, "red")
+register_sprite("player_house", 0, 0, "player_house")
+register_sprite("fridge", 0, 0, "fridge")

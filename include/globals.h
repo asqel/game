@@ -18,17 +18,13 @@ extern int					is_img_init;
 
 //------- registries
 extern sprite_registry_t	*sprite_registry;
-extern int					sprite_registry_len;
+extern uint32_t				sprite_registry_len;
 
 extern texture_t			*texture_registry;
-extern int					texture_registry_len;
+extern uint32_t				texture_registry_len;
 
 extern obj_info_t			*obj_registry;
-extern int					obj_registry_len;
-
-//------- errors
-extern char					*game_error_str;
-extern int					game_error_is_special;
+extern uint32_t				obj_registry_len;
 
 //------- other
 extern game_t				*game_ctx;
@@ -42,7 +38,7 @@ extern char					game_lang[6];
 
 //------- dialogue
 extern dialogue_info_t		*dialogue_infos;
-extern int					dialogue_infos_len;
+extern uint32_t				dialogue_infos_len;
 
 //-------- lua
 extern lua_State			*lua_state;

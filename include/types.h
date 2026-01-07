@@ -95,7 +95,7 @@ struct sprite_registry_t {
 };
 
 struct sprite_t {
-	int sprite_id; // id in registry
+	uint32_t sprite_id; // id in registry
 	int frame_idx;
 	int current_frame_ttl; // tick to live
 	uint8_t state;
