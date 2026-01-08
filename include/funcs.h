@@ -60,7 +60,7 @@ void game_register_obj_full(char *name, uint32_t sprite_id, c_lua_obj_t func, in
 //------- render
 void		game_render_text(char *text, int x, int y, uint8_t r, uint8_t g, uint8_t b);
 void		game_render_strf(int x, int y, uint8_t r, uint8_t g, uint8_t b, char *text, ...);
-void		game_render();
+void		game_render(uint64_t fps);
 void		update_screen();
 void		game_render_background(chunk_t *** chunks, int size);
 void		game_render_middle(chunk_t *** chunks, int size);
