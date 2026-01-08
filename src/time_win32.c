@@ -7,6 +7,9 @@
 struct timespec { int64_t tv_sec; int64_t tv_nsec; };
 #endif
 
+#undef CLOCK_MONOTONIC
+#define CLOCK_MONOTONIC 0
+
 static struct timespec loop_t0;
 static uint64_t current_time_count = 0;
 static uint64_t current_time_frame = 0;
@@ -37,7 +40,7 @@ void usleep(int64_t us) {
 		return ;
 
 	LARGE_INTEGER li;
-	li.QuadPart = -10LL * microseconds;
+	li.QuadPart = -10LL * us;
 
 	if (!SetWaitableTimer(timer, &li, 0, NULL, NULL, FALSE)) {
 		CloseHandle(timer);
