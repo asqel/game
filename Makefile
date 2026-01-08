@@ -17,6 +17,8 @@ else
 	CFLAGS += -Ilua/linux
 endif
 
+EXPORT_PATH = ./out/
+
 NAME = game
 
 all: $(NAME)
@@ -37,5 +39,16 @@ fclean: clean
 
 re: fclean
 	make -j10
+
+export: $(NAME)
+	mkdir -p $(EXPORT_PATH)
+	cp $(NAME)* $(EXPORT_PATH)
+	cp scripts/ -r $(EXPORT_PATH)/
+	cp assets/ -r $(EXPORT_PATH)/
+	cp lang/ -r $(EXPORT_PATH)
+	cp libs/* $(EXPORT_PATH)
+	cp world -r $(EXPORT_PATH)
+
+	
 
 .PHONY: re fclean clean all
