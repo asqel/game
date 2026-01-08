@@ -83,7 +83,7 @@ static void render_editor() {
 	render_border();
 }
 
-void game_render() {
+void game_render(uint32_t fps) {
 	SDL_FillRect(game_surface, &(SDL_Rect){0, 0, GAME_WIDTH, GAME_HEIGHT}, 0);
 	int player_chunk_x = ((int)game_ctx->player->x) / CHUNK_SIZE;
 	int player_chunk_y = ((int)game_ctx->player->y) / CHUNK_SIZE;
@@ -116,4 +116,6 @@ void game_render() {
 		render_editor();
 	if (game_ctx->player->gui)
 		game_render_gui();
+	game_render_strf(0, 0, 255, 0, 0, "fps %d", fps);
+	update_screen();
 }

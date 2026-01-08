@@ -119,4 +119,11 @@ int lua_func_register_sprite(lua_State *l);
 int lua_func_get_sprite_id(lua_State *l);
 int lua_func_launch_file(lua_State *l);
 
+//--------- time
+void game_loop_start();
+void game_loop_end();
+int game_get_fps();
+void game_set_fps_target(uint64_t target);
+uint64_t game_get_fps_target();
+
 #endif
