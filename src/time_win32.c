@@ -1,8 +1,10 @@
-#ifndef _WIN32
+#ifdef _WIN32
 
 #include "game.h"
-#include <time.h>
-#include <unistd.h>
+
+#if 0
+struct timespec { int64_t tv_sec; int64_t tv_nsec; };
+#endif
 
 static struct timespec loop_t0;
 static uint64_t current_time_count = 0;
@@ -11,6 +13,18 @@ static uint64_t current_fps = 0;
 
 static uint64_t fps_target = GAME_FPS;
 static uint64_t fps_target_as_us = 1000 * 1000 / GAME_FPS; 
+
+int clock_gettime(int x, struct timespec *spec) {
+	(void)x;
+	int64_t wintime;
+	GetSystemTimeAsFileTime((FILETIME *)&wintime);
+	
+	wintime -= 116444736000000000LL;
+	spec->tv_sec = wintime / 10000000LL;
+	spec->tv_nsec = wintime % 10000000LL * 100;
+	
+	return 0;
+}
 
 void game_loop_start() {
 	clock_gettime(CLOCK_MONOTONIC, &loop_t0);
