@@ -1,6 +1,7 @@
 #ifdef _WIN32
 
 #include "game.h"
+#include <windows.h>
 
 #if 0
 struct timespec { int64_t tv_sec; int64_t tv_nsec; };
@@ -24,6 +25,27 @@ int clock_gettime(int x, struct timespec *spec) {
 	spec->tv_nsec = wintime % 10000000LL * 100;
 	
 	return 0;
+}
+
+void usleep(int64_t us) {
+	if (us <= 0)
+		return ;
+
+	HANDLE timer;
+	timer = CreateWaitableTimer(NULL, TRUE, NULL);	
+	if (timer == NULL)
+		return ;
+
+	LARGE_INTEGER li;
+	li.QuadPart = -10LL * microseconds;
+
+	if (!SetWaitableTimer(timer, &li, 0, NULL, NULL, FALSE)) {
+		CloseHandle(timer);
+		return ;
+	}
+
+	WaitForSingleObject(timer, INFINITE);
+	CloseHandle(timer);
 }
 
 void game_loop_start() {
