@@ -16,8 +16,8 @@
 #define GAME_WORLD_NAME_MAX_LEN 100
 #define CHUNK_SIZE 20
 
-#define GAME_WIDTH (1280 * 1.5)
-#define GAME_HEIGHT (720 * 1.5)
+#define GAME_WIDTH (1080)
+#define GAME_HEIGHT (600)
 #define TILE_SIZE (64)
 #define GAME_FPS (60)
 
@@ -62,6 +62,7 @@ typedef struct sprite_t				sprite_t;
 typedef struct gui_t				gui_t;
 typedef struct game_event_t			game_event_t;
 typedef struct dialogue_info_t		dialogue_info_t;
+typedef struct dialogue_char_t		dialogue_char_t;
 typedef struct c_lua_obj_t			c_lua_obj_t;
 typedef struct entity_t				entity_t;
 typedef struct entity_info_t		entity_info_t;
@@ -189,26 +190,40 @@ struct game_event_t {
 };
 
 enum {
-	GAME_ERROR_NONE = 0,
-
+	DIALOG_TEXT,
+	DIALOG_VAR, // \$123. (dot to mark the end of the number)
+	DIALOG_PAUSE, // \P2. (pause for 2 tick)
+	DIALOG_EMOTE, // \E3.
+	DIALOG_WAIT, // \W
+	DIALOG_PX, // \X
+	DIALOG_PY, // \Y
+	DIALOG_CR, // \R
+	DIALOG_CG, // \G
+	DIALOG_CB, // \B
+	DIALOG_STYLE, // \S
 };
 
-#define DIALOG_CHAR (0 << 24)
-#define DIALOG_VAR (1 << 24) // \$123. (dot to mark the end of the number)
-#define DIALOG_PAUSE (2 << 24) // \P2. (pause for 2 tick)
-#define DIALOG_EMOTE (3 << 24) // \E3.
-#define DIALOG_WAIT (5 << 24) // \W
-#define DIALOG_PX (6 << 24) // \X
-#define DIALOG_PY (7 << 24) // \Y
-#define DIALOG_CR (8 << 24) // \R
-#define DIALOG_CG (9 << 24) // \G
-#define DIALOG_CB (10 << 24) // \B
-#define DIALOG_STYLE (11 << 24) // \S
+struct dialogue_char_t {
+	uint8_t type;
+	union {
+		size_t text[2]; // [0] idx, [1] len
+		size_t var;
+		size_t pause;
+		size_t emote;
+		int px;
+		int py;
+		uint32_t r;
+		uint32_t g;
+		uint32_t b;
+		size_t style;
+	};
+};
 
 struct dialogue_info_t {
-	uint32_t *text;
+	char *original;
+	dialogue_char_t *text;
+	size_t len;
 	char id[256];
 };
-
 
 #endif

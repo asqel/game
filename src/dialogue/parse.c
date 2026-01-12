@@ -80,7 +80,8 @@ static int parse_buffer(uint32_t *buffer, unsigned char *str) {
 	return buffer - buffer_start;
 }
 
-uint32_t *parse_dialogue(char *str) {
+dialogue_info_t parse_dialogue(char *str) {
+	dialogue_info_t res = {0};
 	int res_len = parse_buffer(NULL, (unsigned char *)str);
 	uint32_t *res = calloc(res_len + 1, sizeof(uint32_t));
 	if (!res) {
