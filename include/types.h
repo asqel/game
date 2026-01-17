@@ -107,7 +107,6 @@ struct obj_info_t {
 	int sprite_id;
 	int has_hitbox; // 2 = custom
 	c_lua_obj_t interact;
-	int lua_func;
 	double hit_x;
 	double hit_y;
 	double hit_w;
@@ -175,7 +174,11 @@ struct game_t {
 	uint32_t actions[GAME_ACT_ENUM_MAX]; // how much the action is pressed
 	SDL_Surface *player_textures[4][3];
 	TTF_Font *fonts[1];
+	size_t fonts_height[1];
 	int is_editor;
+
+	size_t env_len;
+	char **env_vars;
 };
 
 struct game_event_t {
@@ -201,6 +204,8 @@ enum {
 	DIALOG_CG, // \G
 	DIALOG_CB, // \B
 	DIALOG_STYLE, // \S
+	DIALOG_LINE, // \n
+	DIALOG_FONT, // \F
 };
 
 struct dialogue_char_t {
@@ -216,6 +221,7 @@ struct dialogue_char_t {
 		uint32_t g;
 		uint32_t b;
 		size_t style;
+		size_t font;
 	};
 };
 

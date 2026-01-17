@@ -5,7 +5,7 @@ static int is_id_valid(char c) {
 		return 1;
 	if ('a' <= c && c <= 'z')
 		return 1;
-	return strchr("0123456789-_+", c) != NULL;
+	return strchr("0123456789-_+.", c) != NULL;
 }
 
 static int parse_line(char *text) {
@@ -20,7 +20,7 @@ static int parse_line(char *text) {
 	if (!is_id_valid(text[i]))
 		return 1;
 	id_start = i;
-	id_len = 1;
+	id_len = 0;
 	while (is_id_valid(text[i])) {
 		i++;
 		id_len++;

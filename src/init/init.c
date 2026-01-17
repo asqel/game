@@ -9,6 +9,11 @@
 	ctx
 	ttf
 */
+
+void test()  {
+	open_dialogue("aa", NULL, 2, 0, 1);
+}
+
 void game_init(int argc, char **argv) {
 	if (init_sdl())
 		exit(1);
@@ -21,7 +26,7 @@ void game_init(int argc, char **argv) {
 		game_exit(1);
 	if (init_sprites())
 		game_exit(1);
-	if (init_lua())
+	if (TTF_Init() == -1)
 		game_exit(1);
 	game_ctx = malloc(sizeof(game_t));
 	if (game_ctx == NULL) {
@@ -29,14 +34,15 @@ void game_init(int argc, char **argv) {
 		game_exit(1);
 	}
 	*game_ctx = (game_t){0};
-	init_ctx(argc, argv);
-	if (TTF_Init() == -1)
+	if (init_lua())
 		game_exit(1);
+	if (dialogue_init())
+		game_exit(1);
+	init_ctx(argc, argv);
 	char *font_path = malloc(sizeof(char) * (strlen(game_dir) + strlen("/assets/PressStart2P-Regular.ttf") + 1));
 	sprintf(font_path, "%s/assets/PressStart2P-Regular.ttf", game_dir);
 	game_ctx->fonts[0] = TTF_OpenFont(font_path, 16);
+	game_ctx->fonts_height[0] = 20;
 	free(font_path);
-	if (dialogue_init())
-		game_exit(1);
 }
 

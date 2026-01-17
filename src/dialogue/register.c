@@ -11,10 +11,24 @@ int dialogue_register(char *id, char *val) {
 		return 1;
 	}
 	dialogue_infos = new_dialog;
+	dialogue_infos[dialogue_infos_len] = parse_dialogue(val);
 	strcpy(dialogue_infos[dialogue_infos_len].id, id);
-	dialogue_infos[dialogue_infos_len].text = parse_dialogue(val);
 	if (!dialogue_infos[dialogue_infos_len].text)
 		return 1;
 	dialogue_infos_len++;
+	return 0;
+}
+
+dialogue_info_t *get_dialogue_by_id(size_t id) {
+	if (id >= dialogue_infos_len)
+		id = 0;
+	return &dialogue_infos[id];
+}
+
+size_t get_dialogue_id(const char *name) {
+	for (size_t i = 0; i < dialogue_infos_len; i++) {
+		if (!strcmp(dialogue_infos[i].id, name))
+			return i;
+	}
 	return 0;
 }

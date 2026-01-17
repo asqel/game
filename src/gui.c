@@ -31,6 +31,16 @@ void game_close_gui() {
 	else if (gui->free.c)
 		((void (*)(gui_t *))gui->free.c)(gui);
 
+	if (gui->data.is_lua)
+		luaL_unref(lua_state, LUA_REGISTRYINDEX, gui->data.lua_ref);
+	if (gui->update.is_lua)
+		luaL_unref(lua_state, LUA_REGISTRYINDEX, gui->update.lua_ref);
+	if (gui->render.is_lua)
+		luaL_unref(lua_state, LUA_REGISTRYINDEX, gui->render.lua_ref);
+	if (gui->free.is_lua)
+		luaL_unref(lua_state, LUA_REGISTRYINDEX, gui->free.lua_ref);
+	
+
 	free(game_ctx->player->gui);
 	game_ctx->player->gui = NULL;
 }

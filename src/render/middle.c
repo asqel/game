@@ -138,4 +138,5 @@ void game_render_middle(chunk_t ***chunks, int size) {
 		images[end].img = game_ctx->player_textures[game_ctx->player->dir][action_duration];
 	}
 	render_images(images, len);
+	free(images);
 }	

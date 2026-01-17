@@ -1,94 +1,136 @@
 #include "game.h"
 
-static void buff_append_c(uint32_t **buffer, uint32_t c, int do_write) {
-	if (do_write)
-		*(*buffer) = c;
-	(*buffer)++;
+static uint8_t last_type = 0xff;
+
+static void buff_append_text(dialogue_info_t *res, size_t idx, char c) {
+	if (!res->text) {
+		if (last_type != DIALOG_TEXT || c == '\\')
+			res->len++;
+		last_type = DIALOG_TEXT;
+		return ;
+	}
+	if (last_type != DIALOG_TEXT || c == '\\') {
+		res->text[res->len].type = DIALOG_TEXT;
+		res->text[res->len].text[0] = idx;
+		res->text[res->len].text[1] = 0;
+		res->len++;
+		last_type = DIALOG_TEXT;
+	}
+	res->text[res->len - 1].text[1]++;
 }
 
-static int parse_number(unsigned char *str, uint32_t **buffer, uint32_t type, int do_write) {
-	int i = 0;
+static void buff_append(dialogue_info_t *res, dialogue_char_t *c) {
+	if (res->text) {
+		if (res->len > 0 && res->text[res->len - 1].type == DIALOG_TEXT) {
+			res->text[res->len].type = 0xff;
+			res->len++;
+			
+		}
+		res->text[res->len] = *c;
+	}
+	else if (last_type == DIALOG_TEXT)
+		res->len++;
+	last_type = c->type;
+	res->len++;
+}
 
-	if (!isdigit(str[i])) {
-		buff_append_c(buffer, '$', do_write);
-		return 1;
-	}
-	uint32_t nb = 0;
-	while (isdigit(str[i])) {
-		nb = nb * 10 + str[i] - '0';
+static size_t parse_sizet(dialogue_info_t *res, char *str, uint8_t type) {
+	size_t val = 0;
+
+	size_t i = 0;
+	while (str[i] && isdigit(str[i])) {
+		val = val * 10 + str[i] - '0';
 		i++;
 	}
-	if (str[i] == '.')
-		i++;
-	nb &= 0x00FFFFFF;
-	nb |= type;
-	buff_append_c(buffer, nb, do_write);
+	dialogue_char_t c = {0};
+	c.type = type;
+	c.var = val;
+	buff_append(res, &c);
 	return i;
 }
 
-static int parse_sequence(unsigned char *str, uint32_t **buffer, int do_write) {
-	switch (*str) {
+static size_t parse_control(dialogue_info_t *res, char *str) {
+		dialogue_char_t c = {0};	
+	switch (str[0]) {
 		case '$':
-			return 1 + parse_number(str + 1, buffer, DIALOG_VAR, do_write);
+			return 1 + parse_sizet(res, str + 1, DIALOG_VAR);
 		case 'P':
-			return 1 + parse_number(str + 1, buffer, DIALOG_PAUSE, do_write);
+			return 1 + parse_sizet(res, str + 1, DIALOG_PAUSE);
 		case 'E':
-			return 1 + parse_number(str + 1, buffer, DIALOG_EMOTE, do_write);
+			return 1 + parse_sizet(res, str + 1, DIALOG_EMOTE);		
 		case 'X':
-			return 1 + parse_number(str + 1, buffer, DIALOG_PX, do_write);
+			return 1 + parse_sizet(res, str + 1, DIALOG_PX);
 		case 'Y':
-			return 1 + parse_number(str + 1, buffer, DIALOG_PY, do_write);
+			return 1 + parse_sizet(res, str + 1, DIALOG_PY);
 		case 'R':
-			return 1 + parse_number(str + 1, buffer, DIALOG_CR, do_write);
+			return 1 + parse_sizet(res, str + 1, DIALOG_CR);
 		case 'G':
-			return 1 + parse_number(str + 1, buffer, DIALOG_CG, do_write);
+			return 1 + parse_sizet(res, str + 1, DIALOG_CG);
 		case 'B':
-			return 1 + parse_number(str + 1, buffer, DIALOG_CB, do_write);
+			return 1 + parse_sizet(res, str + 1, DIALOG_CB);
 		case 'S':
-			return 1 + parse_number(str + 1, buffer, DIALOG_STYLE, do_write);
-		case 'n':
-			buff_append_c(buffer, '\n', do_write);
-			return 1;
+			return 1 + parse_sizet(res, str + 1, DIALOG_STYLE);
+		case 'F':
+			return 1 + parse_sizet(res, str + 1, DIALOG_FONT);
 		case 'W':
-			buff_append_c(buffer, DIALOG_WAIT, do_write);
+			c.type = DIALOG_WAIT;
+			buff_append(res, &c);
+			return 1;
+		case 'n':
+			c.type = DIALOG_LINE;
+			buff_append(res, &c);
 			return 1;
 		default:
-			break;
+			c.type = 0xff;
+			buff_append(res, &c);
+			return 1;
 	}
-	buff_append_c(buffer, *str, do_write);
-	return 1;
 }
 
-
-static int parse_buffer(uint32_t *buffer, unsigned char *str) {
-	int i = 0;
-	uint32_t *buffer_start = buffer;
-	int do_write = buffer != NULL;
+static void parse_buffer(dialogue_info_t *res, char *str) {
+	last_type = 0xff;
+	size_t i = 0;
 	while (str[i]) {
 		if (str[i] == '\\') {
 			i++;
 			if (!str[i]) {
-				buff_append_c(&buffer, '\\', do_write);
+				buff_append_text(res, i - 1, '\\');
 				continue;
 			}
-			i += parse_sequence(&str[i], &buffer, do_write);
+			if (str[i] == '\\') {
+				buff_append_text(res, i - 1, '\\');
+				i++;
+				continue;
+			}
+			i += parse_control(res, &str[i]);
 			continue;
 		}
-		buff_append_c(&buffer, (uint32_t)str[i], do_write);
+		buff_append_text(res, i, str[i]);
 		i++;
 	}
-	return buffer - buffer_start;
 }
+
+
 
 dialogue_info_t parse_dialogue(char *str) {
 	dialogue_info_t res = {0};
-	int res_len = parse_buffer(NULL, (unsigned char *)str);
-	uint32_t *res = calloc(res_len + 1, sizeof(uint32_t));
-	if (!res) {
+
+	parse_buffer(&res, str);
+
+	res.text = malloc(sizeof(dialogue_char_t) * res.len);	
+	res.original = strdup(str);
+
+	if (!res.text || !res.original) {
+		free(res.text);
+		free(res.original);
+		res.text = NULL;
+		res.original = NULL;
 		perror("malloc");
 		return res;
 	}
-	parse_buffer(res, (unsigned char *)str);
-	res[res_len] = 0;
+
+	res.len = 0;
+	parse_buffer(&res, str);
+
 	return res;
 }

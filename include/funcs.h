@@ -101,12 +101,14 @@ void		game_editor_tick();
 char *read_file(char *path);
 
 //-------- dialogue
-uint32_t *parse_dialogue(char *str);
+dialogue_info_t parse_dialogue(char *str);
 int dialogue_register(char *id, char *val);
 int parse_lang(char *text);
-
-void open_dialogue(char *name, int (*on_end)(gui_t *self), int id_len, ...);
-void display_dialogue(uint32_t *dialogue, int len, int x, int y);
+void open_dialogue(char *name, int (*on_end)(gui_t *self), size_t id_len, ...);
+void open_dialogue2(char *name, c_lua_obj_t on_end, size_t id_len, size_t *ids);
+void display_dialogue(dialogue_info_t *dialogue, size_t len, size_t sublen, int width, int height, size_t style, int x, int y, size_t font);
+size_t get_dialogue_id(const char *name);
+dialogue_info_t *get_dialogue_by_id(size_t id);
 
 //-------- entities
 entity_info_t *get_entity_info(uint32_t id);
@@ -118,6 +120,7 @@ int lua_func_register_obj2(lua_State *l);
 int lua_func_register_sprite(lua_State *l);
 int lua_func_get_sprite_id(lua_State *l);
 int lua_func_launch_file(lua_State *l);
+int lua_func_open_dialogue(lua_State *L);
 
 //--------- time
 void game_loop_start();

@@ -10,7 +10,7 @@ int interact_at(int x, int y) {
 			lua_pushinteger(lua_state, y);
 	
 			if (lua_pcall(lua_state, 2, 0, 0) != LUA_OK) {
-				PRINT_ERR("Erreur: Lua : %s\n", lua_tostring(lua_state, -1));
+				PRINT_ERR("Error: Lua : %s\n", lua_tostring(lua_state, -1));
 				lua_pop(lua_state, 1);
 			}
 			return 1;

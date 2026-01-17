@@ -49,6 +49,7 @@ export: $(NAME)
 	cp libs/* $(EXPORT_PATH)
 	cp world -r $(EXPORT_PATH)
 
-	
+debug:
+	ivalgrind --leak-check=full --show-leak-kinds=all ./game 2> f
 
 .PHONY: re fclean clean all

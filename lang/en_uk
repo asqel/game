@@ -1,2 +1,7 @@
-test1 :  "\X300\Y100\R255\G255\B255\S1The fridge looks at you...\nYou feel a chill along\nyour spine\W"
+test1 :  "\X300\Y100\S1\R255\G255\B255The fridge looks\R100-ÉE- \R255 at you...\nYou feel a chill along\nyour spine\W"
 test2: "... That was probably nothing\W"
+tree.interact1: "\X300\Y500\S0\R0\G0\B0Inspecting every tree seems...\npointless...\W"
+tree.interact2: "\X300\Y500\S0\R0\G0\B0That is a tree...\nit is green...\W"
+tree.interact3: "\X300\Y500\S0\R0\G0\B0This is a tree...\nit seems very bushy...\W"
+tree.interact4: "\X300\Y500\S0\R0\G0\B0That is a tree...\nit is made out of leaves and wood...\nlike almost every trees...\W"
+

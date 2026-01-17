@@ -35,3 +35,20 @@ obj:
 	if C == 1 && A == 0
 		data: uint32_t
 
+
+dialogues control sequence:
+		when a parameter is NUM.
+		'.' is optional if NUM is followed by any non digit char
+		NUM can only contains digit char [0-9] 
+
+		\$NUM. : is replace with variable NUM
+		\PNUM. : pause the dialogue for NUM tick
+		\ENUM. : is replace with texture ...
+		\XNUM. : set x position
+		\YNUM. : set y position
+		\RNUM. : set the R color of the text
+		\GNUM. : set the G color of the text
+		\BNUM. : set the B color of the text
+		\W : make so that the dialoguw wait for input
+		\SNUM. : set the dialogue style
+		\FNUM. : set font

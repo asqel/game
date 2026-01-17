@@ -18,6 +18,7 @@ static void init_lua_funcs() {
 	add_lua_func(lua_func_register_sprite, "register_sprite");
 	add_lua_func(lua_func_get_sprite_id, "get_sprite_id");
 	add_lua_func(lua_func_launch_file, "launch_file");
+	add_lua_func(lua_func_open_dialogue, "open_dialogue");
 }
 
 int init_lua() {
