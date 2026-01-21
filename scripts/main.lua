@@ -1,4 +1,4 @@
-math.randomseed(os.time())
-launch_file("sprites.lua")
-launch_file("obj.lua")
-
+__path__ = "/main.lua"
+launch_file("/init.lua")
+require("/sprites")
+require("/obj")

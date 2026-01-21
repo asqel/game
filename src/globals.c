@@ -1,6 +1,6 @@
 #include "game.h"
 
-char *game_dir = "./";
+char *game_dir = NULL;
 
 SDL_Window *window = NULL;
 SDL_Renderer *renderer = NULL;

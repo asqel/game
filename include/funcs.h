@@ -25,6 +25,7 @@ int			game_path_is_dir(char *path);
 void		game_list_files(char *path, void (*callback)(const char *filepath));
 int			game_path_is_file(char *path);
 char *game_get_world_path(char *name);
+void normalize_path(char *str);
 
 //------- error
 char		*game_get_error();
@@ -94,6 +95,7 @@ void		game_tick_gui();
 void		game_close_gui();
 void		game_render_gui();
 gui_t *game_open_gui(void *data, void (*update)(gui_t *self), void (*render)(gui_t *self), void (*free)(gui_t *self));
+gui_t *game_open_gui2(c_lua_obj_t data, c_lua_obj_t update, c_lua_obj_t render, c_lua_obj_t free);
 //-------- editor
 void		game_editor_tick();
 
@@ -121,6 +123,8 @@ int lua_func_register_sprite(lua_State *l);
 int lua_func_get_sprite_id(lua_State *l);
 int lua_func_launch_file(lua_State *l);
 int lua_func_open_dialogue(lua_State *L);
+int lua_func_open_gui(lua_State *l);
+int lua_func_draw_text(lua_State *l);
 
 //--------- time
 void game_loop_start();

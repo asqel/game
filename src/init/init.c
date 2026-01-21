@@ -15,6 +15,9 @@ void test()  {
 }
 
 void game_init(int argc, char **argv) {
+	game_ctx = malloc(sizeof(game_t));
+	*game_ctx = (game_t){0};
+	game_dir = strdup("./");
 	if (init_sdl())
 		exit(1);
 	if (IMG_Init(IMG_INIT_PNG) == 0) {
@@ -28,12 +31,10 @@ void game_init(int argc, char **argv) {
 		game_exit(1);
 	if (TTF_Init() == -1)
 		game_exit(1);
-	game_ctx = malloc(sizeof(game_t));
 	if (game_ctx == NULL) {
 		PRINT_ERR("Error: Failed to allocate game context\n");
 		game_exit(1);
 	}
-	*game_ctx = (game_t){0};
 	if (init_lua())
 		game_exit(1);
 	if (dialogue_init())

@@ -1,0 +1,8 @@
+
+game.path.list(path) -> [str]
+	if (path is file) return []
+	else return [path/*]
+
+game.path.is_file(path) -> bool
+game.path.is_dir(path) -> bool
+

@@ -73,3 +73,17 @@ gui_t *game_open_gui(void *data, void (*update)(gui_t *self), void (*render)(gui
 		game_ctx->actions[i] = 0;
 	return gui;
 }
+
+gui_t *game_open_gui2(c_lua_obj_t data, c_lua_obj_t update, c_lua_obj_t render, c_lua_obj_t free) {
+	gui_t *gui = malloc(sizeof(gui_t));
+	*gui = (gui_t){0};
+	gui->data = data;
+	gui->free = free;
+	gui->render = render;
+	gui->update = update;
+	game_close_gui();
+	game_ctx->player->gui = gui;
+	for (int i = 0; i < GAME_ACT_ENUM_MAX; i++)
+		game_ctx->actions[i] = 0;
+	return gui;
+}

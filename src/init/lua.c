@@ -18,8 +18,26 @@ static void init_lua_funcs() {
 	add_lua_func(lua_func_register_sprite, "register_sprite");
 	add_lua_func(lua_func_get_sprite_id, "get_sprite_id");
 	add_lua_func(lua_func_launch_file, "launch_file");
+	add_lua_func(lua_func_launch_file, "dofile");
 	add_lua_func(lua_func_open_dialogue, "open_dialogue");
+	add_lua_func(lua_func_open_gui, "open_gui");
+	add_lua_func(lua_func_draw_text, "draw_text");
 }
+
+static void load_libs() {
+	luaL_requiref(lua_state, "_G", luaopen_base, 1);
+	lua_pop(lua_state, 1);
+
+	luaL_requiref(lua_state, LUA_MATHLIBNAME, luaopen_math, 1);
+	lua_pop(lua_state, 1);
+
+	luaL_requiref(lua_state, LUA_STRLIBNAME, luaopen_string, 1);
+	lua_pop(lua_state, 1);
+
+	luaL_requiref(lua_state, LUA_TABLIBNAME, luaopen_table, 1);
+	lua_pop(lua_state, 1);
+}
+
 
 int init_lua() {
 	lua_state = luaL_newstate();
@@ -28,7 +46,7 @@ int init_lua() {
 		return 1;
 	}
 
-	luaL_openlibs(lua_state);
+	load_libs();
 	init_lua_funcs();
 
 	char *path = malloc(strlen(game_dir) + strlen("/scripts/main.lua") + 1);

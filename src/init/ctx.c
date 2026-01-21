@@ -13,7 +13,9 @@ static void parse_args(int argc, char **argv) {
 				PRINT_ERR("Error: argument -d require a valid path\n");
 				game_exit(1);
 			}
-			game_dir = argv[i];
+			free(game_dir);
+			game_dir = strdup(argv[i]);
+			normalize_path(game_dir);
 			i++;
 		}
 		else {

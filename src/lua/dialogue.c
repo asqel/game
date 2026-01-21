@@ -34,8 +34,10 @@ int lua_func_open_dialogue(lua_State *L) {
 		}
 	}
 	
-	if (lua_type(L, 2) == LUA_TFUNCTION)	
+	if (lua_type(L, 2) == LUA_TFUNCTION) {
+		lua_pushvalue(L, 2);
 		on_end = luaL_ref(L, LUA_REGISTRYINDEX);
+	}
 	else if (lua_type(L, 2) != LUA_TNIL) {
 		lua_pushstring(L, "Error: open_dialogue takes a function or nil as arg #2\n");
 		return lua_error(L);

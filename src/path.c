@@ -48,3 +48,18 @@ void game_list_files(char *path, void (*callback)(const char *filepath)) {
 	}
 	closedir(dir);
 }
+
+void normalize_path(char *path) {
+	size_t i = 0;
+	while (path[i]) {
+		if (path[i] != '/') {
+			i++;
+			continue;
+		}
+		size_t start = i;
+		while (path[start] == '/')
+			start++;
+		i++;
+		memmove(&path[i], &path[start], strlen(&path[start]) + 1);
+	}
+}
