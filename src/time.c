@@ -12,6 +12,12 @@ static uint64_t current_fps = 0;
 static uint64_t fps_target = GAME_FPS;
 static uint64_t fps_target_as_us = 1000 * 1000 / GAME_FPS; 
 
+int64_t game_get_time() {
+	struct timespec t;
+	clock_gettime(CLOCK_MONOTONIC, &t);
+	return t.tv_sec * 1000 + t.tv_nsec * 1000000;
+}
+
 void game_loop_start() {
 	clock_gettime(CLOCK_MONOTONIC, &loop_t0);
 }

@@ -22,6 +22,25 @@ static void init_lua_funcs() {
 	add_lua_func(lua_func_open_dialogue, "open_dialogue");
 	add_lua_func(lua_func_open_gui, "open_gui");
 	add_lua_func(lua_func_draw_text, "draw_text");
+	add_lua_number(GAME_ACT_UP, "GAME_ACT_UP");
+	add_lua_number(GAME_ACT_RIGHT, "GAME_ACT_RIGHT");
+	add_lua_number(GAME_ACT_DOWN, "GAME_ACT_DOWN");
+	add_lua_number(GAME_ACT_LEFT, "GAME_ACT_LEFT");
+	add_lua_number(GAME_ACT_INTERACT, "GAME_ACT_INTERACT");
+	add_lua_number(GAME_ACT_CLOSE, "GAME_ACT_CLOSE");
+	add_lua_number(GAME_ACT_EDIT_UP, "GAME_ACT_EDIT_UP");
+	add_lua_number(GAME_ACT_EDIT_RIGHT, "GAME_ACT_EDIT_RIGHT");
+	add_lua_number(GAME_ACT_EDIT_DOWN, "GAME_ACT_EDIT_DOWN");
+	add_lua_number(GAME_ACT_EDIT_LEFT, "GAME_ACT_EDIT_LEFT");
+	add_lua_number(GAME_ACT_EDIT_PLACE, "GAME_ACT_EDIT_PLACE");
+	add_lua_number(GAME_ACT_EDIT_REMOVE, "GAME_ACT_EDIT_REMOVE");
+	add_lua_number(GAME_ACT_EDIT_FILL, "GAME_ACT_EDIT_FILL");
+	add_lua_number(GAME_ACT_EDIT_EMPTY, "GAME_ACT_EDIT_EMPTY");
+	add_lua_number(GAME_ACT_EDIT_SAVE, "GAME_ACT_EDIT_SAVE");
+	add_lua_func(lua_func_time, "time");
+	add_lua_func(lua_func_set_action, "set_action");
+	add_lua_func(lua_func_get_action, "get_action");
+	add_lua_func(lua_func_close_gui, "close_gui");
 }
 
 static void load_libs() {

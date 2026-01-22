@@ -125,6 +125,10 @@ int lua_func_launch_file(lua_State *l);
 int lua_func_open_dialogue(lua_State *L);
 int lua_func_open_gui(lua_State *l);
 int lua_func_draw_text(lua_State *l);
+int lua_func_time(lua_State *l);
+int lua_func_get_action(lua_State *l);
+int lua_func_set_action(lua_State *l);
+int lua_func_close_gui(lua_State *l);
 
 //--------- time
 void game_loop_start();
@@ -132,5 +136,6 @@ void game_loop_end();
 int game_get_fps();
 void game_set_fps_target(uint64_t target);
 uint64_t game_get_fps_target();
+int64_t game_get_time();
 
 #endif

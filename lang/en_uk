@@ -1,3 +1,4 @@
+null_dialogue : " \X300\Y500\S0\R0\G0\B0NULL DIALOGUE id 0 probably an error in code \P100\W"
 test1 :  "\X300\Y100\S1\R255\G255\B255The fridge looks\R100-ÉE- \R255 at you...\nYou feel a chill along\nyour spine\W"
 test2: "... That was probably nothing\W"
 tree.interact1: "\X300\Y500\S0\R0\G0\B0Inspecting every tree seems...\npointless...\W"

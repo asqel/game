@@ -30,6 +30,12 @@ int clock_gettime(int x, struct timespec *spec) {
 	return 0;
 }
 
+int64_t game_get_time() {
+	struct timespec t;
+	clock_gettime(CLOCK_MONOTONIC, &t);
+	return t.tv_sec * 1000 + t.tv_nsec * 1000000;
+}
+
 void usleep(int64_t us) {
 	if (us <= 0)
 		return ;

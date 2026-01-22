@@ -21,3 +21,12 @@ int lua_func_open_gui(lua_State *l) {
 
 	return 0;
 }
+
+int lua_func_close_gui(lua_State *l) {
+	if (lua_gettop(l)) {
+		lua_pushstring(l, "Error: close_gui doesnt take any argument");
+		return lua_error(l);
+	}
+	game_close_gui();
+	return 0;
+}
