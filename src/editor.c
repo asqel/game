@@ -4,12 +4,7 @@ int editor_obj_id = 0;
 int editor_obj_layer = 0;
 
 static void editor_place() {
-	int cx = (int)game_ctx->player->x / CHUNK_SIZE;
-	int cy = (int)game_ctx->player->y / CHUNK_SIZE;
-	int off_x = (int)game_ctx->player->x % CHUNK_SIZE;
-	int off_y = (int)game_ctx->player->y % CHUNK_SIZE;
-	chunk_t *chunk = world_get_chunk(game_ctx->world, cx, cy);
-	chunk->objs[off_y][off_x][editor_obj_layer] = game_get_obj(editor_obj_id);
+	world_set_obj(game_ctx->world, game_ctx->player->x, game_ctx->player->y, editor_obj_layer, game_get_obj(editor_obj_id));
 }
 
 static void editor_remove() {

@@ -17,7 +17,7 @@ void		sprite_free();
 void		textures_free();
 void		objects_free();
 int			dialogue_init();
-void		dialogue_exit();
+void		game_free_dialogues();
 int			init_lua();
 
 //------- file / path
@@ -80,12 +80,17 @@ int			player_move(double x, double y);
 void		player_interact();
 
 //------- chunk
-chunk_t		*game_load_chunk(world_t *world, int x, int y);
-chunk_t		*world_get_chunk(world_t *world, int cx, int cy);
+chunk_t		*world_new_chunk(int x, int y, world_t *world); // chunk co
+chunk_t		*world_new_chunk_at(int x, int y, world_t *world); // obj co
+chunk_t 	*get_chunk(int x, int y, world_t *world);
+chunk_t 	*get_chunk_at(int x, int y, world_t *world);
 
 //------- world
 world_t		*game_load_world(char *name);
-obj_t		*world_get_obj_at(world_t *world, int x, int y, int layer);
+obj_t		world_get_obj(world_t *world, int x, int y, int layer);
+int			world_get_hitbox(world_t *world, int x, int y);
+void		world_set_hitbox(world_t *world, int x, int y, int state);
+void		world_set_obj(world_t *world, int x, int y, int layer, obj_t obj); 
 int			game_world_exists(char *name);
 void		game_world_save(world_t *world);
 

@@ -28,18 +28,10 @@ int dialogue_init() {
 	if (parse_lang(text)) {
 		free(text);
 		free(path);
-		dialogue_exit();
+		game_free_dialogues();
 		return 1;
 	}
 	free(text);
 	free(path);
 	return 0;
-}
-
-void dialogue_exit() {
-	for (uint32_t i = 0; i < dialogue_infos_len; i++)
-		free(dialogue_infos[i].text);
-	free(dialogue_infos);
-	dialogue_infos = NULL;
-	dialogue_infos_len = 0;
 }

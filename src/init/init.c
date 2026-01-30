@@ -31,6 +31,7 @@ void game_init(int argc, char **argv) {
 		game_exit(1);
 	if (TTF_Init() == -1)
 		game_exit(1);
+	is_ttf_init = 1;
 	if (game_ctx == NULL) {
 		PRINT_ERR("Error: Failed to allocate game context\n");
 		game_exit(1);

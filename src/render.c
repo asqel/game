@@ -96,13 +96,9 @@ void game_render(uint32_t fps) {
 	}
 	for (int i = 0; i < size; i++) {
 		int real_y = player_chunk_y - size / 2 + i;
-		if (real_y < 0 || real_y >= game_ctx->world->height)
-			continue;
 		for (int k = 0; k < size; k++) {
 			int real_x = k + player_chunk_x - size / 2; 
-			if (real_x < 0 || real_x >= game_ctx->world->width)
-				continue;
-			chunks_ptr[i][k] = game_ctx->world->chunks[real_y][real_x];
+			chunks_ptr[i][k] = get_chunk(real_x, real_y, game_ctx->world);
 		}
 	}
 	game_render_background(chunks_ptr, size);

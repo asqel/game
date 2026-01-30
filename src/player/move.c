@@ -33,13 +33,8 @@ static void get_objs(hitbox_t map[5][5][2], hitbox_t player_hit) {
 		for (int k = 0; k < 5; k++) {
 			int mx = k - 2 + (int)player_hit.x;
 			int my = i - 2 + (int)player_hit.y;
-			if (mx < 0 || my < 0)
-				continue;
-			int cy = my / CHUNK_SIZE;
-			int cx = mx / CHUNK_SIZE;
-			if (cx >= game_ctx->world->width || cy >= game_ctx->world->height || game_ctx->world->chunks[cy][cx] == NULL)
-				continue;
-			uint32_t obj_id = game_ctx->world->chunks[cy][cx]->objs[my % CHUNK_SIZE][mx % CHUNK_SIZE][1].id;
+			obj_t obj = world_get_obj(game_ctx->world, mx, my, 1);
+			uint32_t obj_id = obj.id;
 			if (obj_id > 0 && obj_id < obj_registry_len) {
 				int hit_val = obj_registry[obj_id].has_hitbox;
 				if (hit_val == 1)
@@ -52,7 +47,7 @@ static void get_objs(hitbox_t map[5][5][2], hitbox_t player_hit) {
 					map[i][k][0] = hitbox(x, y, w, h);
 				}
 			}
-			if (game_ctx->world->chunks[cy][cx]->hitbox[my % CHUNK_SIZE][mx % CHUNK_SIZE])
+			if (world_get_hitbox(game_ctx->world, mx, my))
 				map[i][k][1] = hitbox(0, 0, 1, 1);
 		}
 	}

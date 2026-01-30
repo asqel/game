@@ -21,10 +21,17 @@ void player_tick() {
     }
 	if (game_action_pressed_hold(GAME_ACT_INTERACT, 15) && !game_ctx->is_editor)
 		player_interact();
-	if (game_ctx->player->x < 0)
-		game_ctx->player->x = 0;
-	if (game_ctx->player->y < 0)
-		game_ctx->player->y = 0;
+
+	while (game_ctx->player->x < 0)
+		game_ctx->player->x += game_ctx->world->width * CHUNK_SIZE;
+	while (game_ctx->player->y < 0)
+		game_ctx->player->y += game_ctx->world->height * CHUNK_SIZE;
+
+	while (game_ctx->player->x >= game_ctx->world->width * CHUNK_SIZE)
+		game_ctx->player->x -= game_ctx->world->width * CHUNK_SIZE;
+	while (game_ctx->player->y >= game_ctx->world->height * CHUNK_SIZE)
+		game_ctx->player->y -= game_ctx->world->height * CHUNK_SIZE;
+
 	if (game_ctx->is_editor)
 		game_editor_tick();
 
