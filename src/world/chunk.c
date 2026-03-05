@@ -91,6 +91,5 @@ chunk_t *get_chunk_at(int x, int y, world_t *world) {
 		y += world->height * CHUNK_SIZE;
 	while (y >= world->height * CHUNK_SIZE)
 		y -= world->height * CHUNK_SIZE;
-	printf("%d %d\n", x, y);
 	return world->chunks[y / CHUNK_SIZE][x / CHUNK_SIZE];
 }
