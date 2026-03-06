@@ -43,4 +43,8 @@ extern uint32_t				dialogue_infos_len;
 //-------- lua
 extern lua_State			*lua_state;
 
+//-------- entities
+extern entity_info_t		*entities_infos;
+extern int					entities_infos_len;
+
 #endif

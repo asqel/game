@@ -133,7 +133,7 @@ struct world_t {
 	char name[GAME_WORLD_NAME_MAX_LEN + 1];
 };
 
-struct player_t {
+struct player_t 
 	double x;
 	double y;
 	uint8_t dir; // 0 up, 1 right, 2 down 3 left
@@ -155,6 +155,7 @@ struct entity_t {
 	double hitbox_h;
 	double hp;
 	int has_to_die;
+	int lua_ref; // custom obj store cx, cy, idx in list
 };
 
 struct entity_info_t {

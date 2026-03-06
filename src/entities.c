@@ -12,6 +12,24 @@ void tick_entity(entity_t *ent) {
 	}
 }
 
+static void for_each_chunk(void (*func)(chunk_t *, int, int)) {
+	int player_chunk_y = game_ctx->player->y / CHUNK_SIZE;	
+	int player_chunk_x = game_ctx->player->x / CHUNK_SIZE;	
+	int size = game_ctx->player->render_distance;
+	for (int i = 0; i < size; i++) {
+		int real_y = player_chunk_y - size / 2 + i;
+		for (int k = 0; k < size; k++) {
+			int real_x = k + player_chunk_x - size / 2; 
+			chunk_t *chunk = get_chunk(real_x, real_y, game_ctx->world);
+			func(chunk, real_x, real_y);
+		}
+	}
+}
+
+static void update_position() {
+	
+}
+
 void entities_tick() {
 	int player_chunk_y = game_ctx->player->y / CHUNK_SIZE;	
 	int player_chunk_x = game_ctx->player->x / CHUNK_SIZE;	
