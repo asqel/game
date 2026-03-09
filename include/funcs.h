@@ -120,6 +120,8 @@ dialogue_info_t *get_dialogue_by_id(size_t id);
 //-------- entities
 entity_info_t *get_entity_info(uint32_t id);
 void entities_tick();
+uint32_t entity_register(char *name, int sprite_id, c_lua_obj_t tick, double hp, int hit[4], double friction);
+entity_t *entity_add(uint32_t id, int x, int y, world_t *world);
 
 //-------- lua funcs
 int lua_func_register_obj(lua_State *l); 
@@ -134,6 +136,8 @@ int lua_func_time(lua_State *l);
 int lua_func_get_action(lua_State *l);
 int lua_func_set_action(lua_State *l);
 int lua_func_close_gui(lua_State *l);
+int lua_func_register_entity(lua_State *l);
+int lua_func_entity_add(lua_State *l);
 
 //--------- time
 void game_loop_start();

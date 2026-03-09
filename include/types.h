@@ -24,6 +24,8 @@
 #define SPRITE_MASK_PAUSED (1)
 #define SPRITE_MASK_LOOP (1 << 1)
 
+#define DEFAULT_FRICTION 0.8
+#define VELOCITY_EPSILON 0.005
 
 enum {
 	GAME_ACT_NONE,
@@ -133,7 +135,7 @@ struct world_t {
 	char name[GAME_WORLD_NAME_MAX_LEN + 1];
 };
 
-struct player_t 
+struct player_t {
 	double x;
 	double y;
 	uint8_t dir; // 0 up, 1 right, 2 down 3 left
@@ -146,6 +148,7 @@ struct entity_t {
 	double y;
 	double vx;
 	double vy;
+	double friction;
 	c_lua_obj_t data;
 	uint32_t id;
 	sprite_t sprite;
@@ -153,9 +156,10 @@ struct entity_t {
 	double hitbox_y;
 	double hitbox_w;
 	double hitbox_h;
-	double hp;
-	int has_to_die;
+	double hp; // == 0 to die
 	int lua_ref; // custom obj store cx, cy, idx in list
+	int *lua_infos; // [3] (cx, cy, idx)
+	int is_moving;
 };
 
 struct entity_info_t {
@@ -165,8 +169,9 @@ struct entity_info_t {
 	double default_hitbox_y;
 	double default_hitbox_w;
 	double default_hitbox_h;
-	c_lua_obj_t on_tick; // return 1 to die
+	c_lua_obj_t on_tick;
 	double hp;
+	double friction;
 };
 
 struct game_t {
