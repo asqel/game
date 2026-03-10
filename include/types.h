@@ -126,6 +126,8 @@ struct chunk_t {
 	char hitbox[CHUNK_SIZE][CHUNK_SIZE];
 	entity_t *entities;
 	int entities_len;
+	int rx; // real position (used by display)
+	int ry;
 };
 
 struct world_t {

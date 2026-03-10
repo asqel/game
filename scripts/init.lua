@@ -1,6 +1,5 @@
 math.randomseed(time())
 local _required_loaded = {}
-_required_loaded["/std/game"] = launch_file("/std/game.lua")
 _required_loaded["/std/path"] = launch_file("/std/path.lua")
 
 function require(path)
@@ -22,3 +21,5 @@ function require(path)
 	_required_loaded[path] = res[1]
 	return res[1]
 end
+
+game = require("game")

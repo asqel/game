@@ -18,6 +18,9 @@ static uint64_t current_fps = 0;
 static uint64_t fps_target = GAME_FPS;
 static uint64_t fps_target_as_us = 1000 * 1000 / GAME_FPS; 
 
+static int64_t time_start = 0;
+static int time_is_init = 0;
+
 int clock_gettime(int x, struct timespec *spec) {
 	(void)x;
 	int64_t wintime;
@@ -31,9 +34,13 @@ int clock_gettime(int x, struct timespec *spec) {
 }
 
 int64_t game_get_time() {
+	if (!time_is_init) {
+		time_is_init = 1;
+		time_start = game_get_time();
+	}
 	struct timespec t;
 	clock_gettime(CLOCK_MONOTONIC, &t);
-	return t.tv_sec * 1000 + t.tv_nsec * 1000000;
+	return t.tv_sec * 1000 + t.tv_nsec * 1000000 - time_start;
 }
 
 void usleep(int64_t us) {

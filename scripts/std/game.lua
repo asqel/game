@@ -39,5 +39,6 @@ game.act.set = set_action
 game.act.get = get_action
 
 game.time = time
+print(io)
 
 return game

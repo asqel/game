@@ -20,7 +20,7 @@ static int count_len(chunk_t ***chunks, int size) {
 	return res;
 }
 
-static inline int add_entities(image_t *images, int end, entity_t *entities, int len) {
+static inline int add_entities(image_t *images, int end, entity_t *entities, int len, chunk_t *c, int relx, int rely) {
 /*
 (e - p) * TILE_SIZE + S / 2- T / 2
 
@@ -36,9 +36,11 @@ e * TILE_SIZE - p * TILE_SIZE +  S / 2 - T / 2
 		game_sprite_tick(&ent->sprite);
 		if (!texture)
 			continue;
+		double ex = ent->x - c->rx * CHUNK_SIZE + relx * CHUNK_SIZE;
+		double ey = ent->y - c->ry * CHUNK_SIZE + rely * CHUNK_SIZE;
 		images[end].img = texture;
-		images[end].x = ent->x * TILE_SIZE + off_x;
-		images[end].y = ent->y * TILE_SIZE + off_y + TILE_SIZE;
+		images[end].x = ex * TILE_SIZE + off_x;
+		images[end].y = ey * TILE_SIZE + off_y + TILE_SIZE;
 		images[end].z = 0;
 		end++;
 	}
@@ -117,12 +119,14 @@ void game_render_middle(chunk_t ***chunks, int size) {
 			end++;
 		}
 	}
+	int cx = game_ctx->player->x / CHUNK_SIZE;
+	int cy = game_ctx->player->y / CHUNK_SIZE;
 	for (int i = 0; i < size; i++) {
 		for (int k = 0; k < size; k++) {
 			chunk_t *chunk = chunks[i][k];
 			if (!chunk)
 				continue;
-			end = add_entities(images, end, chunk->entities, chunk->entities_len);
+			end = add_entities(images, end, chunk->entities, chunk->entities_len, chunk, k - size / 2 + cx, i - size / 2 + cy);
 		}
 	}
 	if (!game_ctx->is_editor) {
