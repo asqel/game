@@ -43,6 +43,7 @@ static void init_lua_funcs() {
 	add_lua_func(lua_func_close_gui, "close_gui");
 	add_lua_func(lua_func_register_entity, "register_entity");
 	add_lua_func(lua_func_entity_add, "entity_add");
+	add_lua_func(lua_func_read_save, "read_save");
 }
 
 static void load_libs() {

@@ -84,6 +84,8 @@ static void render_editor() {
 }
 
 void game_render(uint32_t fps) {
+	if (!game_ctx->world)
+		return 
 	SDL_FillRect(game_surface, &(SDL_Rect){0, 0, GAME_WIDTH, GAME_HEIGHT}, 0);
 	int player_chunk_x = ((int)game_ctx->player->x) / CHUNK_SIZE;
 	int player_chunk_y = ((int)game_ctx->player->y) / CHUNK_SIZE;

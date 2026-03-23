@@ -29,6 +29,13 @@ int lua_func_read_save(lua_State *l) {
 		return lua_error(l);
 	}
 	const char *name = lua_tostring(l, 1);
+	for (int i = 0; name[i]; i++) {
+		char c = name[i];
+		if (!('a' <= c && c <= 'z') && !('A' <= c && c <= 'Z') && !strchr("0123456789-_", c)) {
+			lua_pushstring(l, "Error: read_save: save name can only contain [a-zA-Z0-9-_]\n");
+			return lua_error(l);
+		}
+	}
 
 	int path_len = strlen(game_dir) + 1 + strlen("save") + 1 + strlen(name);
 	char *path = malloc(path_len + 1);

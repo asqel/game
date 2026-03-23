@@ -52,10 +52,8 @@ uint32_t	game_get_obj_id(char *name);
 obj_t		game_get_obj(uint32_t id);
 
 //------- register
-void		game_register_obj(char *name, uint32_t sprite_id, int hithox, void *interact);
-void game_register_obj_w_hit(char *name, uint32_t sprite_id, void *interact, double hitx, double hity, double hitw, double hith);
 void		register_sprite(uint32_t *texture_ids, int texture_ids_len, int frame_len_tick, const char *name, uint8_t state);
-void game_register_obj_full(char *name, uint32_t sprite_id, c_lua_obj_t func, int has_hit, double hitx, double hity, double hitw, double hith);
+void 		register_obj(char *name, uint32_t sprite_id, int func_ref, int has_hit, double hitx, double hity, double hitw, double hith);
 
 
 //------- render
@@ -99,8 +97,7 @@ void		game_world_save(world_t *world);
 void		game_tick_gui();
 void		game_close_gui();
 void		game_render_gui();
-gui_t *game_open_gui(void *data, void (*update)(gui_t *self), void (*render)(gui_t *self), void (*free)(gui_t *self));
-gui_t *game_open_gui2(c_lua_obj_t data, c_lua_obj_t update, c_lua_obj_t render, c_lua_obj_t free);
+gui_t		*game_open_gui(int data_ref, int update_ref, int render_ref, int free_ref);
 //-------- editor
 void		game_editor_tick();
 
@@ -111,16 +108,13 @@ char *read_file(char *path);
 dialogue_info_t parse_dialogue(char *str);
 int dialogue_register(char *id, char *val);
 int parse_lang(char *text);
-void open_dialogue(char *name, int (*on_end)(gui_t *self), size_t id_len, ...);
-void open_dialogue2(char *name, c_lua_obj_t on_end, size_t id_len, size_t *ids);
-void display_dialogue(dialogue_info_t *dialogue, size_t len, size_t sublen, int width, int height, size_t style, int x, int y, size_t font);
 size_t get_dialogue_id(const char *name);
 dialogue_info_t *get_dialogue_by_id(size_t id);
 
 //-------- entities
 entity_info_t *get_entity_info(uint32_t id);
 void entities_tick();
-uint32_t entity_register(char *name, int sprite_id, c_lua_obj_t tick, double hp, int hit[4], double friction);
+uint32_t entity_register(char *name, int sprite_id, int tick_ref, double hp, int hit[4], double friction);
 entity_t *entity_add(uint32_t id, int x, int y, world_t *world);
 
 //-------- lua funcs
@@ -138,6 +132,7 @@ int lua_func_set_action(lua_State *l);
 int lua_func_close_gui(lua_State *l);
 int lua_func_register_entity(lua_State *l);
 int lua_func_entity_add(lua_State *l);
+int lua_func_read_save(lua_State *l);
 
 //--------- time
 void game_loop_start();

@@ -27,8 +27,6 @@ void game_init(int argc, char **argv) {
 	is_img_init = 1;
 	if (init_textures())
 		game_exit(1);
-	if (init_sprites())
-		game_exit(1);
 	if (TTF_Init() == -1)
 		game_exit(1);
 	is_ttf_init = 1;

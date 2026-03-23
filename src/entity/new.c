@@ -52,8 +52,6 @@ entity_t *entity_add(uint32_t id, int x, int y, world_t *world) {
 	ent->lua_infos[1] = cy;
 	ent->lua_infos[2] = chunk->entities_len - 1;
 	ent->friction = entities_infos[id].friction;
-	ent->friction = 1;
-	ent->vx = 0.5;
 	return ent;
 }
 

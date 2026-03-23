@@ -65,23 +65,14 @@ typedef struct gui_t				gui_t;
 typedef struct game_event_t			game_event_t;
 typedef struct dialogue_info_t		dialogue_info_t;
 typedef struct dialogue_char_t		dialogue_char_t;
-typedef struct c_lua_obj_t			c_lua_obj_t;
 typedef struct entity_t				entity_t;
 typedef struct entity_info_t		entity_info_t;
 
-struct c_lua_obj_t {
-	uint8_t is_lua;
-	union {
-		void *c;
-		int lua_ref;
-	};
-};
-
 struct gui_t {
-	c_lua_obj_t data;
-	c_lua_obj_t update;
-	c_lua_obj_t render;
-	c_lua_obj_t free;
+	int data_ref;
+	int update_ref;
+	int render_ref;
+	int free_ref;
 };
 
 struct texture_t {
@@ -108,7 +99,7 @@ struct obj_info_t {
 	char name[OBJ_NAME_LENGTH + 1];
 	int sprite_id;
 	int has_hitbox; // 2 = custom
-	c_lua_obj_t interact;
+	int interact_ref;
 	double hit_x;
 	double hit_y;
 	double hit_w;
@@ -146,58 +137,51 @@ struct player_t {
 };
 
 struct entity_t {
+	uint32_t id; // id 0 == player
+
 	double x;
 	double y;
 	double vx;
 	double vy;
 	double friction;
-	c_lua_obj_t data;
-	uint32_t id;
-	sprite_t sprite;
+	int is_moving;
+	int direction;
+
 	double hitbox_x;
 	double hitbox_y;
 	double hitbox_w;
 	double hitbox_h;
+
 	double hp; // == 0 to die
+	sprite_t sprite;
+	int data_ref;
 	int lua_ref; // custom obj store cx, cy, idx in list
-	int *lua_infos; // [3] (cx, cy, idx)
-	int is_moving;
+	int *lua_infos; // [3] (cx, cy, idx), if NULL skip this entity
 };
 
 struct entity_info_t {
 	char name[OBJ_NAME_LENGTH + 1];
-	int sprite_id;
 	double default_hitbox_x;
 	double default_hitbox_y;
 	double default_hitbox_w;
 	double default_hitbox_h;
-	c_lua_obj_t on_tick;
-	double hp;
 	double friction;
+	int sprite_id;
+	double hp;
+	int on_tick_ref;
 };
 
 struct game_t {
+	int is_editor;
 	player_t *player;
 	world_t *world;
 	uint32_t actions[GAME_ACT_ENUM_MAX]; // how much the action is pressed
-	SDL_Surface *player_textures[4][3];
-	TTF_Font *fonts[1];
-	size_t fonts_height[1];
-	int is_editor;
-
-	size_t env_len;
-	char **env_vars;
 };
 
 struct game_event_t {
 	uint8_t type;
-	union {
-		struct {
-			uint8_t action; // 0 if not mapped
-			uint32_t scancode; // SDL scancode
-		} key;
-		char text[32];
-	};
+	uint8_t action; // 0 if not mapped
+	uint32_t scancode; // SDL scancode
 };
 
 enum {
