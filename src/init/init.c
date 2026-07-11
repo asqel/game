@@ -4,45 +4,41 @@
 	sdl
 	img
 	textures
-	sprites
-	obj
+	dialogue
 	ctx
-	ttf
-*/
+	lua
+	player
+	lua script
 
-void test()  {
-	open_dialogue("aa", NULL, 2, 0, 1);
-}
+*/
 
 void game_init(int argc, char **argv) {
 	game_ctx = malloc(sizeof(game_t));
+	if (game_ctx == NULL) {
+		PRINT_ERR("Error: Failed to allocate game context\n");
+		game_exit(1);
+	}
 	*game_ctx = (game_t){0};
-	game_dir = strdup("./");
+	game_dir = "./";
 	if (init_sdl())
 		exit(1);
 	if (IMG_Init(IMG_INIT_PNG) == 0) {
-		PRINT_ERR("Error: Failed to initialize SDl Image\n");
+		PRINT_ERR("Error: Failed to initialize SDL Image: %s\n", IMG_GetError());
 		game_exit(1);
 	}
 	is_img_init = 1;
 	if (init_textures())
 		game_exit(1);
-	if (TTF_Init() == -1)
-		game_exit(1);
-	is_ttf_init = 1;
-	if (game_ctx == NULL) {
-		PRINT_ERR("Error: Failed to allocate game context\n");
-		game_exit(1);
-	}
-	if (init_lua())
-		game_exit(1);
 	if (dialogue_init())
 		game_exit(1);
 	init_ctx(argc, argv);
-	char *font_path = malloc(sizeof(char) * (strlen(game_dir) + strlen("/assets/PressStart2P-Regular.ttf") + 1));
-	sprintf(font_path, "%s/assets/PressStart2P-Regular.ttf", game_dir);
-	game_ctx->fonts[0] = TTF_OpenFont(font_path, 16);
-	game_ctx->fonts_height[0] = 20;
-	free(font_path);
+	if (init_lua())
+		game_exit(1);
+	entity_register("", 0, LUA_REFNIL, 100, (int []){0.1, 0.7, 0.8, 0.3}, DEFAULT_FRICTION);
+	if (init_lua_script())
+		game_exit(1);
+	game_ctx->world = game_load_world("start");
+	if (init_player())
+		game_exit(1);
 }
 

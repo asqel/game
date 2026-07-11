@@ -35,8 +35,7 @@ entity_t *entity_add(uint32_t id, int x, int y, world_t *world) {
 	ent->y = y;
 	ent->vx = 0;
 	ent->vy = 0;
-	ent->data.is_lua = 0;
-	ent->data.c = NULL;
+	ent->data_ref = LUA_REFNIL;
 	ent->id = id;
 	ent->sprite = get_sprite_by_id(entities_infos[id].sprite_id);
 	ent->hp = entities_infos[id].hp;
@@ -52,17 +51,17 @@ entity_t *entity_add(uint32_t id, int x, int y, world_t *world) {
 	ent->lua_infos[1] = cy;
 	ent->lua_infos[2] = chunk->entities_len - 1;
 	ent->friction = entities_infos[id].friction;
+	ent->is_moving = 0;
 	return ent;
 }
 
 void entity_destroy(entity_t *ent) {
 	luaL_unref(lua_state, LUA_REGISTRYINDEX, ent->lua_ref);
-	ent->lua_ref = LUA_NOREF;
+	ent->lua_ref = LUA_REFNIL;
+	ent->lua_infos[0] = -1;
+	ent->lua_infos[1] = -1;
+	ent->lua_infos[2] = -1;
 	ent->lua_infos = NULL;
-	if (!ent->data.is_lua)
-		free(ent->data.c);
-	else
-		luaL_unref(lua_state, LUA_REGISTRYINDEX, ent->data.lua_ref);
-	ent->data.is_lua = 0;
-	ent->data.c = NULL;
+	luaL_unref(lua_state, LUA_REGISTRYINDEX, ent->data_ref);
+	ent->data_ref = LUA_REFNIL;
 }

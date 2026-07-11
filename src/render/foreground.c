@@ -21,17 +21,17 @@ static inline void render_obj(obj_t *obj, int x, int y) {
 	SDL_BlitSurface(texture, NULL, game_surface, &rect);
 }
 
-void game_render_foreground(chunk_t ***chunks, int size) {
-	int offset_x = game_ctx->player->x;
-	int offset_y = game_ctx->player->y;
+void game_render_foreground(chunk_t ***chunks, int size, double player_x, double player_y) {
+	int offset_x = player_x;
+	int offset_y = player_y;
 
 	offset_x -= offset_x % CHUNK_SIZE;
 	offset_y -= offset_y % CHUNK_SIZE;
-	offset_x -= (size / 2) * CHUNK_SIZE + game_ctx->player->x;
-	offset_y -= (size / 2) * CHUNK_SIZE + game_ctx->player->y;
+	offset_x -= (size / 2) * CHUNK_SIZE + player_x;
+	offset_y -= (size / 2) * CHUNK_SIZE + player_y;
 
-	int frac_x = -(game_ctx->player->x - (int)game_ctx->player->x) * TILE_SIZE;  
-	int frac_y = -(game_ctx->player->y - (int)game_ctx->player->y) * TILE_SIZE; 
+	int frac_x = -(player_x - (int)player_x) * TILE_SIZE;  
+	int frac_y = -(player_y - (int)player_y) * TILE_SIZE; 
 	for (int y = 0; y < size * CHUNK_SIZE; y++) {
 		for (int x = 0; x < size * CHUNK_SIZE; x++) {
 			chunk_t *chunk = chunks[y / CHUNK_SIZE][x / CHUNK_SIZE];

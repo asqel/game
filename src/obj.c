@@ -1,6 +1,6 @@
 #include "game.h"
 
-void game_register_obj(char *name, uint32_t sprite_id, int hithox, void *interact) {
+void register_obj(char *name, uint32_t sprite_id, int has_hit, double hitx, double hity, double hitw, double hith) {
 	if (strlen(name) > OBJ_NAME_LENGTH) {
 		PRINT_ERR("Error: Object name too long: '%s'\n", name);
 		return;
@@ -12,6 +12,21 @@ void game_register_obj(char *name, uint32_t sprite_id, int hithox, void *interac
 			return;
 		}
 	}
+	if (has_hit == 2) {
+		int is_error = 0;
+
+		if (hitx < 0 || hity < 0)
+			is_error = 1;
+		if (hitx + hitw > 1)
+			is_error = 1;
+		if (hity + hith > 1)
+			is_error = 1;
+
+		if (is_error) {
+			PRINT_ERR("Error: Object %s cannot have hitbox outside theyre grid max (0,0) -> (1, 1) got (%f %f) size (%f %f)\n", name, hitx, hity, hitw, hith);
+			game_exit(1);
+		}
+	}
 	tmp = realloc(obj_registry, sizeof(obj_info_t) * (obj_registry_len + 1));
 	if (!tmp) {
 		PRINT_ERR("Error: Memory allocation failed (game_register_obj)\n");
@@ -20,9 +35,11 @@ void game_register_obj(char *name, uint32_t sprite_id, int hithox, void *interac
 	obj_registry = tmp;
 	strcpy(obj_registry[obj_registry_len].name, name);
 	obj_registry[obj_registry_len].sprite_id = sprite_id;
-	obj_registry[obj_registry_len].has_hitbox = hithox;
-	obj_registry[obj_registry_len].interact.c = interact;
-	obj_registry[obj_registry_len].interact.is_lua = 0;
+	obj_registry[obj_registry_len].has_hitbox = has_hit;
+	obj_registry[obj_registry_len].hit_x = hitx;
+	obj_registry[obj_registry_len].hit_y = hity;
+	obj_registry[obj_registry_len].hit_h = hith;
+	obj_registry[obj_registry_len].hit_w = hitw;
 	obj_registry_len++;
 }
 
@@ -50,63 +67,4 @@ obj_t game_get_obj(uint32_t id) {
 		obj.sprite.state = sprite_registry[obj.sprite.sprite_id].state;
 	}
 	return obj;
-}
-
-void game_register_obj_w_hit(char *name, uint32_t sprite_id, void *interact, double hitx, double hity, double hitw, double hith) {
-	if (strlen(name) > OBJ_NAME_LENGTH) {
-		PRINT_ERR("Error: Object name too long: '%s'\n", name);
-		return;
-	}
-	void *tmp;
-	for (uint32_t i = 0; i < obj_registry_len; i++) {
-		if (strcmp(obj_registry[i].name, name) == 0) {
-			PRINT_ERR("Error: Object already exists: '%s'\n", name);
-			return;
-		}
-	}
-	tmp = realloc(obj_registry, sizeof(obj_info_t) * (obj_registry_len + 1));
-	if (!tmp) {
-		PRINT_ERR("Error: Memory allocation failed (game_register_obj)\n");
-		game_exit(1);
-	}
-	obj_registry = tmp;
-	strcpy(obj_registry[obj_registry_len].name, name);
-	obj_registry[obj_registry_len].sprite_id = sprite_id;
-	obj_registry[obj_registry_len].has_hitbox = 2;
-	obj_registry[obj_registry_len].interact.c = interact;
-	obj_registry[obj_registry_len].interact.is_lua = 0;
-	obj_registry[obj_registry_len].hit_x = hitx;
-	obj_registry[obj_registry_len].hit_y = hity;
-	obj_registry[obj_registry_len].hit_w = hitw;
-	obj_registry[obj_registry_len].hit_h = hith;
-	obj_registry_len++;
-}
-
-void game_register_obj_full(char *name, uint32_t sprite_id, c_lua_obj_t func, int has_hit, double hitx, double hity, double hitw, double hith) {
-	if (strlen(name) > OBJ_NAME_LENGTH) {
-		PRINT_ERR("Error: Object name too long: '%s'\n", name);
-		return;
-	}
-	void *tmp;
-	for (uint32_t i = 0; i < obj_registry_len; i++) {
-		if (strcmp(obj_registry[i].name, name) == 0) {
-			PRINT_ERR("Error: Object already exists: '%s'\n", name);
-			return;
-		}
-	}
-	tmp = realloc(obj_registry, sizeof(obj_info_t) * (obj_registry_len + 1));
-	if (!tmp) {
-		PRINT_ERR("Error: Memory allocation failed (game_register_obj)\n");
-		game_exit(1);
-	}
-	obj_registry = tmp;
-	strcpy(obj_registry[obj_registry_len].name, name);
-	obj_registry[obj_registry_len].sprite_id = sprite_id;
-	obj_registry[obj_registry_len].has_hitbox = has_hit;
-	obj_registry[obj_registry_len].interact = func;
-	obj_registry[obj_registry_len].hit_x = hitx;
-	obj_registry[obj_registry_len].hit_y = hity;
-	obj_registry[obj_registry_len].hit_w = hitw;
-	obj_registry[obj_registry_len].hit_h = hith;
-	obj_registry_len++;
 }

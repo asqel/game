@@ -1,15 +1,19 @@
 #ifndef GAME_TYPES
 #define GAME_TYPES
 
+// !TODO rearange struct members to better pack
+
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include <SDL2/SDL_ttf.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdint.h>
 
 #define PRINT_ERR(...) fprintf(stderr, __VA_ARGS__)
+
+#define GAME_MIN(X, Y) ((X) < (Y) ? (X) : (Y))
+#define GAME_MAX(X, Y) ((X) > (Y) ? (X) : (Y))
 
 #define TEXTURE_NAME_LENGTH 256
 #define OBJ_NAME_LENGTH 256
@@ -80,6 +84,7 @@ struct texture_t {
 	char name[TEXTURE_NAME_LENGTH + 1];
 };
 
+// !TODO change sprites types to uint16_t for ttl/idx
 struct sprite_registry_t {
 	int *textures_ids;
 	int textures_ids_len;
@@ -99,7 +104,6 @@ struct obj_info_t {
 	char name[OBJ_NAME_LENGTH + 1];
 	int sprite_id;
 	int has_hitbox; // 2 = custom
-	int interact_ref;
 	double hit_x;
 	double hit_y;
 	double hit_w;
@@ -113,6 +117,7 @@ struct obj_t {
 };
 
 struct chunk_t {
+	// !TODO make this have 3 pointers so if no foreground NULL
 	obj_t objs[CHUNK_SIZE][CHUNK_SIZE][3]; // 0: back, 1: middle, 2:top
 	char hitbox[CHUNK_SIZE][CHUNK_SIZE];
 	entity_t *entities;
@@ -129,11 +134,9 @@ struct world_t {
 };
 
 struct player_t {
-	double x;
-	double y;
-	uint8_t dir; // 0 up, 1 right, 2 down 3 left
 	int render_distance;
 	gui_t *gui;
+	int *entity_infos;
 };
 
 struct entity_t {
@@ -152,7 +155,7 @@ struct entity_t {
 	double hitbox_w;
 	double hitbox_h;
 
-	double hp; // == 0 to die
+	double hp; // == 0 to die && id != 0
 	sprite_t sprite;
 	int data_ref;
 	int lua_ref; // custom obj store cx, cy, idx in list
@@ -172,7 +175,6 @@ struct entity_info_t {
 };
 
 struct game_t {
-	int is_editor;
 	player_t *player;
 	world_t *world;
 	uint32_t actions[GAME_ACT_ENUM_MAX]; // how much the action is pressed
