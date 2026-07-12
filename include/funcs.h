@@ -104,7 +104,7 @@ dialogue_info_t *get_dialogue_by_id(size_t id);
 //-------- entities
 entity_info_t *get_entity_info(uint32_t id);
 void entities_tick();
-uint32_t entity_register(char *name, int sprite_id, int tick_ref, double hp, int hit[4], double friction);
+uint32_t entity_register(char *name, int sprite_id, int tick_ref, double hp, double hit[4], double friction);
 entity_t *entity_add(uint32_t id, int x, int y, world_t *world);
 void entity_move_collide(entity_t *ent, double vx, double vy, int *to_remove);
 

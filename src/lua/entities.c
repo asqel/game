@@ -26,7 +26,7 @@ int lua_func_register_entity(lua_State *l) {
 	int tick = LUA_REFNIL;
 	int hp = lua_tonumber(l, 4);
 
-	int hit[4];
+	double hit[4];
 	hit[0] = lua_tonumber(l, 5);
 	hit[1] = lua_tonumber(l, 6);
 	hit[2] = lua_tonumber(l, 7);

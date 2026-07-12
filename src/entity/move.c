@@ -72,10 +72,18 @@ static inline void swept_aabb(hitbox_t *moving_hit, double dx, double dy, hitbox
 	info->hit = 1;
 	info->t = entry;
 	
-	if (x_entry > y_entry)
-		info->nx = (dx > 0) ? -1 : 1;
-	else
-		info->ny = (dy > 0) ? -1 : 1;
+	//if (x_entry > y_entry)
+	//	info->nx = (dx > 0) ? -1 : 1;
+	//else
+	//	info->ny = (dy > 0) ? -1 : 1;
+	if (x_entry > y_entry) {
+    info->nx = (dx > 0) ? -1 : 1;
+    info->ny = 0;
+}
+else {
+    info->nx = 0;
+    info->ny = (dy > 0) ? -1 : 1;
+}
 }
 
 static inline int get_obj_hit(hitbox_t *hit, int x, int y, int width_as_block, int height_as_block) {
@@ -119,8 +127,6 @@ static inline void move(hitbox_t *ent_hit, double dx, double dy, int width_as_bl
 	double max_x = GAME_MAX(ent_hit->x + ent_hit->w, ent_hit->x + dx + ent_hit->w);
 	double max_y = GAME_MAX(ent_hit->y + ent_hit->h, ent_hit->y + dy + ent_hit->h);
 
-	
-	
 	for (int y = min_y; y <= max_y; y++) {
 		for (int x = min_x; x <= max_x; x++) {
 			hitbox_t obj_hit = {0};
@@ -131,13 +137,15 @@ static inline void move(hitbox_t *ent_hit, double dx, double dy, int width_as_bl
 			ret.t = 1;
 			swept_aabb(ent_hit, dx, dy, &obj_hit, &ret);
 
-			if (ret.hit && ret.t < best->t)
+			if (ret.hit && ret.t <= best->t)
 				*best = ret;
 		}
 	}
 }
 
 void entity_move_collide(entity_t *ent, double vx, double vy, int *to_remove) {
+	if (vx == 0 && vy == 0)
+		return ;
 	int width_as_block = game_ctx->world->width * CHUNK_SIZE;
 	int height_as_block = game_ctx->world->height * CHUNK_SIZE;
 
@@ -145,20 +153,41 @@ void entity_move_collide(entity_t *ent, double vx, double vy, int *to_remove) {
 	normalize_coord(&ent->y, height_as_block);
 
 	hitbox_t ent_hit = {0};
-	ent_hit.x = ent->x + ent->hitbox_x;
-	ent_hit.y = ent->y + ent->hitbox_y;
+	ent_hit.x = ent->x - ent->hitbox_w / 2 + ent->hitbox_x;
+	ent_hit.y = ent->y - ent->hitbox_h + ent->hitbox_y;
 	ent_hit.w = ent->hitbox_w;
 	ent_hit.h = ent->hitbox_h;
 
 	info_t info = {0};
 	info.t = 1;
 	move(&ent_hit, vx, vy, width_as_block, height_as_block, &info);
+	//ent->x += vx * info.t;
+	//ent->y += vy * info.t;
+	//if (info.hit) {
+	//	if (info.nx)
+	//		vx = 0;
+	//	if (info.ny)
+	//		vy = 0;
+	//	entity_move_collide(ent, vx, vy, to_remove);
+	//}
+	info.t -= 0.001;
+	if (info.t < 0)
+		info.t = 0;
+	double remain = 1.0 - info.t;
+
 	ent->x += vx * info.t;
 	ent->y += vy * info.t;
+	
 	if (info.hit) {
-		if (info.nx)
-			*to_remove |= 1;
-		if (info.ny)
-			*to_remove |= 2;
+	    vx *= remain;
+	    vy *= remain;
+	
+	    if (info.nx)
+	        vx = 0;
+	
+	    if (info.ny)
+	        vy = 0;
+	
+	    entity_move_collide(ent, vx, vy, to_remove);
 	}
 }

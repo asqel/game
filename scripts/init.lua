@@ -45,7 +45,10 @@ function test(ent)
 	if (game.act.get(game.act.RIGHT)) > 0 then
 		vx = vx + 0.1
 	end
-	set_entity_velocity(ent, vx, vy)
+	-- set_entity_velocity(ent, 0.1, 0.1)
+	if (vx ~= 0 or vy ~= 0) then
+		set_entity_velocity(ent, vx, vy)
+	end
 	print("is moving ?", get_entity_ismoving(ent))
 end
 

@@ -3,7 +3,7 @@
 entity_info_t *entities_infos = NULL;
 int entities_infos_len = 0;
 
-uint32_t entity_register(char *name, int sprite_id, int tick_ref, double hp, int hit[4], double friction) {
+uint32_t entity_register(char *name, int sprite_id, int tick_ref, double hp, double hit[4], double friction) {
 	if (strlen(name) > OBJ_NAME_LENGTH) {
 		PRINT_ERR("Error: entity name too long %s\n", name);
 		game_exit(1);
