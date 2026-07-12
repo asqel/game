@@ -48,22 +48,10 @@ game_event_t game_event_from_sdl(SDL_Event *ev) {
 
 	if (ev->type == SDL_KEYDOWN || ev->type == SDL_KEYUP) {
 		res.type = (ev->type == SDL_KEYDOWN) ? GAME_EVTY_PRESSED : GAME_EVTY_RELEASED;
-		res.key.scancode = ev->key.keysym.scancode;
-		res.key.action = get_action_from_scancode(res.key.scancode);
-	}
-	else if (ev->type == SDL_TEXTINPUT) {
-		res.type = GAME_EVTY_TEXT;
-		memcpy(res.text, ev->text.text, 32);
+		res.scancode = ev->key.keysym.scancode;
+		res.action = get_action_from_scancode(res.scancode);
 	}
 	return res;
-}
-
-void game_enable_text_input() {
-	SDL_StartTextInput();
-}
-
-void game_disable_text_input() {
-	SDL_StopTextInput();
 }
 
 void update_event() {
@@ -73,8 +61,8 @@ void update_event() {
 			game_exit(0);
 		game_event_t event = game_event_from_sdl(&ev);
 		if (event.type == GAME_EVTY_PRESSED)
-			game_ctx->actions[event.key.action]++;
+			game_ctx->actions[event.action]++;
 		else if (event.type == GAME_EVTY_RELEASED)
-			game_ctx->actions[event.key.action] = 0;
+			game_ctx->actions[event.action] = 0;
 	}
 }

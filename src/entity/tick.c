@@ -1,8 +1,8 @@
 #include "game.h"
 
 static void for_each_chunk(void (*func)(chunk_t *, int, int)) {
-	int player_chunk_y = game_ctx->player->y / CHUNK_SIZE;	
-	int player_chunk_x = game_ctx->player->x / CHUNK_SIZE;	
+	int player_chunk_x = game_ctx->player->entity_infos[0];	
+	int player_chunk_y = game_ctx->player->entity_infos[1];	
 	int size = game_ctx->player->render_distance;
 	for (int i = 0; i < size; i++) {
 		int real_y = player_chunk_y - size / 2 + i;
@@ -40,18 +40,16 @@ static void update_tick(chunk_t *chunk, int cx, int cy) {
 		return ;
 	for (int i = 0; i < chunk->entities_len; i++) {
 		entity_t *ent = &chunk->entities[i];
+		if (ent->vx || ent->vy)
+			ent->is_moving = 1;
 		entity_info_t *info = &entities_infos[ent->id];
-		if (info->on_tick.is_lua) {
-			lua_rawgeti(lua_state, LUA_REGISTRYINDEX, info->on_tick.lua_ref);
-			lua_rawgeti(lua_state, LUA_REGISTRYINDEX, ent->lua_ref);
-			if (lua_pcall(lua_state, 1, 0, 0) != 0) {
-					PRINT_ERR("Error: entity tick: %s\n", lua_tostring(lua_state, -1));
-					lua_pop(lua_state, 1);
-			}
-		}
-		else if (info->on_tick.c) {
-			void (*func)(entity_t *) = info->on_tick.c;
-			func(ent);
+		if (info->on_tick_ref == LUA_REFNIL)
+			continue;
+		lua_rawgeti(lua_state, LUA_REGISTRYINDEX, info->on_tick_ref);
+		lua_rawgeti(lua_state, LUA_REGISTRYINDEX, ent->lua_ref);
+		if (lua_pcall(lua_state, 1, 0, 0) != 0) {
+			PRINT_ERR("Error: entity tick: %s\n", lua_tostring(lua_state, -1));
+			lua_pop(lua_state, 1);
 		}
 	}
 }
@@ -63,21 +61,50 @@ static void update_velocity(chunk_t *chunk, int cx, int cy) {
 		return ;
 	for (int i = 0; i < chunk->entities_len; i++) {
 		entity_t *ent = &chunk->entities[i];
+		double vx = ent->vx;
+		double vy = ent->vy;
 		if (ent->vx != 0) {
-			ent->x += ent->vx;
 			ent->vx *= ent->friction;
-			ent->is_moving = 1;
 			if (-VELOCITY_EPSILON < ent->vx && ent->vx < VELOCITY_EPSILON)
 				ent->vx = 0;
 		}
 		if (ent->vy != 0) {
-			ent->y += ent->vy;
 			ent->vy *= ent->friction;
-			ent->is_moving = 1;
 			if (-VELOCITY_EPSILON < ent->vy && ent->vy < VELOCITY_EPSILON)
 				ent->vy = 0;
 		}
+		int to_remove = 0;
+		if (vx || vy)
+			entity_move_collide(ent, vx, vy, &to_remove);
+		if (to_remove & 1)
+			ent->vx = 0;
+		if (to_remove & 2)
+			ent->vy = 0;
 	}
+}
+
+static void add_entity(chunk_t *chunk, entity_t *ent, int cx, int cy) {
+	chunk->entities_len++;
+	chunk->entities = realloc(chunk->entities, sizeof(entity_t) * chunk->entities_len);
+	chunk->entities[chunk->entities_len - 1] = *ent;
+	ent = &chunk->entities[chunk->entities_len - 1];
+	ent->lua_infos[0] = cx;
+	ent->lua_infos[1] = cy;
+	ent->lua_infos[2] = chunk->entities_len - 1;
+}
+
+static void remove_entity(chunk_t *chunk, int idx) {
+	if (chunk->entities_len == 1) {
+		free(chunk->entities);
+		chunk->entities_len = 0;
+		chunk->entities = NULL;
+		return ;
+	}
+	chunk->entities_len--;
+	chunk->entities[idx] = chunk->entities[chunk->entities_len];
+	chunk->entities[idx].lua_infos[2] = idx;
+	if (chunk->entities_len % 5 == 0)
+		chunk->entities = realloc(chunk->entities, sizeof(entity_t) * (chunk->entities_len));
 }
 
 static void update_pos(chunk_t *chunk, int cx, int cy) {
@@ -106,25 +133,9 @@ static void update_pos(chunk_t *chunk, int cx, int cy) {
 		chunk_t *new_chunk = get_chunk(ent_cx, ent_cy, game_ctx->world);
 		if (!new_chunk)
 			new_chunk = world_new_chunk(ent_cx, ent_cy, game_ctx->world);
-		new_chunk->entities = realloc(new_chunk->entities, sizeof(entity_t) * (new_chunk->entities_len + 1));
-		new_chunk->entities[new_chunk->entities_len] = *ent;
-		ent->lua_infos[0] = ent_cx;
-		ent->lua_infos[1] = ent_cx;
-		ent->lua_infos[2] = new_chunk->entities_len;
-		new_chunk->entities_len++;
 		
-		chunk->entities[i] = chunk->entities[chunk->entities_len - 1];
-		chunk->entities[i].lua_infos[0] = cx;
-		chunk->entities[i].lua_infos[1] = cy;
-		chunk->entities[i].lua_infos[2] = i;
-		chunk->entities_len--;
-		if (!chunk->entities_len) {
-			free(chunk->entities);
-			chunk->entities = NULL;
-		}
-		else if ((chunk->entities_len % 5) == 0)
-			chunk->entities = realloc(chunk->entities, sizeof(entity_t) * (chunk->entities_len));
-
+		add_entity(new_chunk, ent, ent_cx, ent_cy);
+		remove_entity(chunk, i);
 		i--;
 	}
 }

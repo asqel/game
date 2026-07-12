@@ -1,5 +1,4 @@
 #include "game.h"
-#include <unistd.h>
 
 int main(int argc,char **argv) {
 	game_init(argc, argv);
@@ -12,7 +11,9 @@ int main(int argc,char **argv) {
 				game_ctx->actions[i]++;
 
 		game_tick();
-		game_render(game_get_fps());
+
+		game_render();
+		update_screen();
 
 		game_loop_end();
 

@@ -7,7 +7,7 @@ CC = gcc
 LD = gcc
 
 CFLAGS = -Wall -Wextra -g -Iinclude/ $(SDL_INC) #-fsanitize=address
-LDFLAGS = $(SDL_LIB) -lSDL2 -lSDL2_image -lSDL2_ttf -Llibs/ -llua54 -lm #-fsanitize=address
+LDFLAGS = $(SDL_LIB) -lSDL2 -lSDL2_image -Llibs/ -llua54 -lm #-fsanitize=address
 LIBS = 
 
 ifeq ($(OS), Windows_NT)
@@ -18,6 +18,9 @@ else
 endif
 
 EXPORT_PATH = ./out/
+
+MAKEFLAGS ?= 
+MAKEFLAGS += -j10
 
 NAME = game
 
@@ -37,8 +40,7 @@ clean:
 fclean: clean
 	rm -rf $(NAME)
 
-re: fclean
-	make -j10
+re: fclean all
 
 export: $(NAME)
 	mkdir -p $(EXPORT_PATH)
@@ -53,3 +55,4 @@ debug:
 	valgrind --leak-check=full --show-leak-kinds=all ./game 2> f
 
 .PHONY: re fclean clean all
+.NOTPARALLEL: fclean clean all

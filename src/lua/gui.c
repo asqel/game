@@ -11,13 +11,12 @@ int lua_func_open_gui(lua_State *l) {
 			return lua_error(l);
 		}
 	}
-	c_lua_obj_t data[4];
+	int data[4];
 	for (int i = 1; i <= 4; i++) {
-		data[i - 1].is_lua = 1;
 		lua_pushvalue(l, i);
-		data[i - 1].lua_ref = luaL_ref(l, LUA_REGISTRYINDEX);
+		data[i - 1] = luaL_ref(l, LUA_REGISTRYINDEX);
 	}
-	game_open_gui2(data[0], data[1], data[2], data[3]);		
+	game_open_gui(data[0], data[1], data[2], data[3]);
 
 	return 0;
 }

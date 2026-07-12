@@ -9,6 +9,9 @@ static uint64_t current_time_count = 0;
 static uint64_t current_time_frame = 0;
 static uint64_t current_fps = 0;
 
+//#undef GAME_FPS
+//#define GAME_FPS 1
+
 static uint64_t fps_target = GAME_FPS;
 static uint64_t fps_target_as_us = 1000 * 1000 / GAME_FPS; 
 

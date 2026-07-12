@@ -2,7 +2,7 @@ local game = {}
 
 game.sprite = {}
 game.sprite.PAUSED = SPRITE_PAUSED
-game.sprite.LOOP = LOOP
+game.sprite.LOOP = SPRITE_LOOP
 game.sprite.register = register_sprite
 game.sprite.get_id = get_sprite_id
 

@@ -19,9 +19,7 @@ static void init_lua_funcs() {
 	add_lua_func(lua_func_get_sprite_id, "get_sprite_id");
 	add_lua_func(lua_func_launch_file, "launch_file");
 	add_lua_func(lua_func_launch_file, "dofile");
-	add_lua_func(lua_func_open_dialogue, "open_dialogue");
 	add_lua_func(lua_func_open_gui, "open_gui");
-	add_lua_func(lua_func_draw_text, "draw_text");
 	add_lua_number(GAME_ACT_UP, "GAME_ACT_UP");
 	add_lua_number(GAME_ACT_RIGHT, "GAME_ACT_RIGHT");
 	add_lua_number(GAME_ACT_DOWN, "GAME_ACT_DOWN");
@@ -43,6 +41,10 @@ static void init_lua_funcs() {
 	add_lua_func(lua_func_close_gui, "close_gui");
 	add_lua_func(lua_func_register_entity, "register_entity");
 	add_lua_func(lua_func_entity_add, "entity_add");
+	add_lua_func(lua_func_read_save, "read_save");
+	add_lua_func(lua_func_set_entity_func, "set_entity_func");
+	add_lua_func(lua_func_set_entity_velocity, "set_entity_velocity");
+	add_lua_func(lua_func_get_entity_ismoving, "get_entity_ismoving");
 }
 
 static void load_libs() {
@@ -69,7 +71,10 @@ int init_lua() {
 
 	load_libs();
 	init_lua_funcs();
+	return 0;
+}
 
+int init_lua_script() {
 	char *path = malloc(strlen(game_dir) + strlen("/scripts/main.lua") + 1);
 	sprintf(path, "%s/scripts/main.lua", game_dir);
 	if (luaL_dofile(lua_state, path) != LUA_OK) {

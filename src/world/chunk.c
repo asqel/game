@@ -5,6 +5,8 @@ static chunk_t *game_load_chunk(world_t *world, int x, int y) {
 	(void)y;
 	(void)world;
 	chunk_t *res = malloc(sizeof(chunk_t));
+	res->entities_len = 0;
+	res->entities = NULL;
 	for (int i = 0; i < 20; i++) {
 		for (int k = 0; k < 20; k++) {
 			res->objs[i][k][0].id = 0;
@@ -19,13 +21,8 @@ static chunk_t *game_load_chunk(world_t *world, int x, int y) {
 chunk_t *world_new_chunk(int x, int y, world_t *world) {
 	chunk_t *old = get_chunk(x, y, world);	
 	if (old) {
-		for (int i = 0; i < old->entities_len; i++) {
-			c_lua_obj_t *data = &old->entities[i].data;		
-			if (data->is_lua)
-				luaL_unref(lua_state, LUA_REGISTRYINDEX, data->lua_ref);
-			else if (data->c)
-				free(data->c);
-		}
+		for (int i = 0; i < old->entities_len; i++)
+			luaL_unref(lua_state, LUA_REGISTRYINDEX, old->entities[i].data_ref);
 		free(old->entities);
 		bzero(old, sizeof(chunk_t));
 		return old;
@@ -45,13 +42,8 @@ chunk_t *world_new_chunk(int x, int y, world_t *world) {
 chunk_t *world_new_chunk_at(int x, int y, world_t *world) {
 	chunk_t *old = get_chunk_at(x, y, world);	
 	if (old) {
-		for (int i = 0; i < old->entities_len; i++) {
-			c_lua_obj_t *data = &old->entities[i].data;		
-			if (data->is_lua)
-				luaL_unref(lua_state, LUA_REGISTRYINDEX, data->lua_ref);
-			else if (data->c)
-				free(data->c);
-		}
+		for (int i = 0; i < old->entities_len; i++)
+			luaL_unref(lua_state, LUA_REGISTRYINDEX, old->entities[i].data_ref);
 		free(old->entities);
 		bzero(old, sizeof(chunk_t));
 		return old;

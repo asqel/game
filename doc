@@ -52,3 +52,15 @@ dialogues control sequence:
 		\W : make so that the dialoguw wait for input
 		\SNUM. : set the dialogue style
 		\FNUM. : set font
+
+save file:
+	signature: 4bytes
+	checksum: 2 bytes
+	elements...
+	
+	element:
+		name_len: 1 byte
+		name: string (not finished by a \0)
+		type: 1 byte
+		value_len: 4 bytes
+		value...

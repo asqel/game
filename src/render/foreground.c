@@ -8,44 +8,43 @@ static inline void render_obj(obj_t *obj, int x, int y) {
 
 	if (!texture)
 		return ;
-	x += TILE_SIZE;
-	x -= texture->w / 2;
-	y += TILE_SIZE + TILE_SIZE / 2;
-	y -= texture->h;
 
 	SDL_Rect rect = (SDL_Rect){0};
-	rect.x = x;
-	rect.y = y;
+	rect.x = x - texture->w / 2;
+	rect.y = y - texture->h;
 	rect.w = texture->w;
 	rect.h = texture->h;
 	SDL_BlitSurface(texture, NULL, game_surface, &rect);
 }
 
-void game_render_foreground(chunk_t ***chunks, int size) {
-	int offset_x = game_ctx->player->x;
-	int offset_y = game_ctx->player->y;
+void game_render_foreground(chunk_t ***chunks, int size, double player_x, double player_y) {
+	int player_middle_x = player_x * TILE_SIZE + TILE_SIZE / 2;
+	int player_middle_y = player_y * TILE_SIZE + TILE_SIZE / 2;
+	
+	int offset_x = -player_middle_x + GAME_WIDTH / 2;
+	int offset_y = -player_middle_y + GAME_HEIGHT / 2;
 
-	offset_x -= offset_x % CHUNK_SIZE;
-	offset_y -= offset_y % CHUNK_SIZE;
-	offset_x -= (size / 2) * CHUNK_SIZE + game_ctx->player->x;
-	offset_y -= (size / 2) * CHUNK_SIZE + game_ctx->player->y;
+	int obj_top_left_x = (((int)player_x) / CHUNK_SIZE - size / 2) * CHUNK_SIZE;
+	int obj_top_left_y = (((int)player_y) / CHUNK_SIZE - size / 2) * CHUNK_SIZE;
 
-	int frac_x = -(game_ctx->player->x - (int)game_ctx->player->x) * TILE_SIZE;  
-	int frac_y = -(game_ctx->player->y - (int)game_ctx->player->y) * TILE_SIZE; 
+	int current_feet_y = obj_top_left_y * TILE_SIZE + offset_y + TILE_SIZE;
 	for (int y = 0; y < size * CHUNK_SIZE; y++) {
+		int current_feet_x = obj_top_left_x * TILE_SIZE + offset_x + TILE_SIZE / 2;
+
 		for (int x = 0; x < size * CHUNK_SIZE; x++) {
 			chunk_t *chunk = chunks[y / CHUNK_SIZE][x / CHUNK_SIZE];
 			if (!chunk)
-				continue;
-			int scr_x = GAME_WIDTH / 2 - TILE_SIZE / 2;
-			int scr_y = GAME_HEIGHT / 2 - TILE_SIZE / 2;
+				goto next;
 
-			scr_x += (offset_x + x) * TILE_SIZE + frac_x;
-			scr_y += (offset_y + y) * TILE_SIZE + frac_y;
-			obj_t *obj = &chunk->objs[y % CHUNK_SIZE][x % CHUNK_SIZE][2];
+			obj_t *obj = &chunk->objs[y % CHUNK_SIZE][x % CHUNK_SIZE][1];
 			if (!obj->id)
-				continue;
-			render_obj(obj, scr_x, scr_y);
+				goto next;
+
+			render_obj(obj, current_feet_x, current_feet_y);
+			next:
+				current_feet_x += TILE_SIZE;
 		}
+		
+		current_feet_y += TILE_SIZE;
 	}
 }
