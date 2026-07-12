@@ -114,16 +114,16 @@ static void update_pos(chunk_t *chunk, int cx, int cy) {
 		entity_t *ent = &chunk->entities[i];
 		if (!ent->is_moving)
 			continue;
-		//int width_as_blocks = game_ctx->world->width * CHUNK_SIZE;
-		//int height_as_blocks = game_ctx->world->height * CHUNK_SIZE;
-		//while (ent->x < 0)
-		//	ent->x += width_as_blocks;
-		//while (ent->x >= width_as_blocks)
-		//	ent->x -= width_as_blocks;
-		//while (ent->y < 0)
-		//	ent->y += height_as_blocks;
-		//while (ent->y >= height_as_blocks)
-		//	ent->y -= height_as_blocks;
+		int width_as_blocks = game_ctx->world->width * CHUNK_SIZE;
+		int height_as_blocks = game_ctx->world->height * CHUNK_SIZE;
+		while (ent->x < 0)
+			ent->x += width_as_blocks;
+		while (ent->x >= width_as_blocks)
+			ent->x -= width_as_blocks;
+		while (ent->y < 0)
+			ent->y += height_as_blocks;
+		while (ent->y >= height_as_blocks)
+			ent->y -= height_as_blocks;
 
 		ent->is_moving = 0;
 		int ent_cx = ent->x / CHUNK_SIZE;
