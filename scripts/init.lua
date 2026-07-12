@@ -49,6 +49,7 @@ function test(ent)
 	if (vx ~= 0 or vy ~= 0) then
 		set_entity_velocity(ent, vx, vy)
 	end
+	print(ent)
 	print("is moving ?", get_entity_ismoving(ent))
 end
 

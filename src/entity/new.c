@@ -39,10 +39,10 @@ entity_t *entity_add(uint32_t id, int x, int y, world_t *world) {
 	ent->id = id;
 	ent->sprite = get_sprite_by_id(entities_infos[id].sprite_id);
 	ent->hp = entities_infos[id].hp;
-	ent->hitbox_x = entities_infos[id].default_hitbox_x;
-	ent->hitbox_y = entities_infos[id].default_hitbox_y;
-	ent->hitbox_w = entities_infos[id].default_hitbox_w;
-	ent->hitbox_h = entities_infos[id].default_hitbox_h;
+	ent->world_hitbox_x = entities_infos[id].default_world_hitbox_x;
+	ent->world_hitbox_y = entities_infos[id].default_world_hitbox_y;
+	ent->world_hitbox_w = entities_infos[id].default_world_hitbox_w;
+	ent->world_hitbox_h = entities_infos[id].default_world_hitbox_h;
 	ent->lua_infos = lua_newuserdata(lua_state, sizeof(int) * 3);
 	luaL_getmetatable(lua_state, "entity_t");
 	lua_setmetatable(lua_state, -2);

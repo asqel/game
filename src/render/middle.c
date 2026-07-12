@@ -70,7 +70,7 @@ static void render_images(image_t *images, int len) {
 		if (!images[i].img)
 			continue;
 		rect.x = images[i].x;
-		rect.y = images[i].y + images[i].z;
+		rect.y = images[i].y - images[i].z;
 		rect.w = images[i].img->w;
 		rect.h = images[i].img->h;
 		SDL_BlitSurface(images[i].img, NULL, game_surface, &rect);
@@ -92,9 +92,9 @@ void game_render_middle(chunk_t ***chunks, int size, double player_x, double pla
 	memset(images, 0, sizeof(image_t) * len);
 	int end = 0;
 
-	int current_top_left_y = obj_top_left_y * TILE_SIZE;
+	int current_feet_y = obj_top_left_y * TILE_SIZE + offset_y + TILE_SIZE;
 	for (int y = 0; y < size * CHUNK_SIZE; y++) {
-		int current_top_left_x = obj_top_left_x * TILE_SIZE;
+		int current_feet_x = obj_top_left_x * TILE_SIZE + offset_x + TILE_SIZE / 2;
 
 		for (int x = 0; x < size * CHUNK_SIZE; x++) {
 			chunk_t *chunk = chunks[y / CHUNK_SIZE][x / CHUNK_SIZE];
@@ -113,8 +113,8 @@ void game_render_middle(chunk_t ***chunks, int size, double player_x, double pla
 				goto next;
 
 			images[end].img = texture;
-			images[end].x = current_top_left_x + offset_x + TILE_SIZE / 2;
-			images[end].y = current_top_left_y + offset_y + TILE_SIZE;
+			images[end].x = current_feet_x;
+			images[end].y = current_feet_y;
 			images[end].z = 0;
 			images[end].feet_y = images[end].y;
 
@@ -126,10 +126,10 @@ void game_render_middle(chunk_t ***chunks, int size, double player_x, double pla
 			end++;
 			
 			next:
-				current_top_left_x += TILE_SIZE;
+				current_feet_x += TILE_SIZE;
 		}
 
-		current_top_left_y += TILE_SIZE;
+		current_feet_y += TILE_SIZE;
 	}
 	for (int i = 0; i < size; i++) {
 		for (int k = 0; k < size; k++) {
@@ -139,10 +139,6 @@ void game_render_middle(chunk_t ***chunks, int size, double player_x, double pla
 			end = add_entities(images, end, chunk->entities, chunk->entities_len, offset_x, offset_y);
 		}
 	}
-	//for (int i = 0; i < end; i++) {
-	//	printf("%d %d\n", images[i].x, images[i].y);
-	//}
-	//exit(1);
 	render_images(images, len);
 	free(images);
 }	

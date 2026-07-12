@@ -159,10 +159,10 @@ void entity_move_collide(entity_t *ent, double vx, double vy, int *to_remove) {
 	normalize_coord(&ent->y, height_as_block);
 
 	hitbox_t ent_hit = {0};
-	ent_hit.x = ent->x - ent->hitbox_w / 2 + ent->hitbox_x;
-	ent_hit.y = ent->y - ent->hitbox_h + ent->hitbox_y;
-	ent_hit.w = ent->hitbox_w;
-	ent_hit.h = ent->hitbox_h;
+	ent_hit.x = ent->x - ent->world_hitbox_w / 2 + ent->world_hitbox_x;
+	ent_hit.y = ent->y - ent->world_hitbox_h + ent->world_hitbox_y;
+	ent_hit.w = ent->world_hitbox_w;
+	ent_hit.h = ent->world_hitbox_h;
 
 	info_t info = {0};
 	info.t = 1;

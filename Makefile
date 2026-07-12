@@ -19,6 +19,9 @@ endif
 
 EXPORT_PATH = ./out/
 
+MAKEFLAGS ?= 
+MAKEFLAGS += -j10
+
 NAME = game
 
 all: $(NAME)
@@ -37,8 +40,7 @@ clean:
 fclean: clean
 	rm -rf $(NAME)
 
-re: fclean
-	make -j10
+re: fclean all
 
 export: $(NAME)
 	mkdir -p $(EXPORT_PATH)
@@ -53,3 +55,4 @@ debug:
 	valgrind --leak-check=full --show-leak-kinds=all ./game 2> f
 
 .PHONY: re fclean clean all
+.NOTPARALLEL: fclean clean all

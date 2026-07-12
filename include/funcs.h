@@ -58,7 +58,7 @@ void 		register_obj(char *name, uint32_t sprite_id, int has_hit, double hitx, do
 
 
 //------- render
-void		game_render(uint32_t fps);
+void		game_render();
 void		update_screen();
 void		game_render_background(chunk_t *** chunks, int size, double player_x, double player_y);
 void		game_render_middle(chunk_t *** chunks, int size, double player_x, double player_y);

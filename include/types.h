@@ -150,10 +150,10 @@ struct entity_t {
 	int is_moving;
 	int direction;
 
-	double hitbox_x;
-	double hitbox_y;
-	double hitbox_w;
-	double hitbox_h;
+	double world_hitbox_x;
+	double world_hitbox_y;
+	double world_hitbox_w;
+	double world_hitbox_h;
 
 	double hp; // == 0 to die && id != 0
 	sprite_t sprite;
@@ -164,10 +164,10 @@ struct entity_t {
 
 struct entity_info_t {
 	char name[OBJ_NAME_LENGTH + 1];
-	double default_hitbox_x;
-	double default_hitbox_y;
-	double default_hitbox_w;
-	double default_hitbox_h;
+	double default_world_hitbox_x;
+	double default_world_hitbox_y;
+	double default_world_hitbox_w;
+	double default_world_hitbox_h;
 	double friction;
 	int sprite_id;
 	double hp;

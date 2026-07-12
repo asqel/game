@@ -25,7 +25,7 @@ void update_screen() {
 	SDL_RenderPresent(renderer);
 }
 
-void game_render(uint32_t fps) {
+void game_render() {
 	if (!game_ctx->world)
 		return ;
 	SDL_FillRect(game_surface, &(SDL_Rect){0, 0, GAME_WIDTH, GAME_HEIGHT}, 0);
@@ -75,5 +75,4 @@ void game_render(uint32_t fps) {
 	free(chunks_ptr);
 	if (game_ctx->player->gui)
 		game_render_gui();
-	update_screen();
 }
