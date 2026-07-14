@@ -8,9 +8,9 @@
 //------- init / exit
 void		game_init(int argc, char **argv);
 int			init_sdl();
-int			init_textures();
-int			init_sprites();
-int			init_objects();
+void		init_textures();
+void		init_sprite();
+void init_objects();
 void		init_ctx(int argc, char **argv);
 void		sdl_exit();
 noreturn void		game_exit(int exit_code);
@@ -36,6 +36,8 @@ void		game_set_error_special(int error_code);
 //------- texture
 void		game_load_tx(const char *png_path, const char *tx_path);
 uint32_t	game_texture_get_id(const char *name);
+void add_texture(const char *name, SDL_Rect *src_rect, int dest_w, int dest_h, uint32_t atlas, const char *path);
+uint32_t add_atlas(SDL_Texture *tx);
 
 //------- sprite
 sprite_t	get_sprite(char *name);
@@ -46,7 +48,7 @@ void		game_set_sprite_loop(sprite_t *sprite, int loop);
 void		game_sprite_tick(sprite_t *sprite);
 void		game_sprite_reset(sprite_t *sprite);
 uint32_t	get_sprite_id(const char *name);
-SDL_Surface	*game_get_sprite_texture(sprite_t *sprite);
+texture_t *game_get_sprite_texture(sprite_t *sprite);
 
 //------- obj
 uint32_t	game_get_obj_id(char *name);

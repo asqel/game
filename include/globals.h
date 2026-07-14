@@ -9,8 +9,6 @@
 //------- display
 extern SDL_Window			*window;
 extern SDL_Renderer			*renderer;
-extern SDL_Surface			*game_surface;
-extern SDL_Texture			*texture;
 extern int					is_sdl_init;
 extern int					is_img_init;
 
@@ -20,6 +18,8 @@ extern uint32_t				sprite_registry_len;
 
 extern texture_t			*texture_registry;
 extern uint32_t				texture_registry_len;
+extern SDL_Texture			**atlases;
+extern uint32_t				atlases_len;
 
 extern obj_info_t			*obj_registry;
 extern uint32_t				obj_registry_len;

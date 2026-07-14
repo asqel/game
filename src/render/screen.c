@@ -1,34 +1,36 @@
 #include "game.h"
 
 void update_screen() {
-	SDL_UpdateTexture(texture, NULL, game_surface->pixels, game_surface->pitch);
+	//SDL_UpdateTexture(texture, NULL, game_surface->pixels, game_surface->pitch);
 
-	int window_width, window_height;
-	SDL_GetWindowSize(window, &window_width, &window_height);
+	//int window_width, window_height;
+	//SDL_GetWindowSize(window, &window_width, &window_height);
 
-	double scale_factor_width = (double)window_width / (double)GAME_WIDTH;
-	double scale_factor_height = (double)window_height / (double)GAME_HEIGHT;
+	//double scale_factor_width = (double)window_width / (double)GAME_WIDTH;
+	//double scale_factor_height = (double)window_height / (double)GAME_HEIGHT;
 
-	double scale_factor = (scale_factor_width < scale_factor_height) ? scale_factor_width : scale_factor_height;
+	//double scale_factor = (scale_factor_width < scale_factor_height) ? scale_factor_width : scale_factor_height;
 
-	int adjusted_width = (int)(GAME_WIDTH * scale_factor);
-	int adjusted_height = (int)(GAME_HEIGHT * scale_factor);
+	//int adjusted_width = (int)(GAME_WIDTH * scale_factor);
+	//int adjusted_height = (int)(GAME_HEIGHT * scale_factor);
 
-	int x_offset = (window_width - adjusted_width) / 2;
-	int y_offset = (window_height - adjusted_height) / 2;
+	//int x_offset = (window_width - adjusted_width) / 2;
+	//int y_offset = (window_height - adjusted_height) / 2;
 
-	SDL_Rect dst_rect = {x_offset, y_offset, adjusted_width, adjusted_height};
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-	SDL_RenderClear(renderer);
+	//SDL_Rect dst_rect = {x_offset, y_offset, adjusted_width, adjusted_height};
+	//SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+	//SDL_RenderClear(renderer);
 
-	SDL_RenderCopy(renderer, texture, NULL, &dst_rect);
+	//SDL_RenderCopy(renderer, texture, NULL, &dst_rect);
 	SDL_RenderPresent(renderer);
 }
 
 void game_render() {
 	if (!game_ctx->world)
 		return ;
-	SDL_FillRect(game_surface, &(SDL_Rect){0, 0, GAME_WIDTH, GAME_HEIGHT}, 0);
+	//SDL_FillRect(game_surface, &(SDL_Rect){0, 0, GAME_WIDTH, GAME_HEIGHT}, 0);
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // noir
+SDL_RenderClear(renderer);
 	int player_chunk_x = game_ctx->player->entity_infos[0];
 	int player_chunk_y = game_ctx->player->entity_infos[1];
 	int player_idx = game_ctx->player->entity_infos[2];

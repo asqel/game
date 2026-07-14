@@ -1,7 +1,7 @@
 #include "game.h"
 
 typedef struct {
-	SDL_Surface *img;
+	texture_t *img;
 	int x;
 	int y;
 	int z;
@@ -24,19 +24,19 @@ static int count_len(chunk_t ***chunks, int size) {
 static inline int add_entities(image_t *images, int end, entity_t *entities, int len, int offset_x, int offset_y) {
 	for (int i = 0; i < len; i++) {
 		entity_t *ent = &entities[i];
-		SDL_Surface *texture = NULL;
 
-		texture = game_get_sprite_texture(&ent->sprite);
+		texture_t *texture = game_get_sprite_texture(&ent->sprite);
 		game_sprite_tick(&ent->sprite);
+
 		if (!texture)
 			continue;
-		images[end].img = texture;
-		int img_width = texture->w;
-		int img_height = texture->h;
-		images[end].x = ent->x * TILE_SIZE + offset_x - img_width / 2;
-		images[end].y = ent->y * TILE_SIZE + offset_y - img_height;
+
+		images[end].x = ent->x * TILE_SIZE + offset_x - texture->dest_w / 2;
+		images[end].y = ent->y * TILE_SIZE + offset_y - texture->dest_h;
 		images[end].z = 0;
 		images[end].feet_y = ent->y + TILE_SIZE;
+		images[end].img = texture;
+
 		end++;
 	}
 	return end;
@@ -69,11 +69,13 @@ static void render_images(image_t *images, int len) {
 	for (int i = 0; i < len; i++) {
 		if (!images[i].img)
 			continue;
+
 		rect.x = images[i].x;
 		rect.y = images[i].y - images[i].z;
-		rect.w = images[i].img->w;
-		rect.h = images[i].img->h;
-		SDL_BlitSurface(images[i].img, NULL, game_surface, &rect);
+		rect.w = images[i].img->dest_w;
+		rect.h = images[i].img->dest_h;
+
+		SDL_RenderCopy(renderer, atlases[images[i].img->atlas_idx], &images[i].img->src_rect, &rect);
 	}
 }
 
@@ -105,10 +107,9 @@ void game_render_middle(chunk_t ***chunks, int size, double player_x, double pla
 			if (!obj->id)
 				goto next;
 
-			SDL_Surface *texture = NULL;
-	
-			texture = game_get_sprite_texture(&obj->sprite);
+			texture_t *texture = game_get_sprite_texture(&obj->sprite);
 			game_sprite_tick(&obj->sprite);
+
 			if (!texture)
 				goto next;
 
@@ -118,10 +119,8 @@ void game_render_middle(chunk_t ***chunks, int size, double player_x, double pla
 			images[end].z = 0;
 			images[end].feet_y = images[end].y;
 
-			int img_width = texture->w;
-			int img_height = texture->h;
-			images[end].x -= img_width / 2;
-			images[end].y -= img_height;
+			images[end].x -= texture->dest_w / 2;
+			images[end].y -= texture->dest_h;
 
 			end++;
 			

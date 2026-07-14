@@ -80,30 +80,32 @@ struct gui_t {
 };
 
 struct texture_t {
-	SDL_Surface *surface;
+	SDL_Rect src_rect;
+	int dest_w;
+	int dest_h;
+	uint32_t atlas_idx;
 	char name[TEXTURE_NAME_LENGTH + 1];
 };
 
-// !TODO change sprites types to uint16_t for ttl/idx
 struct sprite_registry_t {
-	int *textures_ids;
-	int textures_ids_len;
-	int frame_len_tick;
+	uint32_t *textures_ids;
+	uint16_t textures_ids_len;
+	uint16_t frame_len_tick;
 	char name[TEXTURE_NAME_LENGTH + 1];
 	uint8_t state; // default state
 };
 
 struct sprite_t {
 	uint32_t sprite_id; // id in registry
-	int frame_idx;
-	int current_frame_ttl; // tick to live
+	uint16_t frame_idx;
+	uint16_t current_frame_ttl; // tick to live
 	uint8_t state;
 };
 
 struct obj_info_t {
 	char name[OBJ_NAME_LENGTH + 1];
-	int sprite_id;
-	int has_hitbox; // 2 = custom
+	uint32_t sprite_id;
+	uint8_t has_hitbox; // 2 = custom
 	double hit_x;
 	double hit_y;
 	double hit_w;

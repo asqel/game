@@ -1,20 +1,18 @@
 #include "game.h"
 
 static inline void render_obj(obj_t *obj, int x, int y) {
-	SDL_Surface *texture = NULL;
-	
-	texture = game_get_sprite_texture(&obj->sprite);
+	texture_t *texture = game_get_sprite_texture(&obj->sprite);
 	game_sprite_tick(&obj->sprite);
 
 	if (!texture)
 		return ;
 
 	SDL_Rect rect = (SDL_Rect){0};
-	rect.x = x - texture->w / 2;
-	rect.y = y - texture->h;
-	rect.w = texture->w;
-	rect.h = texture->h;
-	SDL_BlitSurface(texture, NULL, game_surface, &rect);
+	rect.x = x - texture->dest_w / 2;
+	rect.y = y - texture->dest_h;
+	rect.w = texture->dest_w;
+	rect.h = texture->dest_h;
+	SDL_RenderCopy(renderer, atlases[texture->atlas_idx], &texture->src_rect, &rect);
 }
 
 void game_render_background(chunk_t ***chunks, int size, double player_x, double player_y) {

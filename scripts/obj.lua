@@ -4,7 +4,6 @@ local sprite = require("sprite")
 
 
 
-obj.register("air", 0, 0)
 obj.register("grass", sprite.get_id("grass"), 0)
 obj.register("tree", sprite.get_id("tree"), 1)
 obj.register("player_house", sprite.get_id("player_house"), 1)

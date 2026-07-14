@@ -15,6 +15,8 @@ obj_info_t *obj_registry = NULL;
 uint32_t obj_registry_len = 0;
 texture_t *texture_registry = NULL;
 uint32_t texture_registry_len = 0;
+SDL_Texture **atlases = NULL;
+uint32_t atlases_len= 0;
 game_t *game_ctx = NULL;
 
 sprite_registry_t *sprite_registry = NULL;

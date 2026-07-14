@@ -12,11 +12,9 @@ game.obj.register2 = register_obj2
 
 game.gui = {}
 game.gui.open = open_gui
-game.gui.open_dialogue = open_dialogue
 game.gui.close = close_gui
 
 game.draw = {}
-game.draw.text = draw_text
 
 game.act = {}
 game.act.NONE = GAME_ACT_NONE
@@ -39,6 +37,5 @@ game.act.set = set_action
 game.act.get = get_action
 
 game.time = time
-print(io)
 
 return game

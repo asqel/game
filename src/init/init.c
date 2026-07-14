@@ -27,8 +27,9 @@ void game_init(int argc, char **argv) {
 		game_exit(1);
 	}
 	is_img_init = 1;
-	if (init_textures())
-		game_exit(1);
+	init_textures();
+	init_sprite();
+	init_objects();
 	if (dialogue_init())
 		game_exit(1);
 	init_ctx(argc, argv);

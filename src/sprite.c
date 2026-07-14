@@ -79,9 +79,11 @@ void game_sprite_tick(sprite_t *sprite) {
 
 	if (sprite->state & SPRITE_MASK_PAUSED)
 		return;
+
 	if (sprite->current_frame_ttl > 0)
 		sprite->current_frame_ttl--;
-	if (sprite->current_frame_ttl <= 0) {
+
+	if (sprite->current_frame_ttl == 0) {
 		sprite->frame_idx++;
 		if (sprite->frame_idx >= sprite_registry[sprite->sprite_id].textures_ids_len) {
 			if (sprite->state & SPRITE_MASK_LOOP)
@@ -101,15 +103,15 @@ void game_sprite_reset(sprite_t *sprite) {
 	}
 }
 
-SDL_Surface *game_get_sprite_texture(sprite_t *sprite) {
+texture_t *game_get_sprite_texture(sprite_t *sprite) {
 	if (!sprite || sprite->sprite_id >= sprite_registry_len)
-		return NULL;
+		return &texture_registry[0];
 
 	uint32_t texture_id = sprite_registry[sprite->sprite_id].textures_ids[sprite->frame_idx];
 	if (texture_id >= texture_registry_len)
-		return NULL;
+		return &texture_registry[0];
 
-	return texture_registry[texture_id].surface;
+	return &texture_registry[texture_id];
 }
 
 uint32_t get_sprite_id(const char *name) {
@@ -118,5 +120,5 @@ uint32_t get_sprite_id(const char *name) {
 			return i;
 		}
 	}
-	return -1;
+	return 0;
 }

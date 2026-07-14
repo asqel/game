@@ -49,8 +49,8 @@ function test(ent)
 	if (vx ~= 0 or vy ~= 0) then
 		set_entity_velocity(ent, vx, vy)
 	end
-	print(ent)
-	print("is moving ?", get_entity_ismoving(ent))
+	print(game.act.get(game.act.INTERACT))
+
 end
 
 set_entity_func(0, test)
