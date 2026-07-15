@@ -130,8 +130,8 @@ struct chunk_t {
 
 struct world_t {
 	chunk_t ***chunks;
-	int width; // in chunks
-	int height;
+	uint32_t width; // in chunks
+	uint32_t height;
 	char name[GAME_WORLD_NAME_MAX_LEN + 1];
 };
 

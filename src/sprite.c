@@ -1,6 +1,6 @@
 #include "game.h"
 
-void register_sprite(uint32_t *texture_ids, int texture_ids_len, int frame_len_tick, const char *name, uint8_t state) {
+void register_sprite(uint32_t *texture_ids, uint16_t texture_ids_len, uint16_t frame_len_tick, const char *name, uint8_t state) {
 	if (strlen(name) > TEXTURE_NAME_LENGTH) {
 		PRINT_ERR("Sprite %s name too long (not registering)\n", name);
 		return ;
@@ -8,14 +8,14 @@ void register_sprite(uint32_t *texture_ids, int texture_ids_len, int frame_len_t
 	sprite_registry_t *new_sprite = realloc(sprite_registry, sizeof(sprite_registry_t) * (sprite_registry_len + 1));
 	if (!new_sprite) {
 		PRINT_ERR("Allocation failed for sprite %s (not registering)\n", name);
-		return ;
+		exit(1);
 	}
 	sprite_registry = new_sprite;
 
 	sprite_registry[sprite_registry_len].textures_ids = malloc(texture_ids_len * sizeof(int));
 	if (!sprite_registry[sprite_registry_len].textures_ids) {
 		PRINT_ERR("Allocation failed for textures of sprite %s (not registering)\n", name);
-		return ;
+		exit(1);
 	}
 
 	memcpy(sprite_registry[sprite_registry_len].textures_ids, texture_ids, texture_ids_len * sizeof(int));
@@ -28,7 +28,7 @@ void register_sprite(uint32_t *texture_ids, int texture_ids_len, int frame_len_t
 
 sprite_t get_sprite(char *name) {
 	for (uint32_t i = 0; i < sprite_registry_len; i++) {
-		if (strcmp(sprite_registry[i].name, name) == 0) {
+		if (!strcmp(sprite_registry[i].name, name)) {
 			sprite_t sprite;
 			sprite.sprite_id = i;
 			sprite.frame_idx = 0;
@@ -37,15 +37,14 @@ sprite_t get_sprite(char *name) {
 			return sprite;
 		}
 	}
-	sprite_t empty_sprite = {-1, -1, -1, 0 };
-	return empty_sprite;
+	return get_sprite("");
 }
 
 sprite_t get_sprite_by_id(uint32_t sprite_id) {
 	if (sprite_id >= sprite_registry_len) {
-		sprite_t empty_sprite = {-1, -1, -1, 0 };
-		return empty_sprite;
+		return get_sprite("");
 	}
+
 	sprite_t sprite;
 	sprite.sprite_id = sprite_id;
 	sprite.frame_idx = 0;

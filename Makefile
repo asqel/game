@@ -10,8 +10,6 @@ CFLAGS = -Wall -Wextra -g -Iinclude/ $(SDL_INC) #-fsanitize=address
 LDFLAGS = $(SDL_LIB) -lSDL2 -lSDL2_image -Llibs/ -llua54 -lm #-fsanitize=address
 LIBS = 
 
-CFLAGS += -Wconversion -Wsign-conversion
-
 ifeq ($(OS), Windows_NT)
 	CFLAGS += -Ilua/win -DSDL_MAIN_HANDLED=1
 	LIBS += $(wildcard libs/*.dll)
