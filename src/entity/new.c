@@ -1,16 +1,6 @@
 #include "game.h"
 
-static void init_metatable() {
-	static int is_init = 0;
-	if (is_init)
-		return ;
-	is_init = 1;
-	luaL_newmetatable(lua_state, "entity_t");
-	lua_pop(lua_state, 1);
-}
-
 entity_t *entity_add(uint32_t id, int x, int y, world_t *world) {
-	init_metatable();
 	int width = world->width * CHUNK_SIZE;
 	int height = world->height * CHUNK_SIZE;
 	while (x < 0)
@@ -35,7 +25,6 @@ entity_t *entity_add(uint32_t id, int x, int y, world_t *world) {
 	ent->y = y;
 	ent->vx = 0;
 	ent->vy = 0;
-	ent->data_ref = LUA_REFNIL;
 	ent->id = id;
 	ent->sprite = get_sprite_by_id(entities_infos[id].sprite_id);
 	ent->hp = entities_infos[id].hp;
@@ -43,15 +32,13 @@ entity_t *entity_add(uint32_t id, int x, int y, world_t *world) {
 	ent->world_hitbox_y = entities_infos[id].default_world_hitbox_y;
 	ent->world_hitbox_w = entities_infos[id].default_world_hitbox_w;
 	ent->world_hitbox_h = entities_infos[id].default_world_hitbox_h;
-	ent->lua_infos = lua_newuserdata(lua_state, sizeof(int) * 3);
-	luaL_getmetatable(lua_state, "entity_t");
-	lua_setmetatable(lua_state, -2);
-	ent->lua_ref = luaL_ref(lua_state, LUA_REGISTRYINDEX);
+	ent->lua_infos = game_new_lua_udata("entity_t", UDATA_ID_ENTITY, sizeof(int) * 3, &ent->lua_ref);
 	ent->lua_infos[0] = cx;
 	ent->lua_infos[1] = cy;
 	ent->lua_infos[2] = chunk->entities_len - 1;
 	ent->friction = entities_infos[id].friction;
 	ent->is_moving = 0;
+	ent->data_ref = LUA_REFNIL;
 	return ent;
 }
 

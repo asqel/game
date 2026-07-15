@@ -20,6 +20,7 @@ noreturn void game_exit(int exit_code) {
 	free(game_ctx->world->chunks);
 	free(game_ctx->world);
 	free(game_ctx->player);
+	entity_exit();
 	objects_free();
 	sprite_free();
 	textures_free();

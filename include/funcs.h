@@ -17,6 +17,7 @@ noreturn void		game_exit(int exit_code);
 void		sprite_free();
 void		textures_free();
 void		objects_free();
+void		entitiy_exit();
 int			dialogue_init();
 void		game_free_dialogues();
 int			init_lua();
@@ -95,6 +96,7 @@ gui_t		*game_open_gui(int data_ref, int update_ref, int render_ref, int free_ref
 
 //-------- utils
 char *read_file(char *path);
+void *game_new_lua_udata(const char *table_name, size_t table_id, size_t size, int *ref);
 
 //-------- dialogue
 dialogue_info_t parse_dialogue(char *str);
@@ -135,5 +137,10 @@ int game_get_fps();
 void game_set_fps_target(uint64_t target);
 uint64_t game_get_fps_target();
 int64_t game_get_time();
+
+//---------- debug
+void *game_alloc(size_t size);
+
+
 
 #endif

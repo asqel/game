@@ -61,6 +61,16 @@ static void load_libs() {
 	lua_pop(lua_state, 1);
 }
 
+static void create_metatable(const char *name) {
+	luaL_newmetatable(lua_state, name);
+	lua_pop(lua_state, 1);
+}
+
+static void init_lua_metatables() {
+	entity_
+	// !TODO  laaaaaaaa
+
+}
 
 int init_lua() {
 	lua_state = luaL_newstate();
@@ -71,6 +81,7 @@ int init_lua() {
 
 	load_libs();
 	init_lua_funcs();
+	init_lua_metatables();
 	return 0;
 }
 

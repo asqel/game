@@ -72,10 +72,10 @@ world_t *game_load_world(char *name) {
 	fread(&res->width, 1, sizeof(int32_t), f);
 	fread(&res->height, 1, sizeof(int32_t), f);
 	res->chunks = malloc(sizeof(chunk_t **) * res->height);
-	for (int i = 0; i < res->height; i++)
+	for (uint32_t i = 0; i < res->height; i++)
 		res->chunks[i] = calloc(res->width, sizeof(chunk_t *));
-	for (int i = 0; i < res->height; i++) {
-		for (int k = 0; k < res->width; k++) {
+	for (uint32_t i = 0; i < res->height; i++) {
+		for (uint32_t k = 0; k < res->width; k++) {
 			uint8_t c_info = 0;
 			fread(&c_info, 1, 1, f);
 			if (c_info >> 7 == 1)

@@ -108,8 +108,8 @@ void game_world_save(world_t *world) {
 
 	fwrite(&world->width, 1, sizeof(uint32_t), f);
 	fwrite(&world->height, 1, sizeof(uint32_t), f);
-	for (int cy = 0; cy < world->height; cy++) {
-		for (int cx = 0; cx < world->width; cx++) {
+	for (uint32_t cy = 0; cy < world->height; cy++) {
+		for (uint32_t cx = 0; cx < world->width; cx++) {
 			chunk_t *chunk = world->chunks[cy][cx];
 			int layers_empty[3] = {0};
 			int layers_is_repeat[3] = {0};

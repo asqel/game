@@ -31,6 +31,8 @@
 #define DEFAULT_FRICTION 0.8
 #define VELOCITY_EPSILON 0.005
 
+#define malloc game_alloc
+
 enum {
 	GAME_ACT_NONE,
 	GAME_ACT_UP,
@@ -130,8 +132,8 @@ struct chunk_t {
 
 struct world_t {
 	chunk_t ***chunks;
-	uint32_t width; // in chunks
-	uint32_t height;
+	uint16_t width; // in chunks
+	uint16_t height;
 	char name[GAME_WORLD_NAME_MAX_LEN + 1];
 };
 
@@ -159,9 +161,9 @@ struct entity_t {
 
 	double hp; // == 0 to die && id != 0
 	sprite_t sprite;
-	int data_ref;
 	int lua_ref; // custom obj store cx, cy, idx in list
 	int *lua_infos; // [3] (cx, cy, idx), if NULL skip this entity
+	int data_ref; // used for lua custom data
 };
 
 struct entity_info_t {
@@ -226,6 +228,12 @@ struct dialogue_info_t {
 	dialogue_char_t *text;
 	size_t len;
 	char id[256];
+};
+
+enum {
+	UDATA_ID_ENTITY,
+	UDATA_ID_SPRITE,
+	UDATA_ID_MAX
 };
 
 #endif

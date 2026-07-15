@@ -33,9 +33,9 @@ void game_init(int argc, char **argv) {
 	if (dialogue_init())
 		game_exit(1);
 	init_ctx(argc, argv);
+	entity_register("", 0, LUA_REFNIL, 100, (double []){0, 0, 1, 1}, DEFAULT_FRICTION);
 	if (init_lua())
 		game_exit(1);
-	entity_register("", 0, LUA_REFNIL, 100, (double []){0, 0, 1, 1}, DEFAULT_FRICTION);
 	if (init_lua_script())
 		game_exit(1);
 	game_ctx->world = game_load_world("start");
