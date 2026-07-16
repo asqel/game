@@ -1,13 +1,6 @@
 #include "game.h"
 
-#include <signal.h>
-
-void intHandler(int dummy) {
-	game_exit(0);
-}
-
 int main(int argc,char **argv) {
-   signal(SIGINT, intHandler);
 	game_init(argc, argv);
 	while (1) {
 

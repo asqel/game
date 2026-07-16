@@ -7,6 +7,8 @@ int main(void)
 
     for (int i = 0; i < n; i++)
         printf("%s\n", SDL_GetVideoDriver(i));
+	
+	char *s = "aa";
 
     return 0;
 }

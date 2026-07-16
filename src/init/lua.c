@@ -66,9 +66,14 @@ static void create_metatable(const char *name) {
 	lua_pop(lua_state, 1);
 }
 
+static void set_metatable_func(const char *table_name, const char *name, void *f) {
+	LuaL_getmetatable(lua_state, table_name);
+	lua_pushcfunction(lua_state, f);
+	lua_setfield(lua_state, -2, name);
+
+}
+
 static void init_lua_metatables() {
-	entity_
-	// !TODO  laaaaaaaa
 
 }
 
