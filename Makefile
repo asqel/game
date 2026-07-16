@@ -52,4 +52,3 @@ debug:
 	valgrind --leak-check=full --show-leak-kinds=all ./game 2> f
 
 .PHONY: re fclean clean all
-.NOTPARALLEL: fclean clean all

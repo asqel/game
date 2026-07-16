@@ -17,7 +17,7 @@ noreturn void		game_exit(int exit_code);
 void		sprite_free();
 void		textures_free();
 void		objects_free();
-void		entitiy_exit();
+void		entity_exit();
 int			dialogue_init();
 void		game_free_dialogues();
 int			init_lua();
@@ -129,6 +129,8 @@ int lua_func_read_save(lua_State *l);
 int lua_func_set_entity_func(lua_State *l);
 int lua_func_set_entity_velocity(lua_State *l);
 int lua_func_get_entity_ismoving(lua_State *l);
+int lua_func_entity_meta_index(lua_State *l);
+int lua_func_entity_meta_newindex(lua_State *l);
 
 //--------- time
 void game_loop_start();

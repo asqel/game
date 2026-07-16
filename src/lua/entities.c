@@ -108,3 +108,14 @@ int lua_func_set_entity_data(lua_State *l) {
 	ent->data_ref = ref;
 	return 0;
 }
+
+int lua_func_entity_meta_index(lua_State *l) {
+	printf("gettop %d\n", lua_gettop(l));
+	luaL_checktype(l, 2, LUA_TSTRING);
+	return 0;
+}
+
+int lua_func_entity_meta_newindex(lua_State *l) {
+	printf("gettop %d\n", lua_gettop(l));
+	return 0;
+}

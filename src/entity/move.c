@@ -135,12 +135,6 @@ static inline void move(hitbox_t *ent_hit, double dx, double dy, int width_as_bl
 
 			info_t ret = {0};
 			ret.t = 1;
-			printf("will hit ? (%f %f %f %f) (%f %f %f %f)\n",
-				ent_hit->x, ent_hit->y,
-				ent_hit->w, ent_hit->h,
-				obj_hit.x, obj_hit.y,
-				obj_hit.w, obj_hit.h
-			);
 			swept_aabb(ent_hit, dx, dy, &obj_hit, &ret);
 
 			if (ret.hit && ret.t <= best->t)
