@@ -64,12 +64,12 @@ static void update_velocity(chunk_t *chunk, int cx, int cy) {
 		double vx = ent->vx;
 		double vy = ent->vy;
 		if (ent->vx != 0) {
-			ent->vx *= ent->friction;
+			ent->vx *= ent->drag;
 			if (-VELOCITY_EPSILON < ent->vx && ent->vx < VELOCITY_EPSILON)
 				ent->vx = 0;
 		}
 		if (ent->vy != 0) {
-			ent->vy *= ent->friction;
+			ent->vy *= ent->drag;
 			if (-VELOCITY_EPSILON < ent->vy && ent->vy < VELOCITY_EPSILON)
 				ent->vy = 0;
 		}

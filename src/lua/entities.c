@@ -19,7 +19,7 @@ int lua_func_register_entity(lua_State *l) {
 	luaL_checktype(l, 7, LUA_TNUMBER);
 	luaL_checktype(l, 8, LUA_TNUMBER);
 
-	double friction = luaL_optnumber(l, 9, DEFAULT_FRICTION);
+	double drag = luaL_optnumber(l, 9, DEFAULT_FRICTION);
 
 	char *name = (char *)lua_tostring(l, 1);
 	int sprite_id = lua_tonumber(l, 2);
@@ -36,7 +36,7 @@ int lua_func_register_entity(lua_State *l) {
 		lua_pushvalue(l, 3);
 		tick = luaL_ref(l, LUA_REGISTRYINDEX);
 	}
-	lua_pushnumber(l, entity_register(name, sprite_id, tick, hp, hit, friction));
+	lua_pushnumber(l, entity_register(name, sprite_id, tick, hp, hit, drag));
 	return 1;
 }
 
@@ -109,22 +109,47 @@ int lua_func_set_entity_data(lua_State *l) {
 	return 0;
 }
 
+static int return_number(double x, lua_State *l) {
+	lua_pushnumber(l, x);
+	return 1;
+}
+
+static int get_set_double(double *dest, int is_getting, int idx, lua_State *l) {
+	if (is_getting)
+		return return_number(*dest, l);
+	luaL_checktype(l, idx, LUA_TNUMBER);
+	*dest = lua_tonumber(l, idx);
+	return 0;
+}
+
 int lua_func_entity_meta_index(lua_State *l) {
-	int is_setting = (lua_gettop(l) == 3);
+	int is_getting = (lua_gettop(l) == 2);
 
 	luaL_checktype(l, 2, LUA_TSTRING);
 	const char *member = lua_tostring(l, 2);
 	int *entity = luaL_checkudata(l, 1, "entity_t");
 	entity_t *ent = NULL;
-	if (game_ctx->world->chunks[entity[1]][en
-	// !TODO LAAAAAAAAAAAAAA
+	if (entity[0] == -1)
+		return 0;
+	ent = &game_ctx->world->chunks[entity[1]][entity[0]]->entities[entity[2]];
 
-	if (!strcmp(member, "x")) {
-		if (is_setting) {
-			luaL_checktype(l, 3, LUA_TNUMBER);
+	
+	if (!strcmp(member, "vx"))
+		return get_set_double(&ent->vx, is_getting, 3, l);
+	if (!strcmp(member, "vy"))
+		return get_set_double(&ent->vy, is_getting, 3, l);
+	if (!strcmp(member, "drag"))
+		return get_set_double(&ent->drag, is_getting, 3, l);
+	if (!strcmp(member, "world_hitbox_x"))
+		return get_set_double(&ent->world_hitbox_x, is_getting, 3, l);
+	if (!strcmp(member, "world_hitbox_y"))
+		return get_set_double(&ent->world_hitbox_y, is_getting, 3, l);
+	if (!strcmp(member, "world_hitbox_w"))
+		return get_set_double(&ent->world_hitbox_w, is_getting, 3, l);
+	if (!strcmp(member, "world_hitbox_h"))
+		return get_set_double(&ent->world_hitbox_h, is_getting, 3, l);
+	if (!strcmp(member, "hp"))
+		return get_set_double(&ent->hp, is_getting, 3, l);
 
-		}
-	}
-
-	return 0;
+	return luaL_error(l, "unknown member %s in type entity_t", member);
 }

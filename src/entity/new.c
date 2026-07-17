@@ -36,7 +36,7 @@ entity_t *entity_add(uint32_t id, int x, int y, world_t *world) {
 	ent->lua_infos[0] = cx;
 	ent->lua_infos[1] = cy;
 	ent->lua_infos[2] = chunk->entities_len - 1;
-	ent->friction = entities_infos[id].friction;
+	ent->drag = entities_infos[id].drag;
 	ent->is_moving = 0;
 	ent->data_ref = LUA_REFNIL;
 	return ent;

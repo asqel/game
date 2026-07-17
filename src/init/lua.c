@@ -76,6 +76,8 @@ static void init_lua_metatables() {
 	create_metatable("entity_t");
 	set_metatable_func("entity_t", "__index", lua_func_entity_meta_index);
 	set_metatable_func("entity_t", "__newindex", lua_func_entity_meta_index);
+
+	create_metatable("sprite_t");
 }
 
 int init_lua() {

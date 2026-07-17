@@ -45,12 +45,21 @@ function test(ent)
 	if (game.act.get(game.act.RIGHT)) > 0 then
 		vx = vx + 0.1
 	end
-	-- set_entity_velocity(ent, 0.1, 0.1)
-	if (vx ~= 0 or vy ~= 0) then
-		set_entity_velocity(ent, vx, vy)
+	if (game.act.get(game.act.INTERACT) > 0) then
+		vx = vx * 2;
+		vy = vy * 2;
 	end
-	ent.x = 3
-	print(ent.x)
+	-- set_entity_velocity(ent, 0.1, 0.1)
+	if (vx ~= 0 and vy ~= 0) then
+		vx = vx / math.sqrt(2)
+		vy = vy / math.sqrt(2)
+	end
+	if (vx ~= 0 or vy ~= 0) then
+		ent.vx = vx;
+		ent.vy = vy;
+	end
+	print(ent.vx, ent.vy);
+	print(ent.drag);
 end
 
 set_entity_func(0, test)

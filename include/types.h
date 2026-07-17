@@ -150,7 +150,7 @@ struct entity_t {
 	double y;
 	double vx;
 	double vy;
-	double friction;
+	double drag;
 	int is_moving;
 	int direction;
 
@@ -172,7 +172,7 @@ struct entity_info_t {
 	double default_world_hitbox_y;
 	double default_world_hitbox_w;
 	double default_world_hitbox_h;
-	double friction;
+	double drag;
 	int sprite_id;
 	double hp;
 	int on_tick_ref;
