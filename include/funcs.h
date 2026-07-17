@@ -96,7 +96,7 @@ gui_t		*game_open_gui(int data_ref, int update_ref, int render_ref, int free_ref
 
 //-------- utils
 char *read_file(char *path);
-void *game_new_lua_udata(const char *table_name, size_t table_id, size_t size, int *ref);
+void *game_new_lua_udata(const char *table_name, size_t size, int *ref);
 
 //-------- dialogue
 dialogue_info_t parse_dialogue(char *str);
@@ -142,7 +142,5 @@ int64_t game_get_time();
 
 //---------- debug
 void *game_alloc(size_t size);
-
-
 
 #endif

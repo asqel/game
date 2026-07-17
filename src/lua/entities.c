@@ -110,12 +110,21 @@ int lua_func_set_entity_data(lua_State *l) {
 }
 
 int lua_func_entity_meta_index(lua_State *l) {
-	printf("gettop %d\n", lua_gettop(l));
-	luaL_checktype(l, 2, LUA_TSTRING);
-	return 0;
-}
+	int is_setting = (lua_gettop(l) == 3);
 
-int lua_func_entity_meta_newindex(lua_State *l) {
-	printf("gettop %d\n", lua_gettop(l));
+	luaL_checktype(l, 2, LUA_TSTRING);
+	const char *member = lua_tostring(l, 2);
+	int *entity = luaL_checkudata(l, 1, "entity_t");
+	entity_t *ent = NULL;
+	if (game_ctx->world->chunks[entity[1]][en
+	// !TODO LAAAAAAAAAAAAAA
+
+	if (!strcmp(member, "x")) {
+		if (is_setting) {
+			luaL_checktype(l, 3, LUA_TNUMBER);
+
+		}
+	}
+
 	return 0;
 }

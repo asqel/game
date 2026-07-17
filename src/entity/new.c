@@ -32,7 +32,7 @@ entity_t *entity_add(uint32_t id, int x, int y, world_t *world) {
 	ent->world_hitbox_y = entities_infos[id].default_world_hitbox_y;
 	ent->world_hitbox_w = entities_infos[id].default_world_hitbox_w;
 	ent->world_hitbox_h = entities_infos[id].default_world_hitbox_h;
-	ent->lua_infos = game_new_lua_udata("entity_t", UDATA_ID_ENTITY, sizeof(int) * 3, &ent->lua_ref);
+	ent->lua_infos = game_new_lua_udata("entity_t", sizeof(int) * 3, &ent->lua_ref);
 	ent->lua_infos[0] = cx;
 	ent->lua_infos[1] = cy;
 	ent->lua_infos[2] = chunk->entities_len - 1;
