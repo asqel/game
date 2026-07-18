@@ -73,50 +73,24 @@ int lua_func_set_entity_func(lua_State *l) {
 	return 1;
 }
 
-// entity, velx, vely
-int lua_func_set_entity_velocity(lua_State *l) {
-	if (lua_gettop(l) != 3)
-		return luaL_error(l, "expected 3 arguments");
-	int *entity = luaL_checkudata(l, 1, "entity_t");
-	luaL_checktype(l, 2, LUA_TNUMBER);
-	luaL_checktype(l, 3, LUA_TNUMBER);
-
-	entity_t * ent = &game_ctx->world->chunks[entity[1]][entity[0]]->entities[entity[2]];
-	ent->vx = lua_tonumber(l, 2);
-	ent->vy = lua_tonumber(l, 3);
-	return 0;
-}
-
-int lua_func_get_entity_ismoving(lua_State *l) {
-	if (lua_gettop(l) != 1)
-		return luaL_error(l, "expected 1 argument");
-	int *ent_info = luaL_checkudata(l, 1, "entity_t");
-	entity_t *ent = &game_ctx->world->chunks[ent_info[1]][ent_info[0]]->entities[ent_info[2]];
-	lua_pushnumber(l, ent->is_moving);
-	return 1;
-}
-
-// !TODO set/get entity data
-int lua_func_set_entity_data(lua_State *l) {
-	if (lua_gettop(l) != 2)
-		return luaL_error(l, "expected 2 argument");
-	int *ent_info = luaL_checkudata(l, 1, "entity_t");
-	entity_t *ent = &game_ctx->world->chunks[ent_info[1]][ent_info[0]]->entities[ent_info[2]];
-	lua_pushvalue(l, 2);
+static int get_set_ref(int *dest, int is_getting, int idx, lua_State *l) {
+	if (is_getting) {
+		lua_rawgeti(l, LUA_REGISTRYINDEX, *dest);
+		return 1;
+	}
+	lua_pushvalue(l, idx);
 	int ref = luaL_ref(l, LUA_REGISTRYINDEX);
-	luaL_unref(l, LUA_REGISTRYINDEX, ent->data_ref);
-	ent->data_ref = ref;
+	luaL_unref(l, LUA_REGISTRYINDEX, *dest);
+	*dest = ref;
 	return 0;
-}
-
-static int return_number(double x, lua_State *l) {
-	lua_pushnumber(l, x);
-	return 1;
 }
 
 static int get_set_double(double *dest, int is_getting, int idx, lua_State *l) {
-	if (is_getting)
-		return return_number(*dest, l);
+	if (is_getting) {
+		lua_pushnumber(l, *dest);
+		return 1;
+	}
+
 	luaL_checktype(l, idx, LUA_TNUMBER);
 	*dest = lua_tonumber(l, idx);
 	return 0;
@@ -150,6 +124,8 @@ int lua_func_entity_meta_index(lua_State *l) {
 		return get_set_double(&ent->world_hitbox_h, is_getting, 3, l);
 	if (!strcmp(member, "hp"))
 		return get_set_double(&ent->hp, is_getting, 3, l);
+	if (!strcmp(member, "data"))
+		return get_set_ref(&ent->data_ref, is_getting, 3, l);
 
 	return luaL_error(l, "unknown member %s in type entity_t", member);
 }

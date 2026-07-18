@@ -58,8 +58,10 @@ function test(ent)
 		ent.vx = vx;
 		ent.vy = vy;
 	end
-	print(ent.vx, ent.vy);
-	print(ent.drag);
+	if (ent.data == nil) then
+		ent.data = {}
+	end
+	print(ent.data);
 end
 
 set_entity_func(0, test)

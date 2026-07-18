@@ -43,8 +43,6 @@ static void init_lua_funcs() {
 	add_lua_func(lua_func_entity_add, "entity_add");
 	add_lua_func(lua_func_read_save, "read_save");
 	add_lua_func(lua_func_set_entity_func, "set_entity_func");
-	add_lua_func(lua_func_set_entity_velocity, "set_entity_velocity");
-	add_lua_func(lua_func_get_entity_ismoving, "get_entity_ismoving");
 }
 
 static void load_libs() {
