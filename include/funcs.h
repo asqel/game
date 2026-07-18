@@ -69,7 +69,6 @@ void		game_render_foreground(chunk_t *** chunks, int size, double player_x, doub
 
 //------- event
 void		update_event();
-int			game_action_pressed_hold(int action, int duration);
 void		game_tick();
 
 //------- chunk

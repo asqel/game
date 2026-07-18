@@ -1,14 +1,5 @@
 #include "game.h"
 
-int game_action_pressed_hold(int action, int duration) {
-	if (action <= 0 || action >= GAME_ACT_ENUM_MAX)
-		return 0;
-	if (game_ctx->actions[action] == 1)
-		return 1;
-	return game_ctx->actions[action] > (uint32_t)duration;
-
-}
-
 int get_action_from_scancode(int scancode) {
 	if (scancode == SDL_SCANCODE_ESCAPE)
 		return GAME_ACT_CLOSE;
