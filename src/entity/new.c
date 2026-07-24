@@ -1,6 +1,6 @@
 #include "game.h"
 
-entity_t *entity_add(uint32_t id, int x, int y, world_t *world) {
+entity_t *entity_add(uint32_t id, double x, double y, world_t *world) {
 	int width = world->width * CHUNK_SIZE;
 	int height = world->height * CHUNK_SIZE;
 	while (x < 0)
@@ -12,8 +12,8 @@ entity_t *entity_add(uint32_t id, int x, int y, world_t *world) {
 	while (y >=	height)
 		y -= height;
 	
-	int cx = x / CHUNK_SIZE;
-	int cy = y / CHUNK_SIZE;
+	int cx = (int)x / CHUNK_SIZE;
+	int cy = (int)y / CHUNK_SIZE;
 	chunk_t *chunk = get_chunk(cx, cy, world);
 	if (!chunk)
 		chunk = world_new_chunk(cx, cy, world);
@@ -21,6 +21,8 @@ entity_t *entity_add(uint32_t id, int x, int y, world_t *world) {
 	entity_t *ent = &chunk->entities[chunk->entities_len++];
 	if (id >= (uint32_t)entities_infos_len)
 		id = 0;
+	static count = 0;
+	printf("ent count %d\n", count++);
 	ent->x = x;
 	ent->y = y;
 	ent->vx = 0;
@@ -39,6 +41,7 @@ entity_t *entity_add(uint32_t id, int x, int y, world_t *world) {
 	ent->drag = entities_infos[id].drag;
 	ent->is_moving = 0;
 	ent->data_ref = LUA_REFNIL;
+	ent->sprite_depth = entities_infos[id].sprite_depth;
 	return ent;
 }
 

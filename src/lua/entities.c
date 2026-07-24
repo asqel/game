@@ -5,8 +5,8 @@ entity_add(id, x, y) -> entity_t (udata)
 */
 
 int lua_func_register_entity(lua_State *l) {
-	if (lua_gettop(l) != 8 && lua_gettop(l) != 9)
-		return luaL_error(l, "expected 8 to 9 arguments");
+	if (lua_gettop(l) < 8 || 10 < lua_gettop(l))
+		return luaL_error(l, "expected 8 to 10 arguments");
 
 	luaL_checktype(l, 1, LUA_TSTRING);
 	luaL_checktype(l, 2, LUA_TNUMBER);
@@ -20,6 +20,7 @@ int lua_func_register_entity(lua_State *l) {
 	luaL_checktype(l, 8, LUA_TNUMBER);
 
 	double drag = luaL_optnumber(l, 9, DEFAULT_FRICTION);
+	int8_t sprite_depth = luaL_optnumber(l, 10, 0);
 
 	char *name = (char *)lua_tostring(l, 1);
 	int sprite_id = lua_tonumber(l, 2);
@@ -36,7 +37,7 @@ int lua_func_register_entity(lua_State *l) {
 		lua_pushvalue(l, 3);
 		tick = luaL_ref(l, LUA_REGISTRYINDEX);
 	}
-	lua_pushnumber(l, entity_register(name, sprite_id, tick, hp, hit, drag));
+	lua_pushnumber(l, entity_register(name, sprite_id, tick, hp, hit, drag, sprite_depth));
 	return 1;
 }
 
@@ -48,8 +49,8 @@ int lua_func_entity_add(lua_State *l) {
 	luaL_checktype(l, 3, LUA_TNUMBER);
 
 	uint32_t id = lua_tonumber(l, 1);
-	int x = lua_tonumber(l, 2);
-	int y = lua_tonumber(l, 3);
+	double x = lua_tonumber(l, 2);
+	double y = lua_tonumber(l, 3);
 
 	entity_t *ent = entity_add(id, x, y, game_ctx->world);
 	lua_rawgeti(l, LUA_REGISTRYINDEX, ent->lua_ref);
@@ -96,6 +97,17 @@ static int get_set_double(double *dest, int is_getting, int idx, lua_State *l) {
 	return 0;
 }
 
+static int get_set_i8(int8_t *dest, int is_getting, int idx, lua_State *l) {
+	if (is_getting) {
+		lua_pushnumber(l, *dest);
+		return 1;
+	}
+
+	luaL_checktype(l, idx, LUA_TNUMBER);
+	*dest = lua_tonumber(l, idx);
+	return 0;
+}
+
 int lua_func_entity_meta_index(lua_State *l) {
 	int is_getting = (lua_gettop(l) == 2);
 
@@ -126,6 +138,12 @@ int lua_func_entity_meta_index(lua_State *l) {
 		return get_set_double(&ent->hp, is_getting, 3, l);
 	if (!strcmp(member, "data"))
 		return get_set_ref(&ent->data_ref, is_getting, 3, l);
+	if (!strcmp(member, "depth"))
+		return get_set_i8(&ent->sprite_depth, is_getting, 3, l);
+	if (!strcmp(member, "x"))
+		return get_set_double(&ent->x, 1, 3, l);
+	if (!strcmp(member, "y"))
+		return get_set_double(&ent->y, 1, 3, l);
 
 	return luaL_error(l, "unknown member %s in type entity_t", member);
 }

@@ -126,8 +126,10 @@ struct chunk_t {
 	char hitbox[CHUNK_SIZE][CHUNK_SIZE];
 	entity_t *entities;
 	int entities_len;
-	int rx; // real position (used by display)
-	int ry;
+	int cx; 
+	int cy;
+	int sx;
+	int sy;
 };
 
 struct world_t {
@@ -151,8 +153,8 @@ struct entity_t {
 	double vx;
 	double vy;
 	double drag;
-	int is_moving;
-	int direction;
+	uint8_t is_moving;
+	int8_t sprite_depth;
 
 	double world_hitbox_x;
 	double world_hitbox_y;
@@ -161,6 +163,7 @@ struct entity_t {
 
 	double hp; // == 0 to die && id != 0
 	sprite_t sprite;
+
 	int lua_ref; // custom obj store cx, cy, idx in list
 	int *lua_infos; // [3] (cx, cy, idx), if NULL skip this entity
 	int data_ref; // used for lua custom data
@@ -176,6 +179,7 @@ struct entity_info_t {
 	int sprite_id;
 	double hp;
 	int on_tick_ref;
+	int8_t sprite_depth;
 };
 
 struct game_t {

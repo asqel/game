@@ -48,6 +48,7 @@ SDL_RenderClear(renderer);
 	for (int i = 0; i < size; i++) {
 		int real_y = player_chunk_y - size / 2 + i;
 
+		int signed_y = real_y;
 		while (real_y < 0)
 			real_y += game_ctx->world->height;
 		while (real_y >= game_ctx->world->height)
@@ -56,6 +57,7 @@ SDL_RenderClear(renderer);
 		for (int k = 0; k < size; k++) {
 			int real_x = k + player_chunk_x - size / 2; 
 
+			int signed_x = real_x;
 			while (real_x < 0)
 				real_x += game_ctx->world->width;
 			while (real_x >= game_ctx->world->width)
@@ -63,8 +65,11 @@ SDL_RenderClear(renderer);
 
 			chunks_ptr[i][k] = get_chunk(real_x, real_y, game_ctx->world);
 			if (chunks_ptr[i][k]) {
-				chunks_ptr[i][k]->rx = real_x;
-				chunks_ptr[i][k]->ry = real_y;
+				chunks_ptr[i][k]->cx = real_x * CHUNK_SIZE;
+				chunks_ptr[i][k]->cy = real_y * CHUNK_SIZE;
+				chunks_ptr[i][k]->sx = signed_x * CHUNK_SIZE;
+				chunks_ptr[i][k]->sy = signed_y * CHUNK_SIZE;
+
 			}
 		}
 	}
