@@ -21,8 +21,6 @@ entity_t *entity_add(uint32_t id, double x, double y, world_t *world) {
 	entity_t *ent = &chunk->entities[chunk->entities_len++];
 	if (id >= (uint32_t)entities_infos_len)
 		id = 0;
-	static count = 0;
-	printf("ent count %d\n", count++);
 	ent->x = x;
 	ent->y = y;
 	ent->vx = 0;
