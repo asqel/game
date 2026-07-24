@@ -6,6 +6,7 @@ typedef struct {
 	int y;
 	int z;
 	int feet_y;
+	int8_t depth;
 } image_t;
 
 static int count_len(chunk_t ***chunks, int size) {
@@ -21,7 +22,7 @@ static int count_len(chunk_t ***chunks, int size) {
 	return res;
 }
 
-static inline int add_entities(image_t *images, int end, entity_t *entities, int len, int offset_x, int offset_y) {
+static inline int add_entities(image_t *images, int end, entity_t *entities, int len, int offset_x, int offset_y, chunk_t *chunk) {
 	for (int i = 0; i < len; i++) {
 		entity_t *ent = &entities[i];
 
@@ -31,11 +32,12 @@ static inline int add_entities(image_t *images, int end, entity_t *entities, int
 		if (!texture)
 			continue;
 
-		images[end].x = ent->x * TILE_SIZE + offset_x - texture->dest_w / 2;
-		images[end].y = ent->y * TILE_SIZE + offset_y - texture->dest_h;
+		images[end].x = (ent->x - chunk->cx + chunk->sx) * TILE_SIZE + offset_x - texture->dest_w / 2;
+		images[end].y = (ent->y - chunk->cy + chunk->sy) * TILE_SIZE + offset_y - texture->dest_h;
 		images[end].z = 0;
 		images[end].feet_y = ent->y + TILE_SIZE;
 		images[end].img = texture;
+		images[end].depth = ent->sprite_depth;
 
 		end++;
 	}
@@ -45,6 +47,10 @@ static inline int add_entities(image_t *images, int end, entity_t *entities, int
 static int compare(const void *a_ptr, const void *b_ptr) {
 	const image_t *a = a_ptr;
 	const image_t *b = b_ptr;
+	if (a->depth < b->depth)
+		return -1;
+	if (a->depth > b->depth)
+		return 1;
 	if (!a->img && !b->img)
 		return 0;
 	if (!a->img)
@@ -118,6 +124,7 @@ void game_render_middle(chunk_t ***chunks, int size, double player_x, double pla
 			images[end].y = current_feet_y;
 			images[end].z = 0;
 			images[end].feet_y = images[end].y;
+			images[end].depth = 0;
 
 			images[end].x -= texture->dest_w / 2;
 			images[end].y -= texture->dest_h;
@@ -135,7 +142,7 @@ void game_render_middle(chunk_t ***chunks, int size, double player_x, double pla
 			chunk_t *chunk = chunks[i][k];
 			if (!chunk)
 				continue;
-			end = add_entities(images, end, chunk->entities, chunk->entities_len, offset_x, offset_y);
+			end = add_entities(images, end, chunk->entities, chunk->entities_len, offset_x, offset_y, chunk);
 		}
 	}
 	render_images(images, len);
